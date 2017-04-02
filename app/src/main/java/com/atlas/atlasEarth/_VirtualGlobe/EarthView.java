@@ -1,0 +1,254 @@
+package com.atlas.atlasEarth._VirtualGlobe;
+
+import android.content.Context;
+import android.opengl.GLES31;
+import android.opengl.GLSurfaceView;
+import android.util.Log;
+import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
+
+import com.atlas.atlasEarth.R;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.ByteFlags;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Camera;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector3F;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Geometry.CSConverter;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Geometry.geographicCS.Ellipsoid;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Geometry.geographicCS.Geodetic3D;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Matrices.MatricesUtility;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Rendables.EarthModel;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Rendables.Renderable;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Rendables.SpaceBackground;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Scene.Shapefile.ShapefileAppearance;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Scene.Shapefile.ShapefileRenderer;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Scene.Shapefile.Shapefiles.Polygon;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.TouchHandeling.TouchHandler;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Scene.Shapefile.TestShape;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.RendererGL3x;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Light;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.States.RenderState;
+import com.atlas.atlasEarth.general.Utils;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.microedition.khronos.egl.EGLConfig;
+import javax.microedition.khronos.opengles.GL10;
+
+
+public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
+
+    private Renderable earthRenderable;
+    private Renderable background;
+    private TestShape testShapeFile;
+    private Light light;
+    private Camera camera;
+    private RendererGL3x renderer;
+    private TouchHandler touchHandler;
+    private static float height;
+    private static float width;
+    private ScaleGestureDetector scaleGestureDetector;
+    private ShapefileRenderer shapefileRenderer;
+
+
+
+    public EarthView(Context context) {
+        super(context);
+        init();
+    }
+
+    public void init() {
+
+        //Set the OpenGlVersion
+        super.setEGLContextClientVersion(3);
+        //configure the output of OpenGL
+        super.setEGLConfigChooser(8, 8, 8, 8, 0, 0);
+        //Set the RendererGL3x
+        super.setRenderer(this);
+        scaleGestureDetector = new ScaleGestureDetector(getContext(), new ScaleListener());
+    }
+
+
+    @Override
+    public void onSurfaceCreated(GL10 gl10, EGLConfig eglConfig) {
+
+        light = new Light(new Vector3F(0.82f, 0.72f, 0.55f));
+        Ellipsoid globeShape = Ellipsoid.ScaledWgs84;
+        earthRenderable = EarthModel.getInstance();
+        earthRenderable.loadTextures(getContext());
+
+        camera = new Camera(earthRenderable);
+        touchHandler = new TouchHandler(MatricesUtility.createProjectionMatrix(getContext()), camera, getContext());
+
+        background = new SpaceBackground();
+        background.loadTextures(getContext());
+
+
+        RenderState renderState = new RenderState();
+        renderState.getDepthTest().setEnabled(true);
+        renderState.getDepthTest().setDepthTestFunction(ByteFlags.ALWAYS);
+        renderState.getFacetCulling().setEnabled(true);
+        renderState.getFacetCulling().setCullFace(ByteFlags.BACK);
+        renderState.getFacetCulling().setWindingOrder(ByteFlags.COUNTERCLOCKWISE);
+
+
+        testShapeFile = new TestShape();
+        testShapeFile.setRectangle(
+                globeShape.ToVector3D(CSConverter.toRadians(new Geodetic3D(0, 0, 0.1))),
+                globeShape.ToVector3D(CSConverter.toRadians(new Geodetic3D(0, 10, 0.1))),
+                globeShape.ToVector3D(CSConverter.toRadians(new Geodetic3D(10, 10, 0.1))));
+
+    try {
+         shapefileRenderer = new ShapefileRenderer(R.raw.countries_110m, getContext(), globeShape, new ShapefileAppearance());
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+
+        renderer = new RendererGL3x(getContext(), renderState);
+        touchHandler = new TouchHandler(renderer.getProjectionMatrix(), camera, getContext());
+
+        System.gc();
+    }
+
+    @Override
+    public void onSurfaceChanged(GL10 gl10, int width, int height) {
+        //Called when the screen rotates
+        GLES31.glViewport(0, 0, width, height);
+        this.width = width;
+        this.height = height;
+
+    }
+
+
+    @Override
+    public void onDrawFrame(GL10 gl10) {
+        renderer.progressEarthModel(earthRenderable);
+        renderer.progressBackground(background);
+        renderer.progressShapeFile(testShapeFile);
+
+        List<Renderable> polys = new ArrayList<>(shapefileRenderer.getPolygonShapefile().getPolygons().size());
+        for(Polygon polygon : shapefileRenderer.getPolygonShapefile().getPolygons()) {
+          polys.add(polygon);
+        }
+
+        renderer.progressPolygons(polys);
+        renderer.render(light, camera);
+        light.calculateAngleByTime();
+    }
+
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        earthRenderable.clear();
+        background.clear();
+        testShapeFile.clear();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+
+    public static float getEarthViewHeight(Context context) {
+        if (height == 0) {
+            height = Utils.getDisplayDimensions(context, false) - Utils.dpToPixel(55, context) - Utils.getStatusBarHeight(context);
+        }
+        return height;
+    }
+
+    public static float getEarthViewWidth(Context context) {
+        if (width == 0) {
+            width = Utils.getDisplayDimensions(context, true);
+        }
+
+        return width;
+    }
+
+    public Light getLight() {
+        return light;
+    }
+
+
+    /**
+     * Touch Handeling
+     */
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        //Always handle Action Cancel !!!
+    /*
+    +Multitouch:
+        -MotionEvent.getPointerCount(); determines how many pointers are currently on screen
+        -ACTION_POINTER_DOWN/_UP to detect secondary pointers, if there occur two or more touch
+             Events at the same time, onTouchDown wont be fired, rather ACTION_POINTER_UP
+        -PointerID is stable, PointerIndex is related to the amount of touch events occur at the same time
+
+    +ScaleGestureDetector!
+     */
+        return super.dispatchTouchEvent(event);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+
+        float x = event.getX();
+        float y = event.getY();
+
+        switch (event.getPointerCount()) {
+            case 1:
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        touchHandler.setUp(x, y, camera);
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        touchHandler.update(x, y, camera);
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        touchHandler.reset();
+                        break;
+                }
+                break;
+            case 2:
+                scaleGestureDetector.onTouchEvent(event);
+                break;
+            default:
+
+                break;
+
+        }
+
+
+        return true;
+    }
+
+    private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
+        private long previousEventTime = 0;
+
+        @Override
+        public boolean onScale(ScaleGestureDetector detector) {
+            //Log.d("debug", "onScale");
+            //Log.d("debug", "detector.getCurrentSpan(); " + detector.getCurrentSpan());
+            //Log.d("debug", "detector.getCurrentSpanX(); " + detector.getCurrentSpanX());
+            //Log.d("debug", "detector.getCurrentSpanY(); " + detector.getCurrentSpanY());
+            //Log.d("debug", "detector.getScaleFactor(); " + detector.getScaleFactor());
+            long eventTime = System.currentTimeMillis();
+
+            if (previousEventTime == 0 || (eventTime - previousEventTime) > 50) {
+                previousEventTime = eventTime - 16;
+            }
+
+            if (detector.getScaleFactor() > 1) {
+                camera.decreaseZoom(eventTime - previousEventTime);
+                Log.d("EarthControl", "Zooming in");
+            } else {
+                camera.increaseZoom(eventTime - previousEventTime);
+                Log.d("EarthControl", "Zooming out");
+            }
+
+            previousEventTime = eventTime;
+            return true;
+        }
+    }
+
+}

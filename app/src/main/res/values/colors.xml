@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <color name="colorPrimary">#0069a3</color>
+   <color name="colorPrimaryDark">#001e2e</color>
+
+    <color name="colorPrimary1">#4d526c</color>
+    <color name="colorPrimaryDark1">#404459</color>
+    <color name="colorAccent">#868ba9</color>
+    <color name="colorPrimaryLight">#7c819e</color>
+
+    <color name="colorAccentDark">#737893</color>
+    <color name="colorAccentSelected">#c97b809c</color>
+
+    <color name="rippleColor">#b7b7b7</color>
+  <color name="rippleColorLight">#cccccc</color>
+    <color name="translucent">#00ffffff</color>
+
+
+    <color name="colorMarkerLabel">#404459</color>
+    <color name="colorMarkerTitle">#8b92ac</color>
+    <color name="colorMarkerSub">#4d526c</color>
+    <color name="backgroundColor">#074248</color>
+    <color name="buttonStrokeColor">#787878</color>
+
+    <color name="dividerColor">#acacac</color>
+    <color name="barIconSelected">#fff</color>
+    <color name="barIcon">#0271ac</color>
+   <color name="barColor">#0288D1</color>
+
+    <color name="dialogBackground">#b1282828</color>
+
+    <color name="sd">#7c819e</color>
+ <color name="white">#fff</color>
+
+
+</resources>
+
+

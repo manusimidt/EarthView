@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/mainLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimaryDark">
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="15dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+<!--
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:text="Light:   "
+                    android:textSize="16sp" />
+
+                <ImageButton
+                    android:id="@+id/light_out"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:onClick="lightOut"
+                    app:srcCompat="@drawable/ic_zoom_out_black_24dp" />
+
+                <ImageButton
+                    android:id="@+id/light_in"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:onClick="lightIn"
+                    app:srcCompat="@drawable/ic_zoom_in_black_24dp" />
+
+                <ImageButton
+                    android:id="@+id/light_left"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:onClick="lightLeft"
+                    app:srcCompat="@drawable/ic_chevron_left_black_24dp" />
+
+                <ImageButton
+                    android:id="@+id/light_up"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:onClick="lightUp"
+                    app:srcCompat="@drawable/ic_expand_less_black_24dp" />
+
+                <ImageButton
+                    android:id="@+id/light_down"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:onClick="lightDown"
+                    app:srcCompat="@drawable/ic_expand_more_black_24dp" />
+
+                <ImageButton
+                    android:id="@+id/light_right"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:onClick="lightRight"
+                    app:srcCompat="@drawable/ic_chevron_right_black_24dp" />
+
+
+            </LinearLayout>
+                 -->
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="FullLight"
+                android:text="Illuminate"
+                />
+
+        </LinearLayout>
+
+
+    </HorizontalScrollView>
+
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="55dp">
+
+        <android.support.design.widget.TabLayout
+            android:id="@+id/mainTabLayout"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_gravity="top"
+            android:background="@color/barColor"
+            android:elevation="6dp">
+
+            <android.support.design.widget.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Tab1" />
+
+            <!-- <android.support.design.widget.TabItem
+                 android:layout_width="wrap_content"
+                 android:layout_height="match_parent"
+                 android:text="Tab2" />
+
+             <android.support.design.widget.TabItem
+                 android:layout_width="wrap_content"
+                 android:layout_height="match_parent"
+                 android:text="Tab3" />-->
+
+        </android.support.design.widget.TabLayout>
+
+    </android.support.v4.view.ViewPager>
+
+
+</android.support.design.widget.CoordinatorLayout>
+

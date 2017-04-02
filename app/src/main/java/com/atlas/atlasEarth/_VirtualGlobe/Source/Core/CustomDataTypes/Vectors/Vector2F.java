@@ -1,0 +1,30 @@
+package com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors;
+
+
+import java.util.List;
+
+public class Vector2F {
+
+    public float x, y;
+
+    public Vector2F(float x, float y) {
+        this.x = x;
+        this.y = y;
+    }
+
+
+    public static float[] convertToFloatArray(List<Vector2F> positions) {
+        float[] result = new float[positions.size() * 2];
+        short a = 0;
+        for (int i = 0; i < positions.size(); i++) {
+            result[a] = positions.get(i).x;
+            a++;
+            result[a] = positions.get(i).y;
+            a++;
+        }
+
+
+        return result;
+    }
+
+}

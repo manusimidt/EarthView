@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "309482610594",
+    "firebase_url": "https://social-atlas.firebaseio.com",
+    "project_id": "social-atlas",
+    "storage_bucket": "social-atlas.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:309482610594:android:76904e55c25f7e07",
+        "android_client_info": {
+          "package_name": "com.atlas.atlasEarth"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "309482610594-jh1dn1ns9ca759c2t05qr9408ibvl8gv.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "309482610594-i1m8e157strpd00su8pumsfae4njo8se.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [{"current_key":""}],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

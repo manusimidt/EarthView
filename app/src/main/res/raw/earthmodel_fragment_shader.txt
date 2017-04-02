@@ -1,0 +1,87 @@
+precision mediump float;
+
+
+uniform vec3 lightColor;
+uniform float gridResolution;
+uniform sampler2D texture0; //Day Texture
+uniform sampler2D texture1; //NightTexture
+uniform float enableFullLightning;
+
+varying vec3 surfaceNormal;
+varying vec3 toLightVector;
+varying vec3 worldPositionFS;
+varying vec3 toCameraVector;
+
+
+const float blendDuration = 0.1f;
+const float blendDurationScale = 5.0; // blendDurationScale = 1/(2*blendDuration);
+
+
+
+vec2 computeTextureCoordinates(vec3 normal){
+    return vec2(
+        atan(normal.x, normal.y) * og_oneOverTwoPi + 0.5,
+        asin(normal.z) * og_oneOverPi + 0.5
+    );
+}
+
+vec3 computeDiffuseLightning(vec3 unitNormal, vec3 unitLightNormal){
+    float nDot1 = dot(unitNormal, unitLightNormal);
+    float brightness = max(nDot1, 0.1);
+    vec3 finalDiffuse = brightness * lightColor;
+    return finalDiffuse;
+}
+
+vec4 nightColor(vec3 normal, vec2 textureCoordinates){
+    return vec4(0.5, 0.5, 0.5, 1.0) * texture2D(texture1, textureCoordinates);
+}
+
+vec4 dayColor(vec3 normal, vec3 unitLightNormal, vec2 textureCoordinates){
+    return vec4(computeDiffuseLightning(normal, unitLightNormal),1.0) * texture2D(texture0,textureCoordinates);
+}
+
+
+
+void main(){
+
+    vec3 unitNormal = normalize(surfaceNormal);
+    vec3 unitLightNormal = normalize(toLightVector);
+
+    vec2 textureCoordinates = computeTextureCoordinates(normalize(worldPositionFS));
+
+
+   //Lat/Long Grid
+   //vec2 distanceToLine = mod(textureCoordinates, gridResolution);
+   //vec2 dx = abs(dFdx(textureCoordinates));
+   //vec2 dy = abs(dFdy(textureCoordinates));
+   //vec2 dF = vec2(max(dx.s, dy.s), max(dx.t, dy.t)) * 3.0f;
+
+    //if(any(lessThan(distanceToLine, dF))){
+    //    gl_FragColor = vec4(1.0f, 0.0f, 0.0f, 1.0f);
+    //}else{
+
+        float nDot1 = dot(unitNormal, unitLightNormal);
+        float brightness = max(nDot1, 0.0);
+
+        if(enableFullLightning >0.5){
+           gl_FragColor = dayColor(vec3(0.5,0.5,0.5), vec3(1.0,1.0,1.0), textureCoordinates);
+        }else{
+
+            if(brightness < -blendDuration){
+                         gl_FragColor = nightColor(unitNormal, textureCoordinates);
+
+                       }else if(brightness > blendDuration){
+                         gl_FragColor = dayColor(unitNormal, unitLightNormal, textureCoordinates);
+
+                       }else{
+                           vec4 nightColor = nightColor(unitNormal, textureCoordinates);
+                           vec4 dayColor = dayColor(unitNormal, unitLightNormal, textureCoordinates);
+                           gl_FragColor = mix(nightColor, dayColor , (brightness+blendDuration)*blendDurationScale);
+                       }
+        }
+
+
+
+    //}
+
+}
