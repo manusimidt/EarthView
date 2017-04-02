@@ -21,12 +21,6 @@ public class TestShape extends Renderable {
 
     public TestShape() {
         super(new Vector3F(0,0,0), 0, 90, 0, 1);
-        double testchange = test(5);
-
-    }
-
-    private double test(int i) {
-        return Math.pow(i,i);
     }
 
 
