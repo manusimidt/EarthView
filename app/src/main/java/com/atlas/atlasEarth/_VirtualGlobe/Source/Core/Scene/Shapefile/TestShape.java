@@ -24,6 +24,7 @@ public class TestShape extends Renderable {
     }
 
 
+
     public void setRectangle(Vector3D p1, Vector3D p2, Vector3D p3){
         List<Vector3F> positions = new ArrayList<>(3);
         List<TriangleIndicesShort> triangles = new ArrayList<>(1);
