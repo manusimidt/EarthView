@@ -10,6 +10,7 @@ import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Rendables.Renderable;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Light;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.ModelRenderer.BackgroundRenderer;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.ModelRenderer.EarthModelRenderer;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.ModelRenderer.PostRenderer;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.ModelRenderer.ShapefileRenderer;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.States.RenderState;
 
@@ -22,9 +23,11 @@ public class RendererGL3x {
     private EarthModelRenderer earthRenderer;
     private BackgroundRenderer backgroundRenderer;
     private ShapefileRenderer shapefileRenderer;
+    private PostRenderer postRenderer;
     private Renderable earthRenderable;
     private Renderable background;
     private List<Renderable> shapefiles;
+    private Renderable post;
 
 
     public RendererGL3x(Context context, RenderState renderState) {
@@ -32,6 +35,7 @@ public class RendererGL3x {
         earthRenderer = new EarthModelRenderer(context, projectionMatrix);
         backgroundRenderer = new BackgroundRenderer(context, projectionMatrix);
         shapefileRenderer = new ShapefileRenderer(context, projectionMatrix);
+postRenderer = new PostRenderer(context, projectionMatrix);
         forceRenderStates(renderState);
     }
 
@@ -50,6 +54,9 @@ public class RendererGL3x {
         this.shapefiles = shapefiles;
     }
 
+    public void progressPost(Renderable post){
+        this.post = post;
+    }
 
     public void render(Light light, Camera camera) {
         camera.calculateCameraPosition();
@@ -68,6 +75,12 @@ public class RendererGL3x {
         shapefileRenderer.getShaderProgram().start();
         shapefileRenderer.render(shapefiles, camera);
         shapefileRenderer.getShaderProgram().stop();
+
+        postRenderer.getShaderProgram().start();
+        postRenderer.render(post, camera);
+        postRenderer.getShaderProgram().stop();
+
+
     }
 
     /**

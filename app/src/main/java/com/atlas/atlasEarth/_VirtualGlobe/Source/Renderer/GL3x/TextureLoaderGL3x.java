@@ -12,10 +12,14 @@ import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Texture;
 public class TextureLoaderGL3x {
 
     public static void loadTexture(Context context, Texture texture) {
-        final BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inScaled = false;   // No pre-scaling
-
-        final Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), texture.getResourceID(), options);
+        Bitmap bitmap;
+        if(texture.getResourceID()!=0) {
+            final BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inScaled = false;   // No pre-scaling
+              bitmap = BitmapFactory.decodeResource(context.getResources(), texture.getResourceID(), options);
+        }else{
+            bitmap = texture.getBitmap();
+        }
         GLES31.glBindTexture(GLES31.GL_TEXTURE_2D, texture.getTextureID());
         // Set filtering
         GLES31.glTexParameteri(GLES31.GL_TEXTURE_2D, GLES31.GL_TEXTURE_MIN_FILTER, GLES31.GL_NEAREST);

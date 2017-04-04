@@ -18,6 +18,11 @@ public class Camera {
     public Camera(Renderable earthRenderable) {
         this.earthRenderable = earthRenderable;
     }
+    public Camera(Vector3F position, float pitch, float yaw){
+        this.position = position;
+        this.pitch = pitch;
+        this.yaw = yaw;
+    }
 
     /**
      * Zooming

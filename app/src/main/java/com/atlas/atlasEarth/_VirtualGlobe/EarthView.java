@@ -1,6 +1,7 @@
 package com.atlas.atlasEarth._VirtualGlobe;
 
 import android.content.Context;
+import android.graphics.BitmapFactory;
 import android.opengl.GLES31;
 import android.opengl.GLSurfaceView;
 import android.util.Log;
@@ -13,10 +14,12 @@ import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Camera;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector3F;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Geometry.geographicCS.Ellipsoid;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Matrices.MatricesUtility;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Post.Post;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Rendables.EarthModel;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Rendables.Renderable;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Rendables.SpaceBackground;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Scene.Shapefile.ShapefileAppearance;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Scene.Shapefile.Shapefiles.Polygon;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Scene.Shapefile.Shapefiles.ShapefileRenderable;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.TouchHandeling.TouchHandler;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.RendererGL3x;
@@ -36,6 +39,7 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
 
     private Renderable earthRenderable;
     private Renderable background;
+    private Renderable post;
     private Light light;
     private Camera camera;
     private RendererGL3x renderer;
@@ -99,6 +103,9 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
         renderer = new RendererGL3x(getContext(), renderState);
         touchHandler = new TouchHandler(renderer.getProjectionMatrix(), camera, getContext());
 
+        post = new Post(new Vector3F(0,1,0), BitmapFactory.decodeResource(getResources(), R.drawable.sunset6), "test", "14.07.1999");
+        post.loadTextures(getContext());
+
         System.gc();
     }
 
@@ -121,6 +128,7 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
         renderer.progressEarthModel(earthRenderable);
         renderer.progressBackground(background);
         renderer.progressShapeFile(shapefileRenderables);
+        renderer.progressPost(post);
         renderer.render(light, camera);
         light.calculateAngleByTime();
 

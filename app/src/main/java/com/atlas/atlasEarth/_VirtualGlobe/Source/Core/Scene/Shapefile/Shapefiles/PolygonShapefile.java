@@ -97,9 +97,9 @@ public class PolygonShapefile {
                 }
 
             }
-          // if (polygons.size() >= 5) {
-          //     break;
-          // }
+          if (polygons.size() >=2 ) {
+              break;
+          }
 
         }
 
