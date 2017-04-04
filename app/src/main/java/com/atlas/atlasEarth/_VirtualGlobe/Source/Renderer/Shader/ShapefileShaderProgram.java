@@ -5,15 +5,16 @@ import android.renderscript.Matrix4f;
 
 import com.atlas.atlasEarth.R;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Camera;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector4F;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Matrices.MatricesUtility;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.ShaderGL3x.ShaderProgramGL3x;
-
 
 
 public class ShapefileShaderProgram extends ShaderProgramGL3x{
     private int location_projectionMatrix;
     private int location_viewMatrix;
     private int location_transMat;
+    private int location_color;
 
 
     public ShapefileShaderProgram(Context context) {
@@ -30,6 +31,7 @@ public class ShapefileShaderProgram extends ShaderProgramGL3x{
         location_projectionMatrix = super.getUniformLocation("projectionMatrix");
         location_viewMatrix = super.getUniformLocation("viewMatrix");
         location_transMat = super.getUniformLocation("transformationMatrix");
+        location_color  = super.getUniformLocation("color");
     }
 
     public void loadTransformationMatrix(Matrix4f transformation) {
@@ -42,6 +44,10 @@ public class ShapefileShaderProgram extends ShaderProgramGL3x{
 
     public void loadViewMatrix(Camera camera) {
         super.loadMatrix(location_viewMatrix, MatricesUtility.createViewMatrix(camera));
+    }
+
+    public void loadColor(Vector4F color){
+        super.loadVector4F(location_color, color);
     }
 
 }

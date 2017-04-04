@@ -75,8 +75,6 @@ public class Ellipsoid {
 
 
 
-
-
     public Vector3D scaleToGeodeticSurface(Vector3D position) {
         double beta = 1.0 / Math.sqrt(
                 (position.x * position.x) * oneOverRadiiSquared.x +

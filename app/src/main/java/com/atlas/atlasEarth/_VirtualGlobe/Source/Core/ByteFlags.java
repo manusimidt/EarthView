@@ -100,6 +100,7 @@ public class ByteFlags {
     public static final byte MULTIPATCH                 = -14;
     //~ShapeType
     //~-----ShapeFiles------//
+
     //-----MeshDataTypes-----//
 
     //~----MeshDataTypes-----//

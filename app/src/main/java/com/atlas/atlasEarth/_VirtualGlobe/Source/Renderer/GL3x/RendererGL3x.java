@@ -7,12 +7,10 @@ import android.renderscript.Matrix4f;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Camera;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Matrices.MatricesUtility;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Rendables.Renderable;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Scene.Shapefile.Shapefiles.Polygon;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Light;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.ModelRenderer.BackgroundRenderer;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.ModelRenderer.EarthModelRenderer;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.ModelRenderer.PolygonRenderer;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.ModelRenderer.ShapefileRendererTest;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.ModelRenderer.ShapefileRenderer;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.States.RenderState;
 
 import java.util.List;
@@ -23,30 +21,23 @@ public class RendererGL3x {
     private Matrix4f projectionMatrix;
     private EarthModelRenderer earthRenderer;
     private BackgroundRenderer backgroundRenderer;
-    private ShapefileRendererTest shapefileRenderer;
-    private PolygonRenderer polygonRenderer;
+    private ShapefileRenderer shapefileRenderer;
     private Renderable earthRenderable;
     private Renderable background;
-    private Renderable shapefile;
-    private List<Renderable> polygons;
-private RenderState renderState;
+    private List<Renderable> shapefiles;
+
+
     public RendererGL3x(Context context, RenderState renderState) {
         projectionMatrix = MatricesUtility.createProjectionMatrix(context);
         earthRenderer = new EarthModelRenderer(context, projectionMatrix);
         backgroundRenderer = new BackgroundRenderer(context, projectionMatrix);
-        shapefileRenderer = new ShapefileRendererTest(context, projectionMatrix);
-        polygonRenderer = new PolygonRenderer(context, projectionMatrix);
+        shapefileRenderer = new ShapefileRenderer(context, projectionMatrix);
         forceRenderStates(renderState);
-this.renderState = renderState;
     }
+
     /**
      * Loader methods
      */
-
-
-
-
-
     public void progressEarthModel(Renderable renderable) {
         earthRenderable = renderable;
     }
@@ -55,12 +46,8 @@ this.renderState = renderState;
         this.background = background;
     }
 
-    public void progressShapeFile(Renderable shapefile) {
-        this.shapefile = shapefile;
-    }
-    @Deprecated
-    public void progressPolygons(List<Renderable> polygons){
-        this.polygons = polygons;
+    public void progressShapeFile(List<Renderable> shapefiles) {
+        this.shapefiles = shapefiles;
     }
 
 
@@ -78,16 +65,9 @@ this.renderState = renderState;
         earthRenderer.getShaderProgram().stop();
 
 
-       shapefileRenderer.getShaderProgram().start();
-       shapefileRenderer.render(shapefile, camera);
-       shapefileRenderer.getShaderProgram().stop();
-
-
-        polygonRenderer.getShaderProgram().start();
-        polygonRenderer.render(polygons, camera);
-        polygonRenderer.getShaderProgram().stop();
-
-
+        shapefileRenderer.getShaderProgram().start();
+        shapefileRenderer.render(shapefiles, camera);
+        shapefileRenderer.getShaderProgram().stop();
     }
 
     /**

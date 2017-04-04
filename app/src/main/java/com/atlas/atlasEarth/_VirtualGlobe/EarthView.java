@@ -11,18 +11,14 @@ import com.atlas.atlasEarth.R;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.ByteFlags;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Camera;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector3F;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Geometry.CSConverter;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Geometry.geographicCS.Ellipsoid;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Geometry.geographicCS.Geodetic3D;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Matrices.MatricesUtility;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Rendables.EarthModel;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Rendables.Renderable;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Rendables.SpaceBackground;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Scene.Shapefile.ShapefileAppearance;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Scene.Shapefile.ShapefileRenderer;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Scene.Shapefile.Shapefiles.Polygon;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Scene.Shapefile.Shapefiles.ShapefileRenderable;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.TouchHandeling.TouchHandler;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Scene.Shapefile.TestShape;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.RendererGL3x;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Light;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.States.RenderState;
@@ -40,7 +36,6 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
 
     private Renderable earthRenderable;
     private Renderable background;
-    private TestShape testShapeFile;
     private Light light;
     private Camera camera;
     private RendererGL3x renderer;
@@ -48,8 +43,7 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
     private static float height;
     private static float width;
     private ScaleGestureDetector scaleGestureDetector;
-    private ShapefileRenderer shapefileRenderer;
-
+    private List<Renderable> shapefileRenderables;
 
 
     public EarthView(Context context) {
@@ -72,7 +66,8 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
     @Override
     public void onSurfaceCreated(GL10 gl10, EGLConfig eglConfig) {
 
-        light = new Light(new Vector3F(0.82f, 0.72f, 0.55f));
+        //light = new Light(new Vector3F(0.82f, 0.72f, 0.55f));
+        light = new Light(new Vector3F(0.82f, 0.72f, 0.95f));
         Ellipsoid globeShape = Ellipsoid.ScaledWgs84;
         earthRenderable = EarthModel.getInstance();
         earthRenderable.loadTextures(getContext());
@@ -92,22 +87,23 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
         renderState.getFacetCulling().setWindingOrder(ByteFlags.COUNTERCLOCKWISE);
 
 
-        testShapeFile = new TestShape();
-        testShapeFile.setRectangle(
-                globeShape.ToVector3D(CSConverter.toRadians(new Geodetic3D(0, 0, 0.1))),
-                globeShape.ToVector3D(CSConverter.toRadians(new Geodetic3D(0, 10, 0.1))),
-                globeShape.ToVector3D(CSConverter.toRadians(new Geodetic3D(10, 10, 0.1))));
-
-    try {
-         shapefileRenderer = new ShapefileRenderer(R.raw.countries_110m, getContext(), globeShape, new ShapefileAppearance());
-    } catch (IOException e) {
-        e.printStackTrace();
-    }
+        shapefileRenderables = new ArrayList<>(1);
+        try {
+            ShapefileRenderable shapefileRenderable = new ShapefileRenderable(R.raw.countries_110m, getContext(), globeShape,
+                    new ShapefileAppearance());
+            shapefileRenderables.add(shapefileRenderable);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         renderer = new RendererGL3x(getContext(), renderState);
         touchHandler = new TouchHandler(renderer.getProjectionMatrix(), camera, getContext());
 
         System.gc();
+    }
+
+    public List<Renderable> getShapefileRenderables() {
+        return shapefileRenderables;
     }
 
     @Override
@@ -124,16 +120,10 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
     public void onDrawFrame(GL10 gl10) {
         renderer.progressEarthModel(earthRenderable);
         renderer.progressBackground(background);
-        renderer.progressShapeFile(testShapeFile);
-
-        List<Renderable> polys = new ArrayList<>(shapefileRenderer.getPolygonShapefile().getPolygons().size());
-        for(Polygon polygon : shapefileRenderer.getPolygonShapefile().getPolygons()) {
-          polys.add(polygon);
-        }
-
-        renderer.progressPolygons(polys);
+        renderer.progressShapeFile(shapefileRenderables);
         renderer.render(light, camera);
         light.calculateAngleByTime();
+
     }
 
 
@@ -142,7 +132,6 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
         super.onPause();
         earthRenderable.clear();
         background.clear();
-        testShapeFile.clear();
     }
 
     @Override

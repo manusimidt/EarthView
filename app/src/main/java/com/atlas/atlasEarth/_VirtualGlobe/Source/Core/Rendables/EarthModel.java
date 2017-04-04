@@ -22,8 +22,6 @@ public class EarthModel extends GeographicGlobe {
         super.setTexture(configureNightTexture(R.drawable.texture_night));
 
         mesh = SubdivisionSphereTessellator.compute(5);
-
-
     }
 
     /**

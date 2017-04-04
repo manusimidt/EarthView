@@ -1,27 +1,37 @@
 package com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.ModelRenderer;
 
 import android.content.Context;
+import android.opengl.GLES31;
 import android.renderscript.Matrix4f;
 
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Camera;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector3F;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector4F;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Rendables.Renderable;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Shader.ShapefileShaderProgram;
 
+import java.util.List;
+import java.util.Random;
 
-public class ShapefileRendererTest {
+
+public class ShapefileRenderer {
     private ShapefileShaderProgram shaderProgram;
 
 
-    public ShapefileRendererTest(Context context, Matrix4f projectionMatrix) {
+    public ShapefileRenderer(Context context, Matrix4f projectionMatrix) {
         shaderProgram = new ShapefileShaderProgram(context);
         shaderProgram.start();
         shaderProgram.loadProjectionMatrix(projectionMatrix);
         shaderProgram.stop();
     }
 
-    public void render(Renderable renderable, Camera camera) {
+    public void render(List<Renderable> polygons, Camera camera) {
+        GLES31.glCullFace(GLES31.GL_CW);
         shaderProgram.loadViewMatrix(camera);
-        renderable.render(shaderProgram);
+        for (Renderable polygon : polygons) {
+            polygon.render(shaderProgram);
+        }
+        GLES31.glCullFace(GLES31.GL_CCW);
     }
 
 

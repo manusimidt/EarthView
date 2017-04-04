@@ -20,6 +20,7 @@ void main(){
 
     vec4 worldPosition = projectionMatrix * viewMatrix * transformationMatrix * position;
     gl_Position = worldPosition;
+    //gl_Position =  projectionMatrix * viewMatrix * position;
     surfaceNormal = (transformationMatrix * position).xyz;
     toLightVector = lightPosition - worldPosition.xyz;
     worldPositionFS = position.xyz;

@@ -1,14 +1,16 @@
 package com.atlas.atlasEarth._VirtualGlobe.Source.Core.Scene.Shapefile.Shapefiles;
 
-import android.content.Context;
 import android.graphics.Color;
+import android.opengl.GLES31;
 import android.util.Log;
 
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector2D;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector3D;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector3F;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Geometry.CSConverter;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Geometry.geographicCS.Ellipsoid;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Geometry.geographicCS.Geodetic3D;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Matrices.MatricesUtility;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Rendables.OutlinedPolylineTexture;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Scene.Shapefile.ShapeType;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Scene.Shapefile.Shapefile;
@@ -16,6 +18,9 @@ import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Scene.Shapefile.ShapefileA
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Scene.Shapefile.Shapes.PolygonShape;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Scene.Shapefile.Shapes.Shape;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Scene.Shapefile.Shapes.ShapePart;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.NamesGL3x.VertexArrayNameGL3x;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.ShaderGL3x.ShaderProgramGL3x;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Shader.ShapefileShaderProgram;
 
 import java.io.InvalidObjectException;
 import java.util.ArrayList;
@@ -30,7 +35,7 @@ public class PolygonShapefile {
     private OutlinedPolylineTexture polyline;
 
 
-    public PolygonShapefile(Shapefile shapefile, Context context, Ellipsoid globeShape, ShapefileAppearance appearance) throws InvalidObjectException {
+    public PolygonShapefile(Shapefile shapefile, Ellipsoid globeShape, ShapefileAppearance appearance) throws InvalidObjectException {
         if (shapefile == null || globeShape == null || appearance == null) {
             throw new IllegalArgumentException("Value can't be null!");
         }
@@ -84,8 +89,7 @@ public class PolygonShapefile {
                 }
 
                 try {
-                    Polygon p = new Polygon(context, globeShape, positions);
-                    p.setColor(color);
+                    Polygon p = new Polygon(globeShape, positions);
                     polygons.add(p);
                 } catch (ArrayIndexOutOfBoundsException e) // Not enough positions after cleaning
                 {
@@ -93,9 +97,9 @@ public class PolygonShapefile {
                 }
 
             }
-         if(polygons.size()>=5){
-             break;
-         }
+          // if (polygons.size() >= 5) {
+          //     break;
+          // }
 
         }
 
@@ -106,6 +110,28 @@ public class PolygonShapefile {
 
     public List<Polygon> getPolygons() {
         return polygons;
+    }
+
+    public void render(ShaderProgramGL3x shaderProgram, Vector3F position, float rotX, float rotY, float rotZ, float scale) {
+        ShapefileShaderProgram shapefileShaderProgram = (ShapefileShaderProgram) shaderProgram;
+        for (Polygon polygon : polygons) {
+            polygon.getMesh().getVertexArray().bindAndEnableVAO();
+
+            shapefileShaderProgram.loadColor(polygon.getColor());
+
+            shapefileShaderProgram.loadTransformationMatrix(MatricesUtility.createTransformationMatrix(
+                    position,
+                    rotX,
+                    rotY,
+                    rotZ,
+                    scale));
+
+            GLES31.glDrawElements(GLES31.GL_TRIANGLES, polygon.getMesh().elementsCount(), GLES31.GL_UNSIGNED_INT, polygon.getMesh().getIndicesBufferInt());
+
+            VertexArrayNameGL3x.unbindAndDisableVAO();
+
+            Log.d("debug", "Rotation: \t" + rotX + ", " +rotY + ", " + rotZ);
+        }
     }
 }
 

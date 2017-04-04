@@ -6,6 +6,7 @@ import android.renderscript.Matrix4f;
 import android.util.Log;
 
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector3F;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector4F;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.NamesGL3x.ShaderProgramNameGL3x;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Light;
 
@@ -70,8 +71,11 @@ public abstract class ShaderProgramGL3x extends ShaderProgramNameGL3x {
         GLES31.glUniform1i(location, value);
     }
 
-    protected void loadVector(int location, Vector3F vector) {
+    protected void loadVector3F(int location, Vector3F vector) {
         GLES31.glUniform3f(location, vector.x, vector.y, vector.z);
+    }
+    protected void loadVector4F(int location, Vector4F vector) {
+        GLES31.glUniform4f(location, vector.x, vector.y, vector.z, vector.w);
     }
 
     protected void loadBoolean(int location, boolean value) {

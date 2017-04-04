@@ -94,6 +94,10 @@ public class Mesh {
         return vertexArray;
     }
 
+    public byte getBufferType(){
+        return indicesDataType;
+    }
+
     public ShortBuffer getIndicesBufferShort() {
         return indicesBufferShort;
     }
