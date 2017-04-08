@@ -1,8 +1,11 @@
 package com.atlas.atlasEarth._VirtualGlobe.Source.Core.Rendables;
 
 
+import android.content.Context;
+
 import com.atlas.atlasEarth.R;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector3F;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.ExternalMeshData.ObjLoader;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Geometry.cartesianCS.Tessellation.SubdivisionSphereTessellator;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Texture;
 
@@ -22,7 +25,9 @@ public class EarthModel extends GeographicGlobe {
         super.setTexture(configureNightTexture(R.drawable.texture_night));
 
         mesh = SubdivisionSphereTessellator.compute(5);
+
     }
+
 
     /**
      * Setup

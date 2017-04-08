@@ -1,4 +1,4 @@
-precision mediump float;
+
 
 
 uniform vec3 lightColor;
@@ -13,7 +13,7 @@ varying vec3 worldPositionFS;
 varying vec3 toCameraVector;
 
 
-const float blendDuration = 0.1f;
+const float blendDuration = 0.1;
 const float blendDurationScale = 5.0; // blendDurationScale = 1/(2*blendDuration);
 
 

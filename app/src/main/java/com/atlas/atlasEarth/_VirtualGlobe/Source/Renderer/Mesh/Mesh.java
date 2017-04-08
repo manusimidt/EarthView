@@ -15,15 +15,30 @@ import java.util.List;
 public class Mesh {
 
 
-    private List<TriangleIndicesInt> trianglesInt;
-    private List<TriangleIndicesShort> trianglesShort;
-    private byte indicesDataType = ByteFlags.NULL;
+    private List<TriangleIndicesInt> trianglesInt = null;
+    private List<TriangleIndicesShort> trianglesShort = null;
     private VertexAttributeCollection vertexAttributes = null;
 
     private VertexArrayGL3x vertexArray;
     private ShortBuffer indicesBufferShort;
     private IntBuffer indicesBufferInt;
 
+    private byte indicesDataType = ByteFlags.NULL;
+
+    public Mesh(){
+
+    }
+
+    /**
+     * Special Constructor for higher performance
+     */
+    public Mesh(int indices[], float[]positions, float[] normals, float[] textureCoords){
+        indicesDataType = ByteFlags.INT;
+        indicesBufferInt = ByteBuffer.allocateDirect(indices.length*4).order(ByteOrder.nativeOrder()).asIntBuffer();
+        indicesBufferInt.put(indices);
+        indicesBufferInt.rewind();
+        vertexArray = new VertexArrayGL3x(positions, normals, textureCoords);
+    }
 
     public void addVertexAttributes(VertexAttributeCollection vertexAttributeCollection) {
         this.vertexAttributes = vertexAttributeCollection;
@@ -74,7 +89,11 @@ public class Mesh {
     public int elementsCount() {
         switch (indicesDataType) {
             case ByteFlags.INT:
-                return trianglesInt.size()*3;
+                 if(trianglesInt != null){
+                     return trianglesInt.size()*3;
+                 }else{
+                     return indicesBufferInt.limit();
+                 }
             case ByteFlags.SHORT:
                 return trianglesShort.size()*3;
             default:

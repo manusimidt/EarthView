@@ -3,7 +3,7 @@
     package="com.atlas.atlasEarth">
 
 
-    <uses-feature android:glEsVersion="0x00030001" android:required="true"/>
+    <uses-feature android:glEsVersion="0x00020000" android:required="true"/>
     <uses-feature android:name="android.hardware.Camera2.full" android:required="true"/>
     <uses-feature android:name="android.hardware.location" android:required="true"/>
     <uses-feature android:name="android.hardware.touchscreen.multitouch" android:required="true"/>

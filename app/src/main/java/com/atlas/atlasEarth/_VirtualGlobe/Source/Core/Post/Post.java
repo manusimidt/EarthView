@@ -1,10 +1,13 @@
 package com.atlas.atlasEarth._VirtualGlobe.Source.Core.Post;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.opengl.GLES31;
 
+import com.atlas.atlasEarth.R;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector2F;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector3F;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.ExternalMeshData.ObjLoader;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Geometry.cartesianCS.Indices.TriangleIndicesShort;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Matrices.MatricesUtility;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Rendables.Renderable;
@@ -22,13 +25,13 @@ import java.util.List;
 public class Post extends Renderable {
 
 
-    public Post(Vector3F position, Bitmap image, String name, String date) {
-        super(position, 0,0,0,1);
+    public Post(Vector3F position, Bitmap image, String name, String date, Context context) {
+        super(position, 0,0,0,0.3f);
         super.setTexture(new Texture(image));
-        calculateMesh();
+        calculateMesh(context);
     }
 
-    private void calculateMesh() {
+    private void calculateMesh(Context context) {
         //Polygon 1
         List<Vector3F> positions = new ArrayList<>();
         List<Vector3F> normals = new ArrayList<>();
@@ -156,7 +159,8 @@ public class Post extends Renderable {
         Mesh mesh = new Mesh();
         mesh.addVertexAttributes(new VertexAttributeCollection(positions, normals, textureCoords));
         mesh.addTriangleIndicesShort(indices);
-        super.mesh = mesh;
+        //super.mesh = mesh;
+        super.mesh = ObjLoader.loadOBJ(R.raw.text_model_source, context);
     }
 
 
@@ -177,7 +181,7 @@ public class Post extends Renderable {
                 getRotZ(),
                 getScale()));
 
-        GLES31.glDrawElements(GLES31.GL_TRIANGLES, getMesh().elementsCount(), GLES31.GL_UNSIGNED_SHORT, getMesh().getIndicesBufferShort());
+        GLES31.glDrawElements(GLES31.GL_TRIANGLES, getMesh().elementsCount(), GLES31.GL_UNSIGNED_SHORT, getMesh().getIndicesBufferInt());
 
         VertexArrayNameGL3x.unbindAndDisableVAO();
     }

@@ -7,6 +7,7 @@ import com.atlas.atlasEarth.R;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Camera;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Matrices.MatricesUtility;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.ShaderGL3x.ShaderProgramGL3x;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Light;
 
 
 public class PostShaderProgram extends ShaderProgramGL3x {
@@ -18,6 +19,8 @@ public class PostShaderProgram extends ShaderProgramGL3x {
     private int location_transMat;
     private int location_projectionMatrix;
     private int location_viewMatrix;
+       private int location_lightPosition;
+    private int location_lightColor;
     private int location_texture0;
 
 
@@ -33,6 +36,8 @@ public class PostShaderProgram extends ShaderProgramGL3x {
         location_transMat = super.getUniformLocation("transformationMatrix");
         location_projectionMatrix = super.getUniformLocation("projectionMatrix");
         location_viewMatrix = super.getUniformLocation("viewMatrix");
+        location_lightPosition = super.getUniformLocation("lightPosition");
+        location_lightColor = super.getUniformLocation("lightColor");
         location_texture0 = super.getUniformLocation("texture0");
     }
 
@@ -46,6 +51,10 @@ public class PostShaderProgram extends ShaderProgramGL3x {
 
     public void loadViewMatrix(Camera camera) {
         super.loadMatrix(location_viewMatrix, MatricesUtility.createViewMatrix(camera));
+    }
+
+    public void loadLight(Light light) {
+        super.loadLight(location_lightPosition, location_lightColor, light);
     }
 
     public void loadTextureIdentifier(){

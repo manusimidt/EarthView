@@ -7,19 +7,14 @@ import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 
-/**
- * Created by Jonas on 2/12/2017.
- */
 
-public class ShaderObjectGL3x {
+class ShaderObjectGL3x {
 
     private int shaderID;
 
-    public ShaderObjectGL3x(Context context, int shaderType, int rawID) {
-
+    ShaderObjectGL3x(Context context, int shaderType, int rawID) {
 
         try {
             if (shaderType != GLES31.GL_VERTEX_SHADER && shaderType != GLES31.GL_FRAGMENT_SHADER) {
@@ -31,9 +26,9 @@ public class ShaderObjectGL3x {
 
 
         shaderID = GLES31.glCreateShader(shaderType);
-        if(shaderType == GLES31.GL_FRAGMENT_SHADER){
+        if (shaderType == GLES31.GL_FRAGMENT_SHADER) {
             GLES31.glShaderSource(shaderID, loadFsConstants() + loadShader(context, rawID));
-        }else {
+        } else {
             GLES31.glShaderSource(shaderID, loadShader(context, rawID));
         }
         GLES31.glCompileShader(shaderID);
@@ -42,35 +37,35 @@ public class ShaderObjectGL3x {
 
     }
 
-    private String loadFsConstants(){
-        return "#extension GL_OES_standard_derivatives : enable\n" +
-                "const float og_oneOverPi = " + (1/Math.PI) + "; \n" +
-                "const float og_oneOverTwoPi = " + (1/(Math.PI*2)) + "; \n";
+    private String loadFsConstants() {
+        return
+        "#extension GL_OES_standard_derivatives : enable\n" +
+                "precision mediump float;\n"+
+                "const float og_oneOverPi = " + (1 / Math.PI) + "; \n" +
+                "const float og_oneOverTwoPi = " + (1 / (Math.PI * 2)) + "; \n";
     }
 
-        private String loadShader(Context context, int rawID) {
+    private String loadShader(Context context, int rawID) {
 
-            InputStream inputStream = context.getResources().openRawResource(rawID);
-            InputStreamReader inputReader = new InputStreamReader(inputStream);
-            BufferedReader buffReader = new BufferedReader(inputReader);
-            String line;
-            StringBuilder text = new StringBuilder();
+        BufferedReader buffReader = new BufferedReader(new InputStreamReader(context.getResources().openRawResource(rawID)));
+        String line;
+        StringBuilder text = new StringBuilder();
 
-            try {
-                while ((line = buffReader.readLine()) != null) {
-                    text.append(line);
-                    text.append('\n');
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-                return null;
+        try {
+            while ((line = buffReader.readLine()) != null) {
+                text.append(line);
+                text.append('\n');
             }
-            return text.toString();
-
-
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
         }
+        return text.toString();
 
-    public int getShaderID() {
+
+    }
+
+     int getShaderID() {
         return shaderID;
     }
 }

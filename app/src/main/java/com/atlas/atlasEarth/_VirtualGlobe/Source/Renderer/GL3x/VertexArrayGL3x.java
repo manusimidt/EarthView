@@ -1,6 +1,7 @@
 package com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x;
 
 import android.opengl.GLES31;
+import android.support.annotation.Nullable;
 
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.ByteFlags;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector2F;
@@ -17,25 +18,35 @@ import java.util.List;
 
 public class VertexArrayGL3x extends VertexArrayNameGL3x {
 
-    public VertexArrayGL3x(VertexAttributeCollection vertexAttributes){
+    public VertexArrayGL3x(VertexAttributeCollection vertexAttributes) {
         bindAndEnableVAO();
 
         //Store Positions
-        storeFloatBufferInVAO(0,3,vertexAttributes.getPositions().size()*3, convertVector3ArrayListToFloatBuffer(vertexAttributes.getPositions()));
+        storeFloatBufferInVAO(0, 3, vertexAttributes.getPositions().size() * 3, convertVector3ArrayListToFloatBuffer(vertexAttributes.getPositions()));
 
         //Check for normals
-        if(vertexAttributes.getNormals() != null){
+        if (vertexAttributes.getNormals() != null) {
             storeFloatBufferInVAO(1, 3, vertexAttributes.getNormals().size() * 3, convertVector3ArrayListToFloatBuffer(vertexAttributes.getNormals()));
         }
 
         //Check for Texture Coordinates
-        if(vertexAttributes.getTextureCoordinates() != null){
+        if (vertexAttributes.getTextureCoordinates() != null) {
             storeFloatBufferInVAO(2, 2, vertexAttributes.getTextureCoordinates().size() * 2, convertVector2ArrayListToFloatBuffer(vertexAttributes.getTextureCoordinates()));
         }
 
         unbindAndDisableVAO();
     }
 
+    public VertexArrayGL3x(float[] positions, @Nullable float[] normals, @Nullable float[] textureCoords) {
+        bindAndEnableVAO();
+        storeFloatBufferInVAO(0, 3, positions.length, convertFloatArrayToFloatBuffer(positions));
+        if(normals != null) {
+            storeFloatBufferInVAO(1, 3, normals.length, convertFloatArrayToFloatBuffer(normals));
+        }
+        if(textureCoords != null) {
+            storeFloatBufferInVAO(2, 2, textureCoords.length, convertFloatArrayToFloatBuffer(textureCoords));
+        }
+    }
 
 
     private void storeFloatBufferInVAO(int index, int dimension, int amountOfFloats, FloatBuffer data) {
@@ -59,6 +70,12 @@ public class VertexArrayGL3x extends VertexArrayNameGL3x {
         return buffer;
     }
 
+    private FloatBuffer convertFloatArrayToFloatBuffer(float[] data) {
+        FloatBuffer buffer = ByteBuffer.allocateDirect(data.length*4).order(ByteOrder.nativeOrder()).asFloatBuffer();
+        buffer.put(data);
+        buffer.flip();
+        return buffer;
+    }
 
 
 }

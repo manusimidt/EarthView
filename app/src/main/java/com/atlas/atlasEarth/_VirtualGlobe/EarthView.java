@@ -12,6 +12,7 @@ import com.atlas.atlasEarth.R;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.ByteFlags;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Camera;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector3F;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.ExternalMeshData.ObjLoader;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Geometry.geographicCS.Ellipsoid;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Matrices.MatricesUtility;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Post.Post;
@@ -19,11 +20,11 @@ import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Rendables.EarthModel;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Rendables.Renderable;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Rendables.SpaceBackground;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Scene.Shapefile.ShapefileAppearance;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Scene.Shapefile.Shapefiles.Polygon;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Scene.Shapefile.Shapefiles.ShapefileRenderable;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.TouchHandeling.TouchHandler;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.RendererGL3x;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Light;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Shader.EarthShaderProgram;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.States.RenderState;
 import com.atlas.atlasEarth.general.Utils;
 
@@ -31,7 +32,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
+import javax.microedition.khronos.egl.EGLContext;
+import javax.microedition.khronos.egl.EGLDisplay;
 import javax.microedition.khronos.opengles.GL10;
 
 
@@ -48,6 +52,11 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
     private static float width;
     private ScaleGestureDetector scaleGestureDetector;
     private List<Renderable> shapefileRenderables;
+    private static int EGL_CONTEXT_CLIENT_VERSION = 0x3098;
+    private static double glVersion = 3.0;
+
+
+
 
 
     public EarthView(Context context) {
@@ -58,12 +67,19 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
     public void init() {
 
         //Set the OpenGlVersion
-        super.setEGLContextClientVersion(3);
+        super.setEGLContextClientVersion(2);
         //configure the output of OpenGL
         super.setEGLConfigChooser(8, 8, 8, 8, 0, 0);
         //Set the RendererGL3x
         super.setRenderer(this);
+        // Render the view only when there is a change in the drawing data
+        //super.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
         scaleGestureDetector = new ScaleGestureDetector(getContext(), new ScaleListener());
+    }
+
+    @Override
+    public void queueEvent(Runnable r) {
+        super.queueEvent(r);
     }
 
 
@@ -103,8 +119,10 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
         renderer = new RendererGL3x(getContext(), renderState);
         touchHandler = new TouchHandler(renderer.getProjectionMatrix(), camera, getContext());
 
-        post = new Post(new Vector3F(0,1,0), BitmapFactory.decodeResource(getResources(), R.drawable.sunset6), "test", "14.07.1999");
+        post = new Post(new Vector3F(0,1,0), BitmapFactory.decodeResource(getResources(), R.drawable.fern), "test", "14.07.1999", getContext());
         post.loadTextures(getContext());
+
+
 
         System.gc();
     }
@@ -117,8 +135,8 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
     public void onSurfaceChanged(GL10 gl10, int width, int height) {
         //Called when the screen rotates
         GLES31.glViewport(0, 0, width, height);
-        this.width = width;
-        this.height = height;
+        EarthView.width = width;
+        EarthView.height = height;
 
     }
 

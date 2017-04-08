@@ -77,7 +77,7 @@ postRenderer = new PostRenderer(context, projectionMatrix);
         shapefileRenderer.getShaderProgram().stop();
 
         postRenderer.getShaderProgram().start();
-        postRenderer.render(post, camera);
+        postRenderer.render(post, camera, light);
         postRenderer.getShaderProgram().stop();
 
 
