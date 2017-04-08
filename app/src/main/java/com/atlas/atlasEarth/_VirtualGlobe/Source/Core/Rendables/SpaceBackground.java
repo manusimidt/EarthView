@@ -46,7 +46,7 @@ public class SpaceBackground extends Renderable {
         List<TriangleIndicesShort> triangles = new ArrayList<>(2);
         triangles.add(new TriangleIndicesShort((short) 0, (short) 1, (short) 2));
         triangles.add(new TriangleIndicesShort((short) 0, (short) 2, (short) 3));
-        mesh.addTriangleIndicesShort(triangles);
+        mesh.addTriangles(triangles);
 
     }
 
@@ -60,6 +60,8 @@ public class SpaceBackground extends Renderable {
         GLES31.glActiveTexture(GLES31.GL_TEXTURE0);
         GLES31.glBindTexture(GLES31.GL_TEXTURE_2D,getTexture0().getTextureID());
 
-        GLES31.glDrawElements(GLES31.GL_TRIANGLES, getMesh().elementsCount(), GLES31.GL_UNSIGNED_SHORT, getMesh().getIndicesBufferShort());
+        mesh.getIndicesBuffer().bind();
+        GLES31.glDrawElements(GLES31.GL_TRIANGLES, getMesh().getVertexCount(), GLES31.GL_UNSIGNED_SHORT, 0);
+        mesh.getIndicesBuffer().unbind();
     }
 }

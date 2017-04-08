@@ -15,6 +15,7 @@ import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Shader.EarthShaderProg
 class GeographicGlobe extends Renderable {
 
     private Ellipsoid ellipsoid;
+
     GeographicGlobe(Vector3F position, float rotX, float rotY, float rotZ, float scale) {
         super(position, rotX, rotY, rotZ, scale);
     }
@@ -41,13 +42,15 @@ class GeographicGlobe extends Renderable {
                 getRotZ(),
                 getScale()));
 
-        GLES31.glDrawElements(GLES31.GL_TRIANGLES, getMesh().elementsCount(), GLES31.GL_UNSIGNED_SHORT, getMesh().getIndicesBufferShort());
+        mesh.getIndicesBuffer().bind();
+        GLES31.glDrawElements(GLES31.GL_TRIANGLES, getMesh().getVertexCount(), GLES31.GL_UNSIGNED_SHORT, 0);
+        mesh.getIndicesBuffer().bind();
 
         VertexArrayNameGL3x.unbindAndDisableVAO();
     }
 
 
-    public void setShape(Ellipsoid ellipsoid){
+    public void setShape(Ellipsoid ellipsoid) {
         this.ellipsoid = ellipsoid;
     }
 

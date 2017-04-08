@@ -6,6 +6,7 @@ import com.atlas.atlasEarth._VirtualGlobe.Source.Core.ByteFlags;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.NamesGL3x.BufferNameGL3x;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.TypeconverterGL3x;
 
+import java.nio.Buffer;
 import java.nio.FloatBuffer;
 
 
@@ -27,7 +28,7 @@ public class BufferGL3x extends BufferNameGL3x {
         TypeconverterGL3x.testForBiggerZero(sizeInBytes);
     }
 
-    public void setData(FloatBuffer data) {
+    public void setData(Buffer data) {
         bind();
         GLES31.glBufferData(bufferType, sizeIinBytes, data, usageHint);
     }

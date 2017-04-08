@@ -97,9 +97,9 @@ public class PolygonShapefile {
                 }
 
             }
-          if (polygons.size() >=2 ) {
-              break;
-          }
+            if (polygons.size() >= 2) {
+                break;
+            }
 
         }
 
@@ -126,11 +126,12 @@ public class PolygonShapefile {
                     rotZ,
                     scale));
 
-            GLES31.glDrawElements(GLES31.GL_TRIANGLES, polygon.getMesh().elementsCount(), GLES31.GL_UNSIGNED_INT, polygon.getMesh().getIndicesBufferInt());
+            polygon.getMesh().getIndicesBuffer().bind();
+            GLES31.glDrawElements(GLES31.GL_TRIANGLES, polygon.getMesh().getVertexCount(), GLES31.GL_UNSIGNED_INT, 0);
+            polygon.getMesh().getIndicesBuffer().unbind();
 
             VertexArrayNameGL3x.unbindAndDisableVAO();
 
-            Log.d("debug", "Rotation: \t" + rotX + ", " +rotY + ", " + rotZ);
         }
     }
 }

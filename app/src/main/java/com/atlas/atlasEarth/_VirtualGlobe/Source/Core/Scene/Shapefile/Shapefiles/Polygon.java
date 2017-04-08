@@ -65,7 +65,7 @@ public class Polygon {
         }
 
         mesh.addVertexAttributes(new VertexAttributeCollection(Vector3D.toVector3FArray(result.getPositions()), null, null));
-        mesh.addTriangleIndicesInt(result.getIndices());
+        mesh.addTriangles(result.getIndices());
 
         Random random = new Random();
         color = new Vector4F((random.nextInt(100) + 1) / 100f, (random.nextInt(100) + 1) / 100f, (random.nextInt(100) + 1) / 100f, 0.3f);

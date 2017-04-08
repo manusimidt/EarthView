@@ -2,6 +2,7 @@ package com.atlas.atlasEarth._VirtualGlobe;
 
 import android.content.Context;
 import android.graphics.BitmapFactory;
+import android.media.effect.EffectFactory;
 import android.opengl.GLES31;
 import android.opengl.GLSurfaceView;
 import android.util.Log;
@@ -67,7 +68,7 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
     public void init() {
 
         //Set the OpenGlVersion
-        super.setEGLContextClientVersion(2);
+        super.setEGLContextClientVersion(3);
         //configure the output of OpenGL
         super.setEGLConfigChooser(8, 8, 8, 8, 0, 0);
         //Set the RendererGL3x
@@ -75,6 +76,7 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
         // Render the view only when there is a change in the drawing data
         //super.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
         scaleGestureDetector = new ScaleGestureDetector(getContext(), new ScaleListener());
+
     }
 
     @Override
@@ -119,7 +121,7 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
         renderer = new RendererGL3x(getContext(), renderState);
         touchHandler = new TouchHandler(renderer.getProjectionMatrix(), camera, getContext());
 
-        post = new Post(new Vector3F(0,1,0), BitmapFactory.decodeResource(getResources(), R.drawable.fern), "test", "14.07.1999", getContext());
+        post = new Post(new Vector3F(0,1,0), BitmapFactory.decodeResource(getResources(), R.drawable.sunset6), "test", "14.07.1999", getContext());
         post.loadTextures(getContext());
 
 
@@ -149,7 +151,6 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
         renderer.progressPost(post);
         renderer.render(light, camera);
         light.calculateAngleByTime();
-
     }
 
 

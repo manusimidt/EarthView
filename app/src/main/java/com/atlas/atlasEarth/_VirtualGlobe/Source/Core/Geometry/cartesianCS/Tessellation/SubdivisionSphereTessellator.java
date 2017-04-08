@@ -35,7 +35,7 @@ public class SubdivisionSphereTessellator {
 
 
         mesh.addVertexAttributes(new VertexAttributeCollection(positions));
-        mesh.addTriangleIndicesShort(triangles);
+        mesh.addTriangles(triangles);
         return mesh;
     }
 

@@ -7,7 +7,7 @@ varying vec2 textureCoords;
 
 vec3 computeDiffuseLightning(vec3 unitNormal, vec3 unitLightNormal){
     float nDot1 = dot(unitNormal, unitLightNormal);
-    float brightness = max(nDot1, 0.1);
+    float brightness = max(nDot1, 0.4);
     vec3 finalDiffuse = brightness * lightColor;
     return finalDiffuse;
 }
