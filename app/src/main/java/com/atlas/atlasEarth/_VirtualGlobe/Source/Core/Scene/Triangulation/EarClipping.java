@@ -2,7 +2,7 @@ package com.atlas.atlasEarth._VirtualGlobe.Source.Core.Scene.Triangulation;
 
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.IndexedVector2D;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector2D;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Geometry.cartesianCS.Indices.TriangleIndicesShort;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.TriangleIndices.TriangleIndicesShort;
 
 import java.util.ArrayList;
 import java.util.LinkedList;

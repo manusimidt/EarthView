@@ -2,8 +2,8 @@ package com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Mesh;
 
 
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.ByteFlags;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Geometry.cartesianCS.Indices.TriangleIndicesInt;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Geometry.cartesianCS.Indices.TriangleIndicesShort;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.TriangleIndices.TriangleIndicesInt;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.TriangleIndices.TriangleIndicesShort;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.BufferGL3x.BufferGL3x;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.VertexArrayGL3x;
 
@@ -124,4 +124,6 @@ public class Mesh {
     public BufferGL3x getIndicesBuffer() {
         return indicesBuffer;
     }
+
+
 }

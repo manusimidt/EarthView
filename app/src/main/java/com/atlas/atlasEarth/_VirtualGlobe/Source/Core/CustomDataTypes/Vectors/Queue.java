@@ -1,10 +1,7 @@
 package com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.LinkedList;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Geometry.cartesianCS.Indices.TriangleIndicesInt;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.TriangleIndices.TriangleIndicesInt;
 
 import java.util.ArrayList;
 import java.util.List;

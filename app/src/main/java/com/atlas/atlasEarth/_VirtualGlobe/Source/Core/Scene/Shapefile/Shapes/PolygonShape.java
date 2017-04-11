@@ -1,17 +1,17 @@
 package com.atlas.atlasEarth._VirtualGlobe.Source.Core.Scene.Shapefile.Shapes;
 
 
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.RectangleD;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Rectangle2D;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector2D;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Scene.Shapefile.ShapeType;
 
 public class PolygonShape extends Shape {
 
-    private RectangleD extent;
+    private Rectangle2D extent;
     private ShapePart[] parts;
 
 
-    public PolygonShape(int recordNumber, RectangleD extent, int[] parts, Vector2D[] positions) {
+    public PolygonShape(int recordNumber, Rectangle2D extent, int[] parts, Vector2D[] positions) {
         super(recordNumber, ShapeType.Polygon);
         this.extent = extent;
         this.parts = new ShapePart[parts.length];
@@ -25,7 +25,7 @@ public class PolygonShape extends Shape {
 
     }
 
-    public RectangleD getExtent() {
+    public Rectangle2D getExtent() {
         return extent;
     }
 

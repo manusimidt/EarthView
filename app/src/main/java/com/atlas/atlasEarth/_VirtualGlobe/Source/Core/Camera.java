@@ -1,5 +1,6 @@
 package com.atlas.atlasEarth._VirtualGlobe.Source.Core;
 
+import android.os.AsyncTask;
 import android.util.Log;
 
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector3F;
@@ -110,5 +111,6 @@ public class Camera {
     public float getDistanceFromPlayer(){
         return distanceFromPlayer;
     }
+
 
 }

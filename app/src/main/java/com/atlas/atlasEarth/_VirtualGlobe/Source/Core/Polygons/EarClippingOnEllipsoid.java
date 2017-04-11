@@ -5,8 +5,8 @@ import android.util.Log;
 
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.LinkedList;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector3D;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Geometry.cartesianCS.ContainmentTests;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Geometry.cartesianCS.Indices.TriangleIndicesInt;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.BoundingVolumes.ContainmentTests;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.TriangleIndices.TriangleIndicesInt;
 
 import java.util.ArrayList;
 import java.util.List;

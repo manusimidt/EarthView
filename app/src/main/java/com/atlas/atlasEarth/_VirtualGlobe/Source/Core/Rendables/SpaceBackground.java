@@ -6,7 +6,7 @@ import android.opengl.GLES31;
 import com.atlas.atlasEarth.R;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector2F;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector3F;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Geometry.cartesianCS.Indices.TriangleIndicesShort;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.TriangleIndices.TriangleIndicesShort;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.ShaderGL3x.ShaderProgramGL3x;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Mesh.VertexAttributeCollection;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Shader.BackgroundShaderProgram;
@@ -61,7 +61,7 @@ public class SpaceBackground extends Renderable {
         GLES31.glBindTexture(GLES31.GL_TEXTURE_2D,getTexture0().getTextureID());
 
         mesh.getIndicesBuffer().bind();
-        GLES31.glDrawElements(GLES31.GL_TRIANGLES, getMesh().getVertexCount(), GLES31.GL_UNSIGNED_SHORT, 0);
+        GLES31.glDrawElements(GLES31.GL_TRIANGLES, getMesh().getVertexCount(),mesh.getIndicesBuffer().getDataType(), 0);
         mesh.getIndicesBuffer().unbind();
     }
 }

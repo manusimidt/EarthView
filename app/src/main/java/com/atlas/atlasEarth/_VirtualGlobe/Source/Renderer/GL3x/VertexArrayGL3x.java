@@ -46,6 +46,7 @@ public class VertexArrayGL3x extends VertexArrayNameGL3x {
         if(textureCoords != null) {
             storeFloatBufferInVAO(2, 2, textureCoords.length, convertFloatArrayToFloatBuffer(textureCoords));
         }
+        unbindAndDisableVAO();
     }
 
 

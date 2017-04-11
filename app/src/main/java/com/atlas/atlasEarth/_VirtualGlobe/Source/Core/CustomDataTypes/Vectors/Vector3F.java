@@ -51,7 +51,7 @@ public class Vector3F {
 
     public static float[] toArray(List<Vector3F> positions) {
         float[] result = new float[positions.size() * 3];
-        short arrayIndex = 0;
+        int arrayIndex = 0;
         for (int listIndex = 0; listIndex < positions.size(); listIndex++) {
             result[arrayIndex] = positions.get(listIndex).x;
             arrayIndex++;

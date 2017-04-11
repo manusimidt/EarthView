@@ -8,6 +8,8 @@ import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.TypeconverterGL3x
 
 import java.nio.Buffer;
 import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
+import java.nio.ShortBuffer;
 
 
 public class BufferGL3x extends BufferNameGL3x {
@@ -16,6 +18,7 @@ public class BufferGL3x extends BufferNameGL3x {
     private int sizeIinBytes;
     private int bufferType;
     private int usageHint;
+    private int dataType;
 
 
     public BufferGL3x(byte bufferType, byte usageHint, int sizeInBytes) {
@@ -28,11 +31,23 @@ public class BufferGL3x extends BufferNameGL3x {
         TypeconverterGL3x.testForBiggerZero(sizeInBytes);
     }
 
+
     public void setData(Buffer data) {
         bind();
+        if(data instanceof IntBuffer){
+            dataType = GLES31.GL_UNSIGNED_INT;
+        }else if(data instanceof ShortBuffer){
+            dataType = GLES31.GL_UNSIGNED_SHORT;
+        }else if(data instanceof FloatBuffer){
+            // TODO: 4/11/2017 test if Medium float works!
+            dataType = GLES31.GL_MEDIUM_FLOAT;
+        }
         GLES31.glBufferData(bufferType, sizeIinBytes, data, usageHint);
     }
 
+    public int getDataType() {
+        return dataType;
+    }
 
     public void bind() {
         GLES31.glBindBuffer(bufferType, super.getId());

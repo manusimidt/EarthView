@@ -3,7 +3,7 @@ package com.atlas.atlasEarth._VirtualGlobe.Source.Core.Scene.Shapefile;
 import android.content.Context;
 import android.content.res.Resources;
 
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.RectangleD;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Rectangle2D;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector2D;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Scene.Shapefile.Shapes.PointShape;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Scene.Shapefile.Shapes.PolygonShape;
@@ -11,8 +11,6 @@ import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Scene.Shapefile.Shapes.Pol
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Scene.Shapefile.Shapes.Shape;
 
 import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InvalidObjectException;
@@ -28,7 +26,7 @@ public class Shapefile {
     private static final byte byteOrder_LittleEndian = 0;
     private static final byte byteOrder_BigEndian = 1;
     private ShapeType shapeType;
-    private RectangleD extent;
+    private Rectangle2D extent;
     private List<Shape> shapes;
 
 
@@ -127,7 +125,7 @@ public class Shapefile {
             yMax = 0.0;
         }
 
-        this.extent = new RectangleD(new Vector2D(xMin, yMin), new Vector2D(xMax, yMax));
+        this.extent = new Rectangle2D(new Vector2D(xMin, yMin), new Vector2D(xMax, yMax));
         //
         // Read each header...
         //
@@ -166,7 +164,7 @@ public class Shapefile {
 
                 case ShapeType.Polyline:
                 case ShapeType.Polygon:
-                    RectangleD extent = new RectangleD(
+                    Rectangle2D extent = new Rectangle2D(
                             new Vector2D(
                                     toDouble(record, 4, byteOrder_LittleEndian),
                                     toDouble(record, 12, byteOrder_LittleEndian)),
@@ -269,7 +267,7 @@ public class Shapefile {
         return shapeType;
     }
 
-    public RectangleD getExtent() {
+    public Rectangle2D getExtent() {
         return extent;
     }
 

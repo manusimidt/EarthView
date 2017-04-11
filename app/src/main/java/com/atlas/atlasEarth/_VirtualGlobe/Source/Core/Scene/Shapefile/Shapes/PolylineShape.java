@@ -1,6 +1,6 @@
 package com.atlas.atlasEarth._VirtualGlobe.Source.Core.Scene.Shapefile.Shapes;
 
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.RectangleD;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Rectangle2D;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector2D;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Scene.Shapefile.ShapeType;
 
@@ -9,10 +9,10 @@ import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Scene.Shapefile.ShapeType;
 public class PolylineShape extends Shape {
 
 
-    private RectangleD extend;
+    private Rectangle2D extend;
     private  ShapePart[] parts;
 
-    public PolylineShape(int recordNumber, RectangleD extent, int[] parts, Vector2D[] positions) {
+    public PolylineShape(int recordNumber, Rectangle2D extent, int[] parts, Vector2D[] positions) {
         super(recordNumber, ShapeType.Polyline);
         this.extend = extent;
         this.parts = new ShapePart[parts.length];
@@ -26,7 +26,7 @@ public class PolylineShape extends Shape {
         }
     }
 
-    public RectangleD getExtend() {
+    public Rectangle2D getExtend() {
         return extend;
     }
 

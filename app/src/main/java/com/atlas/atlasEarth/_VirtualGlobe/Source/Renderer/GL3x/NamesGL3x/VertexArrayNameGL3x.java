@@ -5,9 +5,9 @@ import android.opengl.GLES31;
 
 public class VertexArrayNameGL3x {
 
-    int[] id = new int[1];
+    private int[] id = new int[1];
 
-    public VertexArrayNameGL3x() {
+    protected VertexArrayNameGL3x() {
         GLES31.glGenVertexArrays(1, id, 0);
     }
 
