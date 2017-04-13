@@ -5,9 +5,7 @@ import android.util.Log;
 
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector2F;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector3F;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.TriangleIndices.TriangleIndicesInt;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Mesh.Mesh;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Mesh.VertexAttributeCollection;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -30,7 +28,7 @@ public class ObjLoader {
         List<Integer> indices = new ArrayList<>();
 
         int[] indicesArray;
-        float[] verticesArray;
+        float[] positionArray;
         float[] sortedNormals = null;
         float[] sortedTextures = null;
 
@@ -79,39 +77,21 @@ public class ObjLoader {
             e.printStackTrace();
         }
 
-        verticesArray = new float[positions.size() * 3];
+        positionArray = new float[positions.size() * 3];
         indicesArray = new int[indices.size()];
 
         int vertexPointer = 0;
-        //for (Vector3F position : positions) {
-        //    verticesArray[vertexPointer++] = position.x;
-        //    verticesArray[vertexPointer++] = position.y;
-        //    verticesArray[vertexPointer++] = position.z;
-        //}
-//
-        //for (int i = 0; i < indices.size(); i++) {
-        //    indicesArray[i] = indices.get(i);
-        //}
-        List<TriangleIndicesInt> indicesS = new ArrayList<>();
-        for(int i  = 0; i <=indices.size()-1; i+=3){
-            indicesS.add(new TriangleIndicesInt(indices.get(i), indices.get(i+1), indices.get(i+2)));
-        }
-        List<Vector2F> texturesS = new ArrayList<>();
-        for(int i = 0; i <=sortedTextures.length-1;i+=2){
-            texturesS.add(new Vector2F(sortedTextures[i], sortedTextures[i+1]));
-        }
-        List<Vector3F> normalsS = new ArrayList<>();
-        for(int i = 0; i <=sortedNormals.length-1;i+=3){
-            normalsS.add(new Vector3F(sortedNormals[i], sortedNormals[i+1], sortedNormals[i+2]));
+        for (Vector3F position : positions) {
+            positionArray[vertexPointer++] = position.x;
+            positionArray[vertexPointer++] = position.y;
+            positionArray[vertexPointer++] = position.z;
         }
 
+        for (int i = 0; i < indices.size(); i++) {
+            indicesArray[i] = indices.get(i);
+        }
 
-
-        Mesh mesh = new Mesh();
-        mesh.addTriangles(indicesS);
-        mesh.addVertexAttributes(new VertexAttributeCollection(positions, normalsS, texturesS));
-        //return new Mesh(indicesArray, verticesArray, sortedNormals, sortedTextures);
-        return mesh;
+        return new Mesh(indicesArray, positionArray, sortedNormals, sortedTextures);
     }
 
     private static void sortVertexData(String[] vertexData, List<Integer> indices,

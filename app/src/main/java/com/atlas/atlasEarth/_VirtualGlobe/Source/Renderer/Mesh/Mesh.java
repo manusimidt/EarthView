@@ -4,13 +4,12 @@ package com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Mesh;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.ByteFlags;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.TriangleIndices.TriangleIndicesInt;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.TriangleIndices.TriangleIndicesShort;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Tools.BufferUtils;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.BufferGL3x.BufferGL3x;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.VertexArrayGL3x;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.IntBuffer;
-import java.nio.ShortBuffer;
+import java.nio.Buffer;
+import java.nio.FloatBuffer;
 import java.util.List;
 
 public class Mesh {
@@ -19,6 +18,11 @@ public class Mesh {
     private List<TriangleIndicesInt> trianglesInt = null;
     private List<TriangleIndicesShort> trianglesShort = null;
     private VertexAttributeCollection vertexAttributes = null;
+
+    private Buffer indicesBufferRAW;
+    private FloatBuffer positionBufferRaw;
+    private FloatBuffer normalBufferRaw;
+    private FloatBuffer textureBufferRaw;
 
     private VertexArrayGL3x vertexArray;
     private BufferGL3x indicesBuffer;
@@ -34,18 +38,16 @@ public class Mesh {
      * Special Constructor for higher performance
      */
     public Mesh(int indices[], float[] positions, float[] normals, float[] textureCoords) {
-        vertexArray = new VertexArrayGL3x(positions, normals, textureCoords);
-
-
         indicesDataType = ByteFlags.INT;
         vertexCount = indices.length;
-
-        IntBuffer indicesBufferInt = ByteBuffer.allocateDirect(indices.length * 4).order(ByteOrder.nativeOrder()).asIntBuffer();
-        indicesBufferInt.put(indices);
-        indicesBufferInt.rewind();
-        indicesBuffer = new BufferGL3x(ByteFlags.ELEMENTARRAY_BUFFER, ByteFlags.STATIC_DRAW, indices.length * 4);
-        indicesBuffer.setData(indicesBufferInt);
-
+        positionBufferRaw = BufferUtils.convertFloatArrayToFloatBuffer(positions);
+        if (normals != null) {
+            normalBufferRaw = BufferUtils.convertFloatArrayToFloatBuffer(normals);
+        }
+        if (textureCoords != null) {
+            textureBufferRaw = BufferUtils.convertFloatArrayToFloatBuffer(textureCoords);
+        }
+        indicesBufferRAW = BufferUtils.convertIntArrayToIntBuffer(indices);
     }
 
     public void addVertexAttributes(VertexAttributeCollection vertexAttributeCollection) {
@@ -66,39 +68,45 @@ public class Mesh {
         }
 
         vertexCount = triangles.size() * 3;
-        if (vertexAttributes != null) {
-            progressData();
-        }
+
+        progressData();
+
     }
 
 
     private void progressData() {
-        vertexArray = new VertexArrayGL3x(vertexAttributes);
+        positionBufferRaw = BufferUtils.convertVector3ArrayListToFloatBuffer(vertexAttributes.getPositions());
+        if (vertexAttributes.getNormals() != null) {
+            normalBufferRaw = BufferUtils.convertVector3ArrayListToFloatBuffer(vertexAttributes.getNormals());
+        }
+        if (vertexAttributes.getTextureCoordinates() != null) {
+            textureBufferRaw = BufferUtils.convertVector2ArrayListToFloatBuffer(vertexAttributes.getTextureCoordinates());
+        }
+
+        if (indicesDataType == ByteFlags.INT) {
+            indicesBufferRAW = BufferUtils.convertTriangleIndicesIntToShortBuffer(trianglesInt);
+        } else if (indicesDataType == ByteFlags.SHORT) {
+            indicesBufferRAW = BufferUtils.convertTriangleIndicesShortToShortBuffer(trianglesShort);
+        } else {
+            throw new IllegalArgumentException("No indices are assigned!!");
+        }
         vertexAttributes.clear();
+    }
 
 
-        ShortBuffer indicesBufferShort;
-        IntBuffer indicesBufferInt;
+    public void activateVAO() {
+        vertexArray = new VertexArrayGL3x(positionBufferRaw, normalBufferRaw, textureBufferRaw);
+
 
         if (indicesDataType == ByteFlags.SHORT) {
-            indicesBufferShort = ByteBuffer.allocateDirect(trianglesShort.size() * 3 * 2).order(ByteOrder.nativeOrder()).asShortBuffer();
-            indicesBufferShort.put(TriangleIndicesShort.convertToShortArray(trianglesShort));
-            indicesBufferShort.rewind();
-            indicesBuffer = new BufferGL3x(ByteFlags.ELEMENTARRAY_BUFFER, ByteFlags.STATIC_DRAW, trianglesShort.size() * 3 * 2);
-            indicesBuffer.setData(indicesBufferShort);
-
+            indicesBuffer = new BufferGL3x(ByteFlags.ELEMENTARRAY_BUFFER, ByteFlags.STATIC_DRAW, indicesBufferRAW.limit()*2);
+            indicesBuffer.setData(indicesBufferRAW);
         } else if (indicesDataType == ByteFlags.INT) {
-            indicesBufferInt = ByteBuffer.allocateDirect(trianglesInt.size() * 3 * 4).order(ByteOrder.nativeOrder()).asIntBuffer();
-            indicesBufferInt.put(TriangleIndicesInt.convertToIntArray(trianglesInt));
-            indicesBufferInt.rewind();
-            indicesBuffer = new BufferGL3x(ByteFlags.ELEMENTARRAY_BUFFER, ByteFlags.STATIC_DRAW, trianglesInt.size() * 3 * 4);
-            indicesBuffer.setData(indicesBufferInt);
-
-        } else {
-            throw new IllegalArgumentException("Mesh doesn't contain Indices!");
+            indicesBuffer = new BufferGL3x(ByteFlags.ELEMENTARRAY_BUFFER, ByteFlags.STATIC_DRAW, indicesBufferRAW.limit()*4);
+            indicesBuffer.setData(indicesBufferRAW);
         }
-        trianglesInt = null;
-        trianglesShort = null;
+
+     clear();
     }
 
     public int getVertexCount() {
@@ -112,8 +120,16 @@ public class Mesh {
     public void clear() {
         trianglesInt = null;
         trianglesShort = null;
+        positionBufferRaw = null;
+        normalBufferRaw = null;
+        textureBufferRaw = null;
+        indicesBufferRAW = null;
         vertexAttributes = null;
-        indicesBuffer = null;
+    }
+
+    public void dispose(){
+        vertexArray.dispose();
+        indicesBuffer.dispose();
     }
 
     public VertexArrayGL3x getVertexArray() {

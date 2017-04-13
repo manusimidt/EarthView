@@ -16,6 +16,7 @@ public abstract class Renderable {
     private float scale;
     protected Mesh mesh;
     private Texture texture0, texture1, texture2;
+    private boolean ready = false;
 
     public Renderable(Vector3F position, float rotX, float rotY, float rotZ, float scale) {
         this.position = position;
@@ -26,7 +27,7 @@ public abstract class Renderable {
         mesh = new Mesh();
     }
     public abstract void render(ShaderProgramGL3x shaderProgram);
-
+    public abstract void onCreate();
 
     public void increaseRotation(float dx, float dy, float dz) {
         rotX += dx;
@@ -42,6 +43,10 @@ public abstract class Renderable {
         if (this.texture1 != null) {
             TextureLoaderGL3x.loadTexture(context, texture1);
         }
+    }
+
+    public void activateVAO(){
+        mesh.activateVAO();
     }
 
 
@@ -87,9 +92,7 @@ public abstract class Renderable {
         this.rotX = rotX;
     }
 
-    public Mesh getMesh() {
-        return mesh;
-    }
+
 
     public Texture getTexture0() {
         return texture0;
@@ -111,5 +114,11 @@ public abstract class Renderable {
         texture2 = null;
     }
 
+    public boolean isReady() {
+        return ready;
+    }
 
+    public void setReady() {
+        this.ready = true;
+    }
 }

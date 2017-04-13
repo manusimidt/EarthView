@@ -8,6 +8,8 @@ import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Rendables.Renderable;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Light;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Shader.PostShaderProgram;
 
+import java.util.List;
+
 
 public class PostRenderer {
 
@@ -19,10 +21,12 @@ public class PostRenderer {
         shaderProgram.loadProjectionMatrix(projectionMatrix);
     }
 
-    public void render(Renderable renderable, Camera camera, Light light) {
+    public void render(List<Renderable> renderables, Camera camera, Light light) {
         shaderProgram.loadViewMatrix(camera);
         shaderProgram.loadLight(light);
-        renderable.render(shaderProgram);
+        for (Renderable renderable : renderables) {
+            renderable.render(shaderProgram);
+        }
     }
 
     public PostShaderProgram getShaderProgram() {

@@ -6,7 +6,11 @@ import android.renderscript.Matrix4f;
 
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Camera;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Matrices.MatricesUtility;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Rendables.EarthModel.EarthModel;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Rendables.Post;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Rendables.Renderable;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Rendables.Shapefiles.ShapefileRenderable;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Rendables.SpaceBackground;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Light;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.ModelRenderer.BackgroundRenderer;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.ModelRenderer.EarthModelRenderer;
@@ -14,6 +18,7 @@ import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.ModelRenderer.PostRend
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.ModelRenderer.ShapefileRenderer;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.States.RenderState;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -24,10 +29,7 @@ public class RendererGL3x {
     private BackgroundRenderer backgroundRenderer;
     private ShapefileRenderer shapefileRenderer;
     private PostRenderer postRenderer;
-    private Renderable earthRenderable;
-    private Renderable background;
-    private List<Renderable> shapefiles;
-    private Renderable post;
+    private List<Renderable> renderables;
 
 
     public RendererGL3x(Context context, RenderState renderState) {
@@ -35,58 +37,63 @@ public class RendererGL3x {
         earthRenderer = new EarthModelRenderer(context, projectionMatrix);
         backgroundRenderer = new BackgroundRenderer(context, projectionMatrix);
         shapefileRenderer = new ShapefileRenderer(context, projectionMatrix);
-postRenderer = new PostRenderer(context, projectionMatrix);
+        postRenderer = new PostRenderer(context, projectionMatrix);
         forceRenderStates(renderState);
     }
 
     /**
      * Loader methods
      */
-    public void progressEarthModel(Renderable renderable) {
-        earthRenderable = renderable;
-    }
-
-    public void progressBackground(Renderable background) {
-        this.background = background;
-    }
-
-    public void progressShapeFile(List<Renderable> shapefiles) {
-        this.shapefiles = shapefiles;
-    }
-
-    public void progressPost(Renderable post){
-        this.post = post;
+    public void postRendables(List<Renderable> renderables) {
+        this.renderables = renderables;
     }
 
     public void render(Light light, Camera camera) {
         camera.calculateCameraPosition();
         clearBuffers();
 
-        backgroundRenderer.getShaderProgram().start();
-        backgroundRenderer.render(background);
-        backgroundRenderer.getShaderProgram().stop();
+        int renderableCounter = renderables.size();
+        boolean lastRenderable = false;
+        List<Renderable> shapefiles = new ArrayList<>();
+        List<Renderable> posts = new ArrayList<>();
+        GLES31.glEnable(GLES31.GL_DEPTH_TEST);
+        for (Renderable renderable : renderables) {
+            renderableCounter--;
+            if (renderableCounter == 0) {
+                lastRenderable = true;
+            }
 
+            if (renderable instanceof SpaceBackground) {
+                backgroundRenderer.getShaderProgram().start();
+                backgroundRenderer.render(renderable);
+                backgroundRenderer.getShaderProgram().stop();
 
-        earthRenderer.getShaderProgram().start();
-        earthRenderer.render(earthRenderable, camera, light);
-        earthRenderer.getShaderProgram().stop();
+            } else if (renderable instanceof EarthModel) {
+                earthRenderer.getShaderProgram().start();
+                earthRenderer.render(renderable, camera, light);
+                earthRenderer.getShaderProgram().stop();
 
+            } else if (renderable instanceof ShapefileRenderable) {
+                if (!lastRenderable) {
+                    shapefiles.add(renderable);
+                } else {
+                    shapefileRenderer.getShaderProgram().start();
+                    shapefileRenderer.render(shapefiles, camera);
+                    shapefileRenderer.getShaderProgram().stop();
+                }
 
-        shapefileRenderer.getShaderProgram().start();
-        shapefileRenderer.render(shapefiles, camera);
-        shapefileRenderer.getShaderProgram().stop();
-
-
-
-        postRenderer.getShaderProgram().start();
-        postRenderer.render(post, camera, light);
-        postRenderer.getShaderProgram().stop();
-
-
-
-
-
+            } else if (renderable instanceof Post) {
+                if (!lastRenderable) {
+                    posts.add(renderable);
+                } else {
+                    postRenderer.getShaderProgram().start();
+                    postRenderer.render(posts, camera, light);
+                    postRenderer.getShaderProgram().stop();
+                }
+            }
+        }
     }
+
 
     /**
      * Worker Methods

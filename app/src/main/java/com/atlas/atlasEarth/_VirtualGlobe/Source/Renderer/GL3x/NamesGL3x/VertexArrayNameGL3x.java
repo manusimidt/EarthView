@@ -28,7 +28,7 @@ public class VertexArrayNameGL3x {
         GLES31.glBindVertexArray(0);
     }
 
-    public void clean(){
+    public void dispose(){
         GLES31.glDeleteVertexArrays(1, id, 0);
 
     }

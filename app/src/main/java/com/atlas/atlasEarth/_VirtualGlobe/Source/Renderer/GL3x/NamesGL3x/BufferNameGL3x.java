@@ -14,7 +14,7 @@ public class BufferNameGL3x {
         return id[0];
     }
     public void dispose(){
-     if(id[1] !=0){
+     if(id[0] !=0){
          GLES31.glDeleteBuffers(1, id,0);
          id[0] = 0;
      }

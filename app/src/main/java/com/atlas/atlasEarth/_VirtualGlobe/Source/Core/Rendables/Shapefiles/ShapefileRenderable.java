@@ -70,5 +70,10 @@ public class ShapefileRenderable extends Renderable {
 
         }
     }
+
+    @Override
+    public void onCreate() {
+
+    }
 }
 

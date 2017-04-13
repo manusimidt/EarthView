@@ -4,6 +4,8 @@ import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.opengl.GLES31;
 import android.opengl.GLSurfaceView;
+import android.os.AsyncTask;
+import android.os.Handler;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
@@ -14,19 +16,16 @@ import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Camera;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector3F;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Geometry.geographicCS.Ellipsoid;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Matrices.MatricesUtility;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Rendables.Post;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Rendables.EarthModel.EarthModel;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Rendables.Post;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Rendables.Renderable;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Rendables.SpaceBackground;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Scene.Shapefile.ShapefileAppearance;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Rendables.Shapefiles.ShapefileRenderable;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.TouchHandeling.TouchHandler;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.RendererGL3x;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Light;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.States.RenderState;
 import com.atlas.atlasEarth.general.Utils;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,28 +35,23 @@ import javax.microedition.khronos.opengles.GL10;
 
 public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
 
-    private Renderable earthRenderable;
-    private Renderable background;
-    private Renderable post;
+    private static float height;
+    private static float width;
+    private List<Renderable> doneQueue;
+    private List<Renderable> renderables;
     private Light light;
     private Camera camera;
     private RendererGL3x renderer;
     private TouchHandler touchHandler;
-    private static float height;
-    private static float width;
     private ScaleGestureDetector scaleGestureDetector;
     private List<Renderable> shapefileRenderables;
-    private static int EGL_CONTEXT_CLIENT_VERSION = 0x3098;
-    private static double glVersion = 3.0;
-
-
-
 
 
     public EarthView(Context context) {
         super(context);
         init();
     }
+
 
     public void init() {
 
@@ -74,57 +68,54 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
     }
 
     @Override
-    public void queueEvent(Runnable r) {
-        super.queueEvent(r);
-    }
-
-
-    @Override
     public void onSurfaceCreated(GL10 gl10, EGLConfig eglConfig) {
 
-        //light = new Light(new Vector3F(0.82f, 0.72f, 0.55f));
-        light = new Light(new Vector3F(0.82f, 0.72f, 0.95f));
         Ellipsoid globeShape = Ellipsoid.ScaledWgs84;
-        earthRenderable = EarthModel.getInstance();
-        earthRenderable.loadTextures(getContext());
 
+        List<Renderable> requestQueue = new ArrayList<>();
+        EarthModel earthRenderable = new EarthModel(getContext());
+        earthRenderable.onCreate();
+        earthRenderable.activateVAO();
+
+        //requestQueue.add(new SpaceBackground(getContext()));
+        requestQueue.add(new Post(new Vector3F(0, 1, 0), BitmapFactory.decodeResource(getResources(), R.drawable.sunset6), "test", "14.07.1999", getContext()));
+
+
+        doneQueue = new ArrayList<>(requestQueue.size());
+        renderables = new ArrayList<>(requestQueue.size()+1);
+        renderables.add(earthRenderable);
+
+        // shapefileRenderables = new ArrayList<>(1);
+        // try {
+        //     ShapefileRenderable shapefileRenderable = new ShapefileRenderable(R.raw.countries_110m, getContext(), globeShape,
+        //             new ShapefileAppearance());
+        //     shapefileRenderables.add(shapefileRenderable);
+        // } catch (IOException e) {
+        //     e.printStackTrace();
+        // }
+
+        WorkerThread workerThread = new WorkerThread();
+        workerThread.execute(requestQueue);
+
+
+        light = new Light(new Vector3F(0.82f, 0.72f, 0.95f));
         camera = new Camera(earthRenderable);
-        touchHandler = new TouchHandler(MatricesUtility.createProjectionMatrix(getContext()), camera, getContext());
-
-        background = new SpaceBackground();
-        background.loadTextures(getContext());
-
-
         RenderState renderState = new RenderState();
         renderState.getDepthTest().setEnabled(true);
         renderState.getDepthTest().setDepthTestFunction(ByteFlags.ALWAYS);
         renderState.getFacetCulling().setEnabled(true);
         renderState.getFacetCulling().setCullFace(ByteFlags.BACK);
         renderState.getFacetCulling().setWindingOrder(ByteFlags.COUNTERCLOCKWISE);
-
-
-        shapefileRenderables = new ArrayList<>(1);
-        try {
-            ShapefileRenderable shapefileRenderable = new ShapefileRenderable(R.raw.countries_110m, getContext(), globeShape,
-                    new ShapefileAppearance());
-            shapefileRenderables.add(shapefileRenderable);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
         renderer = new RendererGL3x(getContext(), renderState);
+
+
+        touchHandler = new TouchHandler(MatricesUtility.createProjectionMatrix(getContext()), camera, getContext());
         touchHandler = new TouchHandler(renderer.getProjectionMatrix(), camera, getContext());
-
-        post = new Post(new Vector3F(0,1,0), BitmapFactory.decodeResource(getResources(), R.drawable.sunset6), "test", "14.07.1999", getContext());
-        post.loadTextures(getContext());
-
-
-
-        System.gc();
+        //System.gc();
     }
 
-    public List<Renderable> getShapefileRenderables() {
-        return shapefileRenderables;
+    public void addRenderable(List<Renderable> renderable) {
+        doneQueue = renderable;
     }
 
     @Override
@@ -136,23 +127,28 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
 
     }
 
-
     @Override
     public void onDrawFrame(GL10 gl10) {
-        renderer.progressEarthModel(earthRenderable);
-        renderer.progressBackground(background);
-        renderer.progressShapeFile(shapefileRenderables);
-        renderer.progressPost(post);
+
+        if (doneQueue.size() != 0) {
+            for (Renderable renderable : doneQueue) {
+                renderable.activateVAO();
+                renderables.add(renderable);
+            }
+           doneQueue.clear();
+        }
+
+        renderer.postRendables(renderables);
         renderer.render(light, camera);
         light.calculateAngleByTime();
     }
 
-
     @Override
     public void onPause() {
         super.onPause();
-        earthRenderable.clear();
-        background.clear();
+        for (Renderable renderable : doneQueue) {
+            renderable.clear();
+        }
     }
 
     @Override
@@ -160,6 +156,14 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
         super.onResume();
     }
 
+
+    public Light getLight() {
+        return light;
+    }
+
+    public List<Renderable> getShapefileRenderables() {
+        return shapefileRenderables;
+    }
 
     public static float getEarthViewHeight(Context context) {
         if (height == 0) {
@@ -174,10 +178,6 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
         }
 
         return width;
-    }
-
-    public Light getLight() {
-        return light;
     }
 
 
@@ -261,4 +261,29 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
         }
     }
 
+
+    public class WorkerThread extends AsyncTask<List<Renderable>, Void, List<Renderable>> {
+
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+
+        @Override
+        protected List<Renderable> doInBackground(List<Renderable>... params) {
+            for (Renderable renderable : params[0]) {
+                renderable.onCreate();
+                renderable.setReady();
+            }
+            return params[0];
+        }
+
+
+        @Override
+        protected void onPostExecute(List<Renderable> renderables) {
+            addRenderable(renderables);
+        }
+    }
 }

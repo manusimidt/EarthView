@@ -1,28 +1,20 @@
 package com.atlas.atlasEarth._VirtualGlobe.Source.Core.Rendables.EarthModel;
 
 
+import android.content.Context;
+
 import com.atlas.atlasEarth.R;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector3F;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Geometry.cartesianCS.Tessellation.SubdivisionSphereTessellator;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Texture;
 
 
 public class EarthModel extends GeographicGlobe {
 
 
-    public static EarthModel getInstance() {
-        return new EarthModel(90, 0, 180, 1);
-    }
-
-
-
-    private EarthModel(float rotX, float rotY, float rotZ, float scale) {
-        super(new Vector3F(0, 0, 0), rotX, rotY, rotZ, scale);
+    public EarthModel(Context context) {
+        super(new Vector3F(0, 0, 0), 90, 0, 180, 1, context);
         super.setTexture(configureDayTexture(R.drawable.texture1_5));
         super.setTexture(configureNightTexture(R.drawable.texture_night));
-
-        mesh = SubdivisionSphereTessellator.compute(5);
-
     }
 
 
@@ -36,6 +28,7 @@ public class EarthModel extends GeographicGlobe {
         texture.setShineDamper(6f);
         return texture;
     }
+
     private Texture configureNightTexture(int path) {
         Texture texture = new Texture(path);
         texture.setReflectivity(0.05f);
@@ -74,8 +67,6 @@ public class EarthModel extends GeographicGlobe {
         }
         super.increaseRotation(dx, dy, dz);
     }
-
-
 
 
 }
