@@ -13,7 +13,7 @@ public class Vector2F {
     }
 
 
-    public static float[] convertToFloatArray(List<Vector2F> positions) {
+    public static float[] toArray(List<Vector2F> positions) {
         float[] result = new float[positions.size() * 2];
         int a = 0;
         for (int i = 0; i < positions.size(); i++) {

@@ -1,6 +1,7 @@
 package com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x;
 
 import android.content.Context;
+import android.opengl.GLES20;
 import android.opengl.GLES31;
 import android.renderscript.Matrix4f;
 
@@ -50,13 +51,14 @@ public class RendererGL3x {
 
     public void render(Light light, Camera camera) {
         camera.calculateCameraPosition();
-        clearBuffers();
 
         int renderableCounter = renderables.size();
         boolean lastRenderable = false;
         List<Renderable> shapefiles = new ArrayList<>();
         List<Renderable> posts = new ArrayList<>();
-        GLES31.glEnable(GLES31.GL_DEPTH_TEST);
+        clearBuffers();
+
+
         for (Renderable renderable : renderables) {
             renderableCounter--;
             if (renderableCounter == 0) {
@@ -74,18 +76,16 @@ public class RendererGL3x {
                 earthRenderer.getShaderProgram().stop();
 
             } else if (renderable instanceof ShapefileRenderable) {
-                if (!lastRenderable) {
-                    shapefiles.add(renderable);
-                } else {
+                shapefiles.add(renderable);
+                if (lastRenderable){
                     shapefileRenderer.getShaderProgram().start();
                     shapefileRenderer.render(shapefiles, camera);
                     shapefileRenderer.getShaderProgram().stop();
                 }
 
             } else if (renderable instanceof Post) {
-                if (!lastRenderable) {
-                    posts.add(renderable);
-                } else {
+                posts.add(renderable);
+                if (lastRenderable) {
                     postRenderer.getShaderProgram().start();
                     postRenderer.render(posts, camera, light);
                     postRenderer.getShaderProgram().stop();
@@ -94,7 +94,6 @@ public class RendererGL3x {
         }
     }
 
-
     /**
      * Worker Methods
      */
@@ -102,6 +101,7 @@ public class RendererGL3x {
         if (renderState.getDepthTest().isEnabled()) {
             GLES31.glEnable(GLES31.GL_DEPTH_TEST);
             GLES31.glDepthFunc(TypeconverterGL3x.convert(renderState.getDepthTest().getDepthTestFunction()));
+            GLES31.glDepthRangef(0.1f,50f);
         }
         if (renderState.getFacetCulling().isEnabled()) {
             GLES31.glEnable(GLES31.GL_CULL_FACE);

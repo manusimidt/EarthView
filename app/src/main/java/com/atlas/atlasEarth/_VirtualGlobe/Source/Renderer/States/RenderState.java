@@ -22,6 +22,10 @@ public class RenderState {
         scissorTest = new ScissorTest();
         colorMask = new ColorMask(true, true, true, true);
     }
+    public void loadGlobalDefaults(){
+        facetCulling.setEnabled(true);
+        depthTest.setEnabled(true);
+    }
 
     public ColorMask getColorMask() {
         return colorMask;

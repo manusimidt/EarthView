@@ -27,7 +27,7 @@ public class MatricesUtility {
 
         final float FOV = 50;
         final float NEAR_PLANE = 0.1f;
-        final float FAR_PLANE = 1000;
+        final float FAR_PLANE = 50;
 
         float aspectRatio =  EarthView.getEarthViewWidth(context) / EarthView.getEarthViewHeight(context);
         float y_scale = (float) ((1f / Math.tan(Math.toRadians(FOV / 2f))) * aspectRatio);

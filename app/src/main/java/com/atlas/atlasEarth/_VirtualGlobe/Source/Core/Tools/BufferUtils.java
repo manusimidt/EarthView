@@ -24,7 +24,7 @@ public class BufferUtils {
 
     public static FloatBuffer convertVector2ArrayListToFloatBuffer(List<Vector2F> data) {
         FloatBuffer buffer = ByteBuffer.allocateDirect(data.size() * 2 * 4).order(ByteOrder.nativeOrder()).asFloatBuffer();
-        buffer.put(Vector2F.convertToFloatArray(data));
+        buffer.put(Vector2F.toArray(data));
         buffer.flip();
         return buffer;
     }
@@ -37,6 +37,12 @@ public class BufferUtils {
     }
     public static IntBuffer convertIntArrayToIntBuffer(int[] data){
         IntBuffer buffer = ByteBuffer.allocateDirect(data.length*4).order(ByteOrder.nativeOrder()).asIntBuffer();
+        buffer.put(data);
+        buffer.flip();
+        return buffer;
+    }
+    public static ShortBuffer convertShortArrayToShortBuffer(short[] data){
+        ShortBuffer buffer = ByteBuffer.allocateDirect(data.length*2).order(ByteOrder.nativeOrder()).asShortBuffer();
         buffer.put(data);
         buffer.flip();
         return buffer;

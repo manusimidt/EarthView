@@ -5,13 +5,11 @@ import android.graphics.BitmapFactory;
 import android.opengl.GLES31;
 import android.opengl.GLSurfaceView;
 import android.os.AsyncTask;
-import android.os.Handler;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 
 import com.atlas.atlasEarth.R;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.ByteFlags;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Camera;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector3F;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Geometry.geographicCS.Ellipsoid;
@@ -67,6 +65,7 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
 
     }
 
+    @SuppressWarnings("varargs")
     @Override
     public void onSurfaceCreated(GL10 gl10, EGLConfig eglConfig) {
 
@@ -80,10 +79,10 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
         //requestQueue.add(new SpaceBackground(getContext()));
         requestQueue.add(new Post(new Vector3F(0, 1, 0), BitmapFactory.decodeResource(getResources(), R.drawable.sunset6), "test", "14.07.1999", getContext()));
 
-
         doneQueue = new ArrayList<>(requestQueue.size());
-        renderables = new ArrayList<>(requestQueue.size()+1);
+        renderables = new ArrayList<>(requestQueue.size() + 1);
         renderables.add(earthRenderable);
+
 
         // shapefileRenderables = new ArrayList<>(1);
         // try {
@@ -101,13 +100,8 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
         light = new Light(new Vector3F(0.82f, 0.72f, 0.95f));
         camera = new Camera(earthRenderable);
         RenderState renderState = new RenderState();
-        renderState.getDepthTest().setEnabled(true);
-        renderState.getDepthTest().setDepthTestFunction(ByteFlags.ALWAYS);
-        renderState.getFacetCulling().setEnabled(true);
-        renderState.getFacetCulling().setCullFace(ByteFlags.BACK);
-        renderState.getFacetCulling().setWindingOrder(ByteFlags.COUNTERCLOCKWISE);
+        renderState.loadGlobalDefaults();
         renderer = new RendererGL3x(getContext(), renderState);
-
 
         touchHandler = new TouchHandler(MatricesUtility.createProjectionMatrix(getContext()), camera, getContext());
         touchHandler = new TouchHandler(renderer.getProjectionMatrix(), camera, getContext());
@@ -120,11 +114,9 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
 
     @Override
     public void onSurfaceChanged(GL10 gl10, int width, int height) {
-        //Called when the screen rotates
         GLES31.glViewport(0, 0, width, height);
         EarthView.width = width;
         EarthView.height = height;
-
     }
 
     @Override
@@ -133,11 +125,13 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
         if (doneQueue.size() != 0) {
             for (Renderable renderable : doneQueue) {
                 renderable.activateVAO();
+                if (renderable.hasTexture()) {
+                    renderable.loadTextures(getContext());
+                }
                 renderables.add(renderable);
             }
-           doneQueue.clear();
+            doneQueue.clear();
         }
-
         renderer.postRendables(renderables);
         renderer.render(light, camera);
         light.calculateAngleByTime();
@@ -181,9 +175,6 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
     }
 
 
-    /**
-     * Touch Handeling
-     */
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
         //Always handle Action Cancel !!!
@@ -262,7 +253,7 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
     }
 
 
-    public class WorkerThread extends AsyncTask<List<Renderable>, Void, List<Renderable>> {
+    private class WorkerThread extends AsyncTask<List<Renderable>, Void, List<Renderable>> {
 
 
         @Override
@@ -270,7 +261,7 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
             super.onPreExecute();
         }
 
-
+        @SuppressWarnings("varargs")
         @Override
         protected List<Renderable> doInBackground(List<Renderable>... params) {
             for (Renderable renderable : params[0]) {

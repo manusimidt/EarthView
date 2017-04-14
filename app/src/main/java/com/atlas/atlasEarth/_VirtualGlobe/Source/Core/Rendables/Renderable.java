@@ -17,6 +17,7 @@ public abstract class Renderable {
     protected Mesh mesh;
     private Texture texture0, texture1, texture2;
     private boolean ready = false;
+    private boolean hasTexture = false;
 
     public Renderable(Vector3F position, float rotX, float rotY, float rotZ, float scale) {
         this.position = position;
@@ -49,6 +50,9 @@ public abstract class Renderable {
         mesh.activateVAO();
     }
 
+    public boolean hasTexture() {
+        return hasTexture;
+    }
 
     public Vector3F getPosition() {
         return position;
@@ -66,11 +70,12 @@ public abstract class Renderable {
         return rotZ;
     }
 
-    public float getScale() {
+     protected   float getScale() {
         return scale;
     }
 
     public void setTexture(Texture texture) {
+        hasTexture = true;
         if (this.texture0 == null) {
             this.texture0 = texture;
         } else if (this.texture1 == null) {
@@ -94,15 +99,15 @@ public abstract class Renderable {
 
 
 
-    public Texture getTexture0() {
+     protected Texture getTexture0() {
         return texture0;
     }
 
-    public Texture getTexture1() {
+    protected Texture getTexture1() {
         return texture1;
     }
 
-    public Texture getTexture2() {
+    protected Texture getTexture2() {
         return texture2;
     }
 

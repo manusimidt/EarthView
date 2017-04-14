@@ -28,7 +28,6 @@ public class Post extends Renderable {
     @Override
     public void onCreate() {
         super.mesh = ObjLoader.loadOBJ(R.raw.text_model_source, context);
-        loadTextures(context);
     }
 
     @Override

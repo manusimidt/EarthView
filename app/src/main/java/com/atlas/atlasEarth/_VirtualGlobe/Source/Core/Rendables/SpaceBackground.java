@@ -18,12 +18,10 @@ import java.util.List;
 
 public class SpaceBackground extends Renderable {
 
-    private Context context;
 
     public SpaceBackground(Context context) {
-        super(new Vector3F(0, 0, -10), 0, 0, 0, 1);
+        super(new Vector3F(0, 0, -20), 0, 0, 0, 1);
         super.setTexture(new Texture(R.drawable.space2));
-        this.context = context;
     }
 
 
@@ -50,7 +48,6 @@ public class SpaceBackground extends Renderable {
         triangles.add(new TriangleIndicesShort((short) 0, (short) 1, (short) 2));
         triangles.add(new TriangleIndicesShort((short) 0, (short) 2, (short) 3));
         mesh.addTriangles(triangles);
-        loadTextures(context);
     }
 
     @Override

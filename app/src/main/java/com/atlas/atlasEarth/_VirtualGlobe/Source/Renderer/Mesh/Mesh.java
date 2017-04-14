@@ -4,6 +4,8 @@ package com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Mesh;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.ByteFlags;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.TriangleIndices.TriangleIndicesInt;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.TriangleIndices.TriangleIndicesShort;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector2F;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector3F;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Tools.BufferUtils;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.BufferGL3x.BufferGL3x;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.VertexArrayGL3x;
@@ -57,6 +59,7 @@ public class Mesh {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public <T> void addTriangles(List<T> triangles) {
 
         if (triangles.get(triangles.size() - 1) instanceof TriangleIndicesShort) {
@@ -75,18 +78,18 @@ public class Mesh {
 
 
     private void progressData() {
-        positionBufferRaw = BufferUtils.convertVector3ArrayListToFloatBuffer(vertexAttributes.getPositions());
+        positionBufferRaw = BufferUtils.convertFloatArrayToFloatBuffer(Vector3F.toArray(vertexAttributes.getPositions()));
         if (vertexAttributes.getNormals() != null) {
-            normalBufferRaw = BufferUtils.convertVector3ArrayListToFloatBuffer(vertexAttributes.getNormals());
+            normalBufferRaw = BufferUtils.convertFloatArrayToFloatBuffer(Vector3F.toArray(vertexAttributes.getNormals()));
         }
         if (vertexAttributes.getTextureCoordinates() != null) {
-            textureBufferRaw = BufferUtils.convertVector2ArrayListToFloatBuffer(vertexAttributes.getTextureCoordinates());
+            textureBufferRaw = BufferUtils.convertFloatArrayToFloatBuffer(Vector2F.toArray(vertexAttributes.getTextureCoordinates()));
         }
 
         if (indicesDataType == ByteFlags.INT) {
-            indicesBufferRAW = BufferUtils.convertTriangleIndicesIntToShortBuffer(trianglesInt);
+            indicesBufferRAW = BufferUtils.convertIntArrayToIntBuffer(TriangleIndicesInt.convertToIntArray(trianglesInt));
         } else if (indicesDataType == ByteFlags.SHORT) {
-            indicesBufferRAW = BufferUtils.convertTriangleIndicesShortToShortBuffer(trianglesShort);
+            indicesBufferRAW = BufferUtils.convertShortArrayToShortBuffer(TriangleIndicesShort.convertToShortArray(trianglesShort));
         } else {
             throw new IllegalArgumentException("No indices are assigned!!");
         }

@@ -4,12 +4,9 @@ import android.opengl.GLES31;
 import android.support.annotation.Nullable;
 
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.ByteFlags;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Tools.BufferUtils;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.BufferGL3x.BufferGL3x;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.NamesGL3x.VertexArrayNameGL3x;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Mesh.VertexAttributeCollection;
 
-import java.nio.Buffer;
 import java.nio.FloatBuffer;
 
 
@@ -23,18 +20,15 @@ public class VertexArrayGL3x extends VertexArrayNameGL3x {
 
         //Check for normals
         if (normalBuffer != null) {
-            storeFloatBufferInVAO(1, 3,normalBuffer);
+            storeFloatBufferInVAO(1, 3, normalBuffer);
         }
 
         //Check for Texture Coordinates
         if (textureBuffer != null) {
             storeFloatBufferInVAO(2, 2, textureBuffer);
         }
-
         unbindAndDisableVAO();
     }
-
-
 
 
     private void storeFloatBufferInVAO(int index, int dimension, FloatBuffer data) {
