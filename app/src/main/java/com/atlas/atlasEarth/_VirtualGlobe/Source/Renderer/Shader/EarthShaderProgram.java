@@ -14,6 +14,7 @@ public class EarthShaderProgram extends ShaderProgramGL3x {
     private int location_transMat;
     private int location_projectionMatrix;
     private int location_viewMatrix;
+    private int location_cameraPosition;
     private int location_lightPosition;
     private int location_lightColor;
     private int location_gridResolution;
@@ -43,6 +44,7 @@ public class EarthShaderProgram extends ShaderProgramGL3x {
         location_lightPosition = super.getUniformLocation("lightPosition");
         location_lightColor = super.getUniformLocation("lightColor");
         location_viewMatrix = super.getUniformLocation("viewMatrix");
+        location_cameraPosition = super.getUniformLocation("cameraPosition");
         location_gridResolution = super.getUniformLocation("gridResolution");
         location_texture0 = super.getUniformLocation("texture0");
         location_texture1 = super.getUniformLocation("texture1");
@@ -66,6 +68,7 @@ public class EarthShaderProgram extends ShaderProgramGL3x {
 
     public void loadViewMatrix(Camera camera) {
         super.loadMatrix(location_viewMatrix, MatricesUtility.createViewMatrix(camera));
+        super.loadVector3F(location_cameraPosition, camera.getPosition());
     }
 
     public void loadLight(Light light) {
