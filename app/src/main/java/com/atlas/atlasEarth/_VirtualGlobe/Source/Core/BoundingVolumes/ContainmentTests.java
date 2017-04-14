@@ -40,7 +40,7 @@ public class ContainmentTests {
         Vector3D v2 = pyramidBase2.substract(pyramidApex);
 
         //
-        // Face normals
+        // FaceCulling normals
         //
         Vector3D n0 = v1.cross(v0);
         Vector3D n1 = v2.cross(v1);

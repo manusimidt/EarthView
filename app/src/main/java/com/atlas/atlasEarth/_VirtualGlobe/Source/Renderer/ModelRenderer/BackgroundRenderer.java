@@ -5,6 +5,7 @@ import android.content.Context;
 import android.opengl.GLES31;
 import android.renderscript.Matrix4f;
 
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Camera;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Rendables.Renderable;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Shader.BackgroundShaderProgram;
 
@@ -19,7 +20,8 @@ public class BackgroundRenderer {
         shaderProgram.stop();
     }
 
-    public void render(Renderable renderable){
+    public void render(Renderable renderable, Camera camera){
+        shaderProgram.loadViewMatrix(camera);
       renderable.render(shaderProgram);
     }
 

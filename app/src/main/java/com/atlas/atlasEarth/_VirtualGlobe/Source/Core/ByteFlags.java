@@ -19,11 +19,11 @@ public class ByteFlags {
     public static final byte ALWAYS                      =   8; //The depth test always passes.
     //~DepthTest
 
-    //FacetCulling
+    //FaceCulling
     public static final byte FRONT                       =   9;
     public static final byte BACK                        =  10;
     public static final byte FRONTANDBACK                =  11;
-    //~FacetCulling
+    //~FaceCulling
 
 
     //~-----Render States------//

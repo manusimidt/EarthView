@@ -4,14 +4,14 @@ package com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.States.RenderStates;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.ByteFlags;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.TypeconverterGL3x;
 
-public class FacetCulling {
+public class FaceCulling {
 
     private boolean enabled;
     private byte cullFace;
     private byte windingOrder;
 
 
-    public FacetCulling() {
+    public FaceCulling() {
         enabled = false;
         cullFace = ByteFlags.BACK;
         windingOrder = ByteFlags.COUNTERCLOCKWISE;

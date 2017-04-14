@@ -8,6 +8,7 @@ import com.atlas.atlasEarth.R;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.TriangleIndices.TriangleIndicesShort;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector2F;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector3F;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Matrices.MatricesUtility;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.ShaderGL3x.ShaderProgramGL3x;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Mesh.VertexAttributeCollection;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Shader.BackgroundShaderProgram;
@@ -20,7 +21,7 @@ public class SpaceBackground extends Renderable {
 
 
     public SpaceBackground(Context context) {
-        super(new Vector3F(0, 0, -20), 0, 0, 0, 1);
+        super(new Vector3F(3, 1, -15), 0, 0, 0, 1);
         super.setTexture(new Texture(R.drawable.space2));
     }
 
@@ -55,6 +56,13 @@ public class SpaceBackground extends Renderable {
         BackgroundShaderProgram backgroundShaderProgram = (BackgroundShaderProgram) shaderProgram;
         mesh.getVertexArray().bindAndEnableVAO();
         backgroundShaderProgram.loadTextureIdentifier();
+
+        backgroundShaderProgram.loadTransformationMatrix(MatricesUtility.createTransformationMatrix(
+                getPosition(),
+                getRotX(),
+                getRotY(),
+                getRotZ(),
+                getScale()));
 
         GLES31.glActiveTexture(GLES31.GL_TEXTURE0);
         GLES31.glBindTexture(GLES31.GL_TEXTURE_2D, getTexture0().getTextureID());

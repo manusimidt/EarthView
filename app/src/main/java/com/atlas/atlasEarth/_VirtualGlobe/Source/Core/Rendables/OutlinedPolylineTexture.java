@@ -18,7 +18,7 @@ public class OutlinedPolylineTexture {
     public OutlinedPolylineTexture()
     {
         RenderState renderState = new RenderState();
-        renderState.getFacetCulling().setEnabled(false);
+        renderState.getFaceCulling().setEnabled(false);
        // renderState.Blending.Enabled = true;
        // renderState.Blending.SourceRGBFactor = SourceBlendingFactor.SourceAlpha;
        // renderState.Blending.SourceAlphaFactor = SourceBlendingFactor.SourceAlpha;

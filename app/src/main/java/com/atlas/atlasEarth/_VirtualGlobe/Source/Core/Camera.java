@@ -64,10 +64,10 @@ public class Camera {
     }
     public void increasePitch(float value) {
         value /= 2;
-        if ((pitch += value) > 90) {
-            pitch = 90;
-        } else if ((pitch += value) < -90) {
-            pitch = -90;
+        if ((pitch += value) > 0) {
+            pitch = 0;
+        } else if ((pitch += value) < -180) {
+            pitch = -180;
         } else {
             pitch += value;
         }
@@ -79,7 +79,7 @@ public class Camera {
         float verticalDistance = calculateVerticalDistance();
         position.y = earthRenderable.getPosition().y + verticalDistance;
 
-        float fullrotationAngle = earthRenderable.getRotY() + angleAroundPlayer;
+        float fullrotationAngle = earthRenderable.getRotZ() + angleAroundPlayer;
         float offsetX = (float) (horizontalDistance * Math.sin(Math.toRadians(fullrotationAngle)));
         float offsetZ = (float) (horizontalDistance * Math.cos(Math.toRadians(fullrotationAngle)));
         position.x = earthRenderable.getPosition().x - offsetX;

@@ -3,27 +3,27 @@ package com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.States;
 
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.States.RenderStates.ColorMask;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.States.RenderStates.DepthTest;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.States.RenderStates.FacetCulling;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.States.RenderStates.FaceCulling;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.States.RenderStates.ScissorTest;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.States.RenderStates.StencilTest;
 
 public class RenderState {
 
     private DepthTest depthTest;
-    private FacetCulling facetCulling;
+    private FaceCulling faceCulling;
     private StencilTest stencilTest;
     private ScissorTest scissorTest;
     private ColorMask colorMask;
 
     public RenderState() {
         depthTest = new DepthTest();
-        facetCulling = new FacetCulling();
+        faceCulling = new FaceCulling();
         stencilTest = new StencilTest();
         scissorTest = new ScissorTest();
         colorMask = new ColorMask(true, true, true, true);
     }
     public void loadGlobalDefaults(){
-        facetCulling.setEnabled(true);
+        faceCulling.setEnabled(true);
         depthTest.setEnabled(true);
     }
 
@@ -43,12 +43,12 @@ public class RenderState {
         this.depthTest = depthTest;
     }
 
-    public FacetCulling getFacetCulling() {
-        return facetCulling;
+    public FaceCulling getFaceCulling() {
+        return faceCulling;
     }
 
-    public void setFacetCulling(FacetCulling facetCulling) {
-        this.facetCulling = facetCulling;
+    public void setFaceCulling(FaceCulling faceCulling) {
+        this.faceCulling = faceCulling;
     }
 
     public ScissorTest getScissorTest() {

@@ -13,9 +13,9 @@ import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Light;
 public class EarthShaderProgram extends ShaderProgramGL3x {
     private int location_transMat;
     private int location_projectionMatrix;
+    private int location_viewMatrix;
     private int location_lightPosition;
     private int location_lightColor;
-    private int location_viewMatrix;
     private int location_gridResolution;
     private int location_texture0;
     private int location_texture1;

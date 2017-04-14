@@ -76,7 +76,7 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
         earthRenderable.onCreate();
         earthRenderable.activateVAO();
 
-        //requestQueue.add(new SpaceBackground(getContext()));
+        requestQueue.add(new SpaceBackground(getContext()));
         requestQueue.add(new Post(new Vector3F(0, 1, 0), BitmapFactory.decodeResource(getResources(), R.drawable.sunset6), "test", "14.07.1999", getContext()));
 
         doneQueue = new ArrayList<>(requestQueue.size());

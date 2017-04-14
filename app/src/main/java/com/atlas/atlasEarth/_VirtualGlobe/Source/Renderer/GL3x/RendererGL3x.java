@@ -1,7 +1,6 @@
 package com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x;
 
 import android.content.Context;
-import android.opengl.GLES20;
 import android.opengl.GLES31;
 import android.renderscript.Matrix4f;
 
@@ -67,7 +66,7 @@ public class RendererGL3x {
 
             if (renderable instanceof SpaceBackground) {
                 backgroundRenderer.getShaderProgram().start();
-                backgroundRenderer.render(renderable);
+                backgroundRenderer.render(renderable, camera);
                 backgroundRenderer.getShaderProgram().stop();
 
             } else if (renderable instanceof EarthModel) {
@@ -103,10 +102,10 @@ public class RendererGL3x {
             GLES31.glDepthFunc(TypeconverterGL3x.convert(renderState.getDepthTest().getDepthTestFunction()));
             GLES31.glDepthRangef(0.1f,50f);
         }
-        if (renderState.getFacetCulling().isEnabled()) {
+        if (renderState.getFaceCulling().isEnabled()) {
             GLES31.glEnable(GLES31.GL_CULL_FACE);
-            GLES31.glCullFace(TypeconverterGL3x.convert(renderState.getFacetCulling().getCullFace()));
-            GLES31.glFrontFace(TypeconverterGL3x.convert(renderState.getFacetCulling().getWindingOrder()));
+            GLES31.glCullFace(TypeconverterGL3x.convert(renderState.getFaceCulling().getCullFace()));
+            GLES31.glFrontFace(TypeconverterGL3x.convert(renderState.getFaceCulling().getWindingOrder()));
         }
     }
 

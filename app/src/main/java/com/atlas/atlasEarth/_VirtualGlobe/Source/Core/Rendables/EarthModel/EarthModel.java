@@ -12,7 +12,7 @@ public class EarthModel extends GeographicGlobe {
 
 
     public EarthModel(Context context) {
-        super(new Vector3F(0, 0, 0), 90, 0, 180, 1, context);
+        super(new Vector3F(0, 0, 0), 0,0,0, 1, context);
         super.setTexture(configureDayTexture(R.drawable.texture1_5));
         super.setTexture(configureNightTexture(R.drawable.texture_night));
     }
