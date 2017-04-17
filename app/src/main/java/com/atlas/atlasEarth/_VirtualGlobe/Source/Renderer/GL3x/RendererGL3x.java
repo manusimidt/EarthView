@@ -50,6 +50,7 @@ public class RendererGL3x {
 
     public void render(Light light, Camera camera) {
         camera.calculateCameraPosition();
+        light.calculateAngleByTime();
 
         int renderableCounter = renderables.size();
         boolean lastRenderable = false;

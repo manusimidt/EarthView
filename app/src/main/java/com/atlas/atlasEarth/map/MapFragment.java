@@ -1,7 +1,6 @@
 package com.atlas.atlasEarth.map;
 
 
-
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -36,39 +35,136 @@ public class MapFragment extends Fragment {
 
         earthView = new EarthView(getContext());
 
-
-        ((MainActivity) getActivity()).setOnLightControlListener(new MainActivity.LightControlInterface() {
+        ((MainActivity) getActivity()).setOnEarthControlListener(new MainActivity.EarthControlInterface() {
             @Override
-            public void left() {
-                earthView.getShapefileRenderables().get(0).setRotZ(earthView.getShapefileRenderables().get(0).getRotZ() + 5);
+            public void iX() {
+                earthView.getEarth().increasePosition(0.1f, 0, 0);
             }
-
             @Override
-            public void up() {
-
+            public void dX() {
+                earthView.getEarth().increasePosition(-0.1f, 0, 0);
             }
-
             @Override
-            public void down() {
-
+            public void iY() {
+                earthView.getEarth().increasePosition(0, 0.1f, 0);
             }
-
             @Override
-            public void right() {
-
+            public void dY() {
+                earthView.getEarth().increasePosition(0, -0.1f, 0);
             }
-
             @Override
-            public void in() {
-                earthView.getShapefileRenderables().get(0).setRotY(earthView.getShapefileRenderables().get(0).getRotY() + 5);
+            public void iZ() {
+                earthView.getEarth().increasePosition(0, 0, 0.1f);
             }
-
             @Override
-            public void out() {
-                earthView.getShapefileRenderables().get(0).setRotX(earthView.getShapefileRenderables().get(0).getRotX() + 5);
+            public void dZ() {
+                earthView.getEarth().increasePosition(0, 0, -0.1f);
+            }
+            @Override
+            public void iXR() {
+                earthView.getEarth().increaseRotation(30, 0, 0);
+            }
+            @Override
+            public void dXR() {
+                earthView.getEarth().increaseRotation(-30, 0, 0);
+            }
+            @Override
+            public void iYR() {
+                earthView.getEarth().increaseRotation(0, 30, 0);
+            }
+            @Override
+            public void dYR() {
+                earthView.getEarth().increaseRotation(0, -30, 0);
+            }
+            @Override
+            public void iZR() {
+                earthView.getEarth().increaseRotation(0, 0, 30);
+            }
+            @Override
+            public void dZR() {
+                earthView.getEarth().increaseRotation(0, 0, -30);
             }
         });
-        ((MainActivity) getActivity()).setOnOptionsControlListener(new MainActivity.OptionsInterface() {
+
+        ((MainActivity) getActivity()).setOnPostControlListener(new MainActivity.PostControlInterface() {
+            @Override
+            public void iX() {
+                earthView.getPost().increasePosition(0.5f, 0, 0);
+            }
+            @Override
+            public void dX() {
+                earthView.getPost().increasePosition(-0.5f, 0, 0);
+            }
+            @Override
+            public void iY() {
+                earthView.getPost().increasePosition(0, 0.5f, 0);
+            }
+            @Override
+            public void dY() {
+                earthView.getPost().increasePosition(0, -0.5f, 0);
+            }
+            @Override
+            public void iZ() {
+                earthView.getPost().increasePosition(0, 0, 0.5f);
+            }
+            @Override
+            public void dZ() {
+                earthView.getPost().increasePosition(0, 0, -0.5f);
+            }
+            @Override
+            public void iXR() {
+                earthView.getPost().increaseRotation(30, 0, 0);
+            }
+            @Override
+            public void dXR() {
+                earthView.getPost().increaseRotation(-30, 0, 0);
+            }
+            @Override
+            public void iYR() {
+                earthView.getPost().increaseRotation(0, 30, 0);
+            }
+            @Override
+            public void dYR() {
+                earthView.getPost().increaseRotation(0, -30, 0);
+            }
+            @Override
+            public void iZR() {
+                earthView.getPost().increaseRotation(0, 0, 30);
+            }
+            @Override
+            public void dZR() {
+                earthView.getPost().increaseRotation(0, 0, -30);
+            }
+        });
+
+        ((MainActivity) getActivity()).setOnCameraControlListener(new MainActivity.CameraControlInterface() {
+            @Override
+            public void iPitch() {
+                earthView.getCamera().increasePitch(10);
+            }
+            @Override
+            public void dPitch() {
+                earthView.getCamera().increasePitch(-10);
+            }
+            @Override
+            public void iDist() {
+                //      earthView.getCamera().increaseDistanceToEarth(0.5f);
+            }
+            @Override
+            public void dDist() {
+                //      earthView.getCamera().increaseDistanceToEarth(-0.5f);
+            }
+            @Override
+            public void iVA() {
+                //      earthView.getCamera().increaseViewAngle(30);
+            }
+            @Override
+            public void dVA() {
+                //      earthView.getCamera().increaseViewAngle(-30);
+            }
+        });
+
+        ((MainActivity) getActivity()).setOnLightControlListener(new MainActivity.LightControlInterface() {
             @Override
             public void fullLight() {
                 if (EarthViewOptions.isFullLightning()) {
@@ -76,6 +172,30 @@ public class MapFragment extends Fragment {
                 } else {
                     EarthViewOptions.enableFullLightning();
                 }
+            }
+            @Override
+            public void iXLight() {
+                earthView.getLight().increasePosition(5, 0, 0);
+            }
+            @Override
+            public void dXLight() {
+                earthView.getLight().increasePosition(-5, 0, 0);
+            }
+            @Override
+            public void iYLight() {
+                earthView.getLight().increasePosition(0, 5, 0);
+            }
+            @Override
+            public void dYLight() {
+                earthView.getLight().increasePosition(0, -5, 0);
+            }
+            @Override
+            public void iZLight() {
+                earthView.getLight().increasePosition(0, 0, 5);
+            }
+            @Override
+            public void dZLight() {
+                earthView.getLight().increasePosition(0, 0, -5);
             }
         });
 
@@ -106,7 +226,7 @@ public class MapFragment extends Fragment {
 
             Log.w("debug", "creating OpenGL ES " + glVersion + " context");
             int[] attrib_list = {EGL_CONTEXT_CLIENT_VERSION, (int) glVersion,
-                    EGL10.EGL_NONE };
+                    EGL10.EGL_NONE};
             // attempt to create a OpenGL ES 3.0 context
             EGLContext context = egl.eglCreateContext(display, eglConfig, EGL10.EGL_NO_CONTEXT, attrib_list);
             return context; // returns null if 3.0 is not supported;

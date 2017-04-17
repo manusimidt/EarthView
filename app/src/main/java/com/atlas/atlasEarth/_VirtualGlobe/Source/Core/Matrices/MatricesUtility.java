@@ -15,9 +15,9 @@ public class MatricesUtility {
 
         Matrix4f transformationMatrix = new Matrix4f();
         transformationMatrix.translate(transformation.x, transformation.y, transformation.z);
-        transformationMatrix.rotate(rx, 1, 0, 0);
+        transformationMatrix.rotate(rx, 1, 0, 0);//+90
         transformationMatrix.rotate(ry, 0, 1, 0);
-        transformationMatrix.rotate(rz, 0, 0, 1);
+        transformationMatrix.rotate(rz, 0, 0, 1);//-90
         transformationMatrix.scale(scale, scale, scale);
 
         return transformationMatrix;
@@ -27,9 +27,9 @@ public class MatricesUtility {
 
         final float FOV = 50;
         final float NEAR_PLANE = 0.1f;
-        final float FAR_PLANE = 50;
+        final float FAR_PLANE = 150;
 
-        float aspectRatio =  EarthView.getEarthViewWidth(context) / EarthView.getEarthViewHeight(context);
+        float aspectRatio = EarthView.getEarthViewWidth(context) / EarthView.getEarthViewHeight(context);
         float y_scale = (float) ((1f / Math.tan(Math.toRadians(FOV / 2f))) * aspectRatio);
         float x_scale = y_scale / aspectRatio;
         float frustum_length = FAR_PLANE - NEAR_PLANE;
@@ -51,18 +51,19 @@ public class MatricesUtility {
         viewMatrix.loadIdentity();
         viewMatrix.rotate(camera.getPitch(), 1, 0, 0);
         viewMatrix.rotate(camera.getYaw(), 0, 1, 0);
+        //viewMatrix.rotate((float)Math.toRadians(camera.getRoll()), 0, 0, 1);
         Vector3F negativeCameraPos = new Vector3F(-camera.getPosition().x, -camera.getPosition().y, -camera.getPosition().z);
 
         viewMatrix.translate(negativeCameraPos.x, negativeCameraPos.y, negativeCameraPos.z);
         return viewMatrix;
     }
 
-    public static Vector4F transformVector(Vector4F vector, Matrix4f transformMatrix){
-        float x = transformMatrix.get(0,0)*vector.x + transformMatrix.get(0,1) * vector.y + transformMatrix.get(0,2) * vector.z + transformMatrix.get(0,3) * vector.w;
-        float y = transformMatrix.get(1,0)*vector.x + transformMatrix.get(1,1) * vector.y + transformMatrix.get(1,2) * vector.z + transformMatrix.get(1,3) * vector.w;
-        float z = transformMatrix.get(2,0)*vector.x + transformMatrix.get(2,1) * vector.y + transformMatrix.get(2,2) * vector.z + transformMatrix.get(2,3) * vector.w;
-                float w= transformMatrix.get(3,0)*vector.x + transformMatrix.get(3,1) * vector.y + transformMatrix.get(3,2) * vector.z + transformMatrix.get(3,3) * vector.w;
-        return new Vector4F(x,y,z,w);
+    public static Vector4F transformVector(Vector4F vector, Matrix4f transformMatrix) {
+        float x = transformMatrix.get(0, 0) * vector.x + transformMatrix.get(0, 1) * vector.y + transformMatrix.get(0, 2) * vector.z + transformMatrix.get(0, 3) * vector.w;
+        float y = transformMatrix.get(1, 0) * vector.x + transformMatrix.get(1, 1) * vector.y + transformMatrix.get(1, 2) * vector.z + transformMatrix.get(1, 3) * vector.w;
+        float z = transformMatrix.get(2, 0) * vector.x + transformMatrix.get(2, 1) * vector.y + transformMatrix.get(2, 2) * vector.z + transformMatrix.get(2, 3) * vector.w;
+        float w = transformMatrix.get(3, 0) * vector.x + transformMatrix.get(3, 1) * vector.y + transformMatrix.get(3, 2) * vector.z + transformMatrix.get(3, 3) * vector.w;
+        return new Vector4F(x, y, z, w);
     }
 
 }

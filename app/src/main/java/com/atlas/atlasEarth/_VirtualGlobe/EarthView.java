@@ -13,6 +13,7 @@ import com.atlas.atlasEarth.R;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Camera;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector3F;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Geometry.geographicCS.Ellipsoid;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Geometry.geographicCS.Geodetic2D;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Matrices.MatricesUtility;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Rendables.EarthModel.EarthModel;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Rendables.Post;
@@ -50,7 +51,6 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
         init();
     }
 
-
     public void init() {
 
         //Set the OpenGlVersion
@@ -76,8 +76,8 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
         earthRenderable.onCreate();
         earthRenderable.activateVAO();
 
-        requestQueue.add(new SpaceBackground(getContext()));
-        requestQueue.add(new Post(new Vector3F(0, 1, 0), BitmapFactory.decodeResource(getResources(), R.drawable.sunset6), "test", "14.07.1999", getContext()));
+        //requestQueue.add(new SpaceBackground(getContext()));
+        requestQueue.add(new Post(globeShape.ToVector3D(new Geodetic2D(0.0,0.0)).toVector3F(), BitmapFactory.decodeResource(getResources(), R.drawable.sunset6), "test", "14.07.1999", getContext()));
 
         doneQueue = new ArrayList<>(requestQueue.size());
         renderables = new ArrayList<>(requestQueue.size() + 1);
@@ -134,7 +134,7 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
         }
         renderer.postRendables(renderables);
         renderer.render(light, camera);
-        light.calculateAngleByTime();
+
     }
 
     @Override
@@ -154,18 +154,29 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
     public Light getLight() {
         return light;
     }
-
+    public Renderable getPost(){
+        for(Renderable renderable : renderables) {
+            if (renderable instanceof Post) {
+                return renderable;
+            }
+        }
+        return null;
+    }
     public List<Renderable> getShapefileRenderables() {
         return shapefileRenderables;
     }
-
+    public Renderable getEarth(){
+        return renderables.get(0);
+    }
+    public Camera getCamera(){
+        return camera;
+    }
     public static float getEarthViewHeight(Context context) {
         if (height == 0) {
             height = Utils.getDisplayDimensions(context, false) - Utils.dpToPixel(55, context) - Utils.getStatusBarHeight(context);
         }
         return height;
     }
-
     public static float getEarthViewWidth(Context context) {
         if (width == 0) {
             width = Utils.getDisplayDimensions(context, true);
@@ -189,7 +200,6 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
      */
         return super.dispatchTouchEvent(event);
     }
-
     @Override
     public boolean onTouchEvent(MotionEvent event) {
 
@@ -222,8 +232,8 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
 
         return true;
     }
-
     private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
+
         private long previousEventTime = 0;
 
         @Override

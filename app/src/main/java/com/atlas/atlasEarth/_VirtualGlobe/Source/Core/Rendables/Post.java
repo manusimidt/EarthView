@@ -19,7 +19,7 @@ public class Post extends Renderable {
     private Context context;
 
     public Post(Vector3F position, Bitmap image, String name, String date, Context context) {
-        super(position, 0, 0, 0, 0.03f);
+        super(position, 0, 0, 90, 0.03f);
         super.setTexture(new Texture(image));
         this.context = context;
     }

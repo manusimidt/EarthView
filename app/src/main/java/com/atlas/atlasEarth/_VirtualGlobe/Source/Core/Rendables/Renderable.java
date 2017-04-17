@@ -35,7 +35,11 @@ public abstract class Renderable {
         rotY += dy;
         rotZ += dz;
     }
-
+    public void increasePosition(float x, float y, float z) {
+        position.x += x;
+        position.y += y;
+        position.z += z;
+    }
 
     public void loadTextures(Context context) {
         if (this.texture0 != null) {
@@ -46,7 +50,7 @@ public abstract class Renderable {
         }
     }
 
-    public void activateVAO(){
+    public void activateVAO() {
         mesh.activateVAO();
     }
 
@@ -70,7 +74,7 @@ public abstract class Renderable {
         return rotZ;
     }
 
-     protected   float getScale() {
+    protected float getScale() {
         return scale;
     }
 
@@ -98,8 +102,7 @@ public abstract class Renderable {
     }
 
 
-
-     protected Texture getTexture0() {
+    protected Texture getTexture0() {
         return texture0;
     }
 

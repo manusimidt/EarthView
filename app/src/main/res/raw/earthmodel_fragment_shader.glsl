@@ -49,9 +49,10 @@ const vec4 og_diffuseSpecularAmbientShininess = vec4(0.2,0.2,0.2,1);
     {
 
         float diffuse = dot(unitToLight, unitNormal);
-        if(enableFullLightning){
 
 
+        if(enableFullLightning >0.5){
+                gl_FragColor = texture2D(texture0, computeTextureCoordinates(unitNormal));
         }else{
             if (diffuse > blendDuration)
             {

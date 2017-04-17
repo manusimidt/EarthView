@@ -1,6 +1,5 @@
 package com.atlas.atlasEarth._VirtualGlobe.Source.Core;
 
-import android.os.AsyncTask;
 import android.util.Log;
 
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector3F;
@@ -12,7 +11,7 @@ public class Camera {
     private Vector3F position = new Vector3F(0, 0, 5);
     private float pitch = 0;
     private float yaw = 0;
-    private float distanceFromPlayer = 5;
+    private float distanceFromEarth = 5;
     private float angleAroundPlayer = 0;
     private Renderable earthRenderable;
 
@@ -30,15 +29,18 @@ public class Camera {
      */
     public void increaseZoom(float time) {
         Log.d("debug", "Time delta: " + time);
-        distanceFromPlayer += calculateZoomFactor(distanceFromPlayer) * time / 1000;
+        distanceFromEarth += calculateZoomFactor(distanceFromEarth) * time / 1000;
         checkZoomLevelForValidity();
-        Log.i("WorldSpaceInfo", "Camera:\t Zoom: " + distanceFromPlayer);
+        Log.i("WorldSpaceInfo", "Camera:\t Zoom: " + distanceFromEarth);
     }
     public void decreaseZoom(float time) {
         Log.d("debug", "Time delta: " + time);
-        distanceFromPlayer -= calculateZoomFactor(distanceFromPlayer) * time / 1000;
+        distanceFromEarth -= calculateZoomFactor(distanceFromEarth) * time / 1000;
         checkZoomLevelForValidity();
-        Log.i("WorldSpaceInfo", "Camera:\t Zoom: " + distanceFromPlayer);
+        Log.i("WorldSpaceInfo", "Camera:\t Zoom: " + distanceFromEarth);
+    }
+    public void increaseDistanceToEarth(float x){
+        distanceFromEarth += x;
     }
 
     private float calculateZoomFactor(float x) {
@@ -47,10 +49,10 @@ public class Camera {
         return (float) (Math.pow(x - 1, Math.E) / 2);
     }
     private void checkZoomLevelForValidity() {
-        if (distanceFromPlayer > 7) {
-            distanceFromPlayer = 7;
-        } else if (distanceFromPlayer < 1.0) {
-            distanceFromPlayer = 1.2f;
+        if (distanceFromEarth > 7) {
+            distanceFromEarth = 7;
+        } else if (distanceFromEarth < 1.0) {
+            distanceFromEarth = 1.2f;
         }
     }
 
@@ -64,15 +66,16 @@ public class Camera {
     }
     public void increasePitch(float value) {
         value /= 2;
-        if ((pitch += value) > 0) {
-            pitch = 0;
-        } else if ((pitch += value) < -180) {
-            pitch = -180;
-        } else {
+//        if ((pitch += value) > 0) {
+ //           pitch = 0;
+ //       } else if ((pitch += value) < -180) {
+ //           pitch = -180;
+//        } else {
             pitch += value;
-        }
+ //       }
         Log.i("WorldSpaceInfo", "Camera:\t Pitch: " + pitch);
     }
+
 
     public void calculateCameraPosition() {
         float horizontalDistance = calculateHorizontalDistance();
@@ -86,13 +89,13 @@ public class Camera {
         position.z = earthRenderable.getPosition().z - offsetZ;
 
 
-        yaw = 180 - (earthRenderable.getRotY() + angleAroundPlayer);
+        yaw = 180 - (earthRenderable.getRotZ() + angleAroundPlayer);
     }
     private float calculateHorizontalDistance() {
-        return (float) (distanceFromPlayer * Math.cos(Math.toRadians(pitch)));
+        return (float) (distanceFromEarth * Math.cos(Math.toRadians(pitch)));
     }
     private float calculateVerticalDistance() {
-        return (float) (distanceFromPlayer * Math.sin(Math.toRadians(pitch)));
+        return (float) (distanceFromEarth * Math.sin(Math.toRadians(pitch)));
     }
 
 
@@ -108,8 +111,8 @@ public class Camera {
     public float getYaw() {
         return yaw;
     }
-    public float getDistanceFromPlayer(){
-        return distanceFromPlayer;
+    public float getDistanceFromEarth(){
+        return distanceFromEarth;
     }
 
 

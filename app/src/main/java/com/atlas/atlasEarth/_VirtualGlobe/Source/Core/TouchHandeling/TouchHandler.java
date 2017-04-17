@@ -3,7 +3,6 @@ package com.atlas.atlasEarth._VirtualGlobe.Source.Core.TouchHandeling;
 
 import android.content.Context;
 import android.renderscript.Matrix4f;
-import android.util.Log;
 
 
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector3F;
@@ -49,8 +48,8 @@ public class TouchHandler {
     }
 
     private void calculateCameraRotation(){
-        float rotX = (float)Math.atan(calculateDeltaXInEyeCoords()/camera.getDistanceFromPlayer());
-        float rotY = (float)Math.atan(calculateDeltaYInEyeCoords()/camera.getDistanceFromPlayer());
+        float rotX = (float)Math.atan(calculateDeltaXInEyeCoords()/camera.getDistanceFromEarth());
+        float rotY = (float)Math.atan(calculateDeltaYInEyeCoords()/camera.getDistanceFromEarth());
         camera.increaseViewAngle(rotX*4);
         camera.increasePitch(rotY*2);
     }

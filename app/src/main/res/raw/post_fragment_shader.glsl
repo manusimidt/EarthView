@@ -15,6 +15,10 @@ vec3 computeDiffuseLightning(vec3 unitNormal, vec3 unitLightNormal){
 void main(){
     vec3 unitNormal = normalize(surfaceNormal);
     vec3 unitLightNormal = normalize(toLightVector);
-
-    gl_FragColor = vec4(computeDiffuseLightning(unitNormal, unitLightNormal),1.0);// * texture2D(texture0, textureCoords);
+    vec4 texture  = texture2D(texture0, textureCoords);
+  //  if(texture.r == 0.0 && texture.g == 0.0 && texture.b == 0.0){
+   //     gl_FragColor = vec4(computeDiffuseLightning(unitNormal, unitLightNormal),1.0);// * texture2D(texture0, textureCoords);
+  // }else{
+      gl_FragColor = vec4(computeDiffuseLightning(unitNormal, unitLightNormal),1.0) * texture;
+  // }
 }

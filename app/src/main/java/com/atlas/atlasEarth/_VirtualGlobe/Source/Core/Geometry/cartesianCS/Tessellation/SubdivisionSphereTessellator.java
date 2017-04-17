@@ -23,7 +23,7 @@ public class SubdivisionSphereTessellator {
         final float rootSixDivByThree = (float) ((Math.sqrt(6.0) / 3.0));
 
         List<Vector3F> positions = new ArrayList<>();
-        positions.add(new Vector3F(0, 0, 1000));
+        positions.add(new Vector3F(0, 0, 1));
         positions.add(new Vector3F(0, (2 * rootTwoDivByThree), -oneThird));
         positions.add(new Vector3F(-rootSixDivByThree, -rootTwoDivByThree, -oneThird));
         positions.add(new Vector3F(rootSixDivByThree, -rootTwoDivByThree, -oneThird));

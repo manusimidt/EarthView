@@ -41,7 +41,7 @@ public class EarthShaderProgram extends ShaderProgramGL3x {
     protected void getAllUniformLocations() {
         location_transMat = super.getUniformLocation("transformationMatrix");
         location_projectionMatrix = super.getUniformLocation("projectionMatrix");
-        location_lightPosition = super.getUniformLocation("lightPosition");
+        location_lightPosition = super.getUniformLocation("sunPosition");
         location_lightColor = super.getUniformLocation("lightColor");
         location_viewMatrix = super.getUniformLocation("viewMatrix");
         location_cameraPosition = super.getUniformLocation("cameraPosition");

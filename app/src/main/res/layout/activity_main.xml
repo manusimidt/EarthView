@@ -1,99 +1,408 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/mainLayout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/colorPrimaryDark">
+                                                 android:id="@+id/mainLayout"
+                                                 android:layout_width="match_parent"
+                                                 android:layout_height="match_parent"
+                                                 android:background="@color/colorPrimaryDark">
 
     <HorizontalScrollView
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_marginTop="15dp">
 
-        <LinearLayout
+        <LinearLayout android:id="@+id/controls"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
 
-            <LinearLayout
+            <LinearLayout android:id="@+id/Earth"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
-                    android:text="XYZ Rot:   "
-                    android:textSize="16sp" />
+                    android:text="Earth:   "
+                    android:textSize="16sp"/>
 
-                <ImageButton
-                    android:id="@+id/light_out"
+                <Button
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:backgroundTint="@color/colorPrimary"
-                    android:onClick="lightOut"
-                    app:srcCompat="@drawable/ic_expand_less_black_24dp" />
+                    android:onClick="iXEarth"
+                    android:text="+X"
+                    />
 
-                <ImageButton
-                    android:id="@+id/light_in"
+                <Button
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:backgroundTint="@color/colorPrimary"
-                    android:onClick="lightIn"
-                    app:srcCompat="@drawable/ic_expand_less_black_24dp" />
+                    android:onClick="dXEarth"
+                    android:text="-X"
+                    />
 
-                <ImageButton
-                    android:id="@+id/light_left"
+                <Button
                     android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:onClick="iYEarth"
+                    android:text="+Y"
+                    />
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:onClick="dYEarth"
+                    android:text="-Y"
+                    />
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:onClick="iZEarth"
+                    android:text="+Z"
+                    />
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:onClick="dZEarth"
+                    android:text="-Z"
+                    />
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:onClick="iXREarth"
+                    android:text="+rZ"
+                    />
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:onClick="dXREarth"
+                    android:text="-rZ"
+                    />
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:onClick="iYREarth"
+                    android:text="+rY"
+                    />
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:onClick="dYREarth"
+                    android:text="-rY"
+                    />
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:onClick="iZREarth"
+                    android:text="+rZ"
+                    />
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:onClick="dZREarth"
+                    android:text="-rZ"
+                    />
+
+
+            </LinearLayout>
+            <LinearLayout android:id="@+id/Post"
+                          android:layout_width="wrap_content"
+                          android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:text="Post:   "
+                    android:textSize="16sp"/>
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:backgroundTint="@color/colorPrimary"
-                    android:onClick="lightLeft"
-                    app:srcCompat="@drawable/ic_expand_less_black_24dp" />
-                <!--
-                                <ImageButton
-                                    android:id="@+id/light_up"
-                                    android:layout_width="0dp"
-                                    android:layout_height="match_parent"
-                                    android:layout_weight="1"
-                                    android:backgroundTint="@color/colorPrimary"
-                                    android:onClick="lightUp"
-                                    app:srcCompat="@drawable/ic_expand_less_black_24dp" />
+                    android:onClick="iXPost"
+                    android:text="+X"
+                    />
 
-                                <ImageButton
-                                    android:id="@+id/light_down"
-                                    android:layout_width="0dp"
-                                    android:layout_height="match_parent"
-                                    android:layout_weight="1"
-                                    android:backgroundTint="@color/colorPrimary"
-                                    android:onClick="lightDown"
-                                    app:srcCompat="@drawable/ic_expand_more_black_24dp" />
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:onClick="dXPost"
+                    android:text="-X"
+                    />
 
-                                <ImageButton
-                                    android:id="@+id/light_right"
-                                    android:layout_width="0dp"
-                                    android:layout_height="match_parent"
-                                    android:layout_weight="1"
-                                    android:backgroundTint="@color/colorPrimary"
-                                    android:onClick="lightRight"
-                                    app:srcCompat="@drawable/ic_chevron_right_black_24dp" />
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:onClick="iYPost"
+                    android:text="+Y"
+                    />
 
-                -->
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:onClick="dYPost"
+                    android:text="-Y"
+                    />
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:onClick="iZPost"
+                    android:text="+Z"
+                    />
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:onClick="dZPost"
+                    android:text="-Z"
+                    />
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:onClick="iXRPost"
+                    android:text="+rZ"
+                    />
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:onClick="dXRPost"
+                    android:text="-rZ"
+                    />
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:onClick="iYRPost"
+                    android:text="+rY"
+                    />
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:onClick="dYRPost"
+                    android:text="-rY"
+                    />
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:onClick="iZRPost"
+                    android:text="+rZ"
+                    />
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:onClick="dZRPost"
+                    android:text="-rZ"
+                    />
+
+
+            </LinearLayout>
+            <LinearLayout android:id="@+id/Camera"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:text="Camera:   "
+                    android:textSize="16sp"/>
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:onClick="iPitch"
+                    android:text="+Pitch"
+                    />
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:onClick="dPitch"
+                    android:text="-Pitch"
+                    />
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:onClick="iDist"
+                    android:text="+Dist"
+                    />
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:onClick="dDist"
+                    android:text="-Dist"
+                    />
+
+
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:onClick="iVA"
+                    android:text="+VA"
+                    />
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:onClick="dVA"
+                    android:text="-VA"
+                    />
+
+            </LinearLayout>
+            <LinearLayout android:id="@+id/LIGHT"
+                          android:layout_width="wrap_content"
+                          android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:text="Light:   "
+                    android:textSize="16sp"/>
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:onClick="fullLight"
+                    android:text="FL"
+                    />
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:onClick="iXLight"
+                    android:text="+Z"
+                    />
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:onClick="dXLight"
+                    android:text="-Z"
+                    />
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:onClick="iYLight"
+                    android:text="+Y"
+                    />
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:onClick="dYLight"
+                    android:text="-Y"
+                    />
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:onClick="iZLight"
+                    android:text="+Z"
+                    />
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:onClick="dZLight"
+                    android:text="-Z"
+                    />
+
             </LinearLayout>
 
 
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:onClick="FullLight"
-                android:text="Illuminate"
-                />
 
         </LinearLayout>
-
 
     </HorizontalScrollView>
 
@@ -115,7 +424,7 @@
             <android.support.design.widget.TabItem
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:text="Tab1" />
+                android:text="Tab1"/>
 
             <!-- <android.support.design.widget.TabItem
                  android:layout_width="wrap_content"

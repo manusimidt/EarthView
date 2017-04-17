@@ -28,7 +28,11 @@ public class Light {
         this.angle += angle;
         calculateCoordinates();
     }
-
+    public void increasePosition(float x, float y, float z) {
+        position.x += x;
+        position.y += y;
+        position.z += z;
+    }
 
     private void calculateCoordinates() {
         position.x = (float) (distanceToEarth * Math.cos(angle));
