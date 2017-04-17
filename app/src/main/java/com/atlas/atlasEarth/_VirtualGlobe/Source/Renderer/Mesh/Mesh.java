@@ -40,12 +40,14 @@ public class Mesh {
      * Special Constructor for higher performance
      */
     public Mesh(int indices[], float[] positions, float[] normals, float[] textureCoords) {
-        indicesDataType = ByteFlags.INT;
-        vertexCount = indices.length;
-        positionBufferRaw = BufferUtils.convertFloatArrayToFloatBuffer(positions);
+      indicesDataType = ByteFlags.INT;
+      vertexCount = indices.length;
+      positionBufferRaw = BufferUtils.convertFloatArrayToFloatBuffer(positions);
+
         if (normals != null) {
             normalBufferRaw = BufferUtils.convertFloatArrayToFloatBuffer(normals);
         }
+
         if (textureCoords != null) {
             textureBufferRaw = BufferUtils.convertFloatArrayToFloatBuffer(textureCoords);
         }

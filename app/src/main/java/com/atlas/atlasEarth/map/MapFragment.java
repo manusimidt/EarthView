@@ -1,6 +1,7 @@
 package com.atlas.atlasEarth.map;
 
 
+import android.graphics.BitmapFactory;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -9,8 +10,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.atlas.atlasEarth.R;
 import com.atlas.atlasEarth._VirtualGlobe.EarthView;
 import com.atlas.atlasEarth._VirtualGlobe.EarthViewOptions;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Geometry.geographicCS.Geodetic2D;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Rendables.Post;
 import com.atlas.atlasEarth.main.MainActivity;
 
 import javax.microedition.khronos.egl.EGL10;
@@ -199,6 +203,14 @@ public class MapFragment extends Fragment {
             }
         });
 
+
+        earthView.addPosts(new Post[]{
+                new Post(earthView.getEllipsiod().ToVector3D(new Geodetic2D(0.0, 0.0)).toVector3F(), BitmapFactory.decodeResource(getResources(), R.drawable.tree), "test", "14.07.1999", getContext()),
+                new Post(earthView.getEllipsiod().ToVector3D(new Geodetic2D(20.0, 0.0)).toVector3F(), BitmapFactory.decodeResource(getResources(), R.drawable.tree), "test", "14.07.1999", getContext()),
+                new Post(earthView.getEllipsiod().ToVector3D(new Geodetic2D(40.0, 0.0)).toVector3F(), BitmapFactory.decodeResource(getResources(), R.drawable.tree), "test", "14.07.1999", getContext()),
+                new Post(earthView.getEllipsiod().ToVector3D(new Geodetic2D(60.0, 0.0)).toVector3F(), BitmapFactory.decodeResource(getResources(), R.drawable.tree), "test", "14.07.1999", getContext()),
+                new Post(earthView.getEllipsiod().ToVector3D(new Geodetic2D(80.0, 0.0)).toVector3F(), BitmapFactory.decodeResource(getResources(), R.drawable.tree), "test", "14.07.1999", getContext()),
+        });
 
         return earthView;
     }

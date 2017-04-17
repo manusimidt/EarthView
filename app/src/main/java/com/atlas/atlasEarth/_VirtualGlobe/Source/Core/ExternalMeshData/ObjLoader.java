@@ -60,6 +60,7 @@ public class ObjLoader {
                     line = reader.readLine();
                     continue;
                 }
+                line = line.replace("//", "/");
                 String[] currentLine = line.split(" ");
                 String[] vertex1 = currentLine[1].split("/");
                 String[] vertex2 = currentLine[2].split("/");
@@ -97,16 +98,25 @@ public class ObjLoader {
     private static void sortVertexData(String[] vertexData, List<Integer> indices,
                                        List<Vector2F> textures, List<Vector3F> normals, float[] textureArray,
                                        float[] normalsArray) {
+
         int currentVertexPointer = Integer.parseInt(vertexData[0]) - 1;
         indices.add(currentVertexPointer);
-        Vector2F currentTex = textures.get(Integer.parseInt(vertexData[1]) - 1);
-        textureArray[currentVertexPointer * 2] = currentTex.x;
-        textureArray[currentVertexPointer * 2 + 1] = 1 - currentTex.y;
-        Vector3F currentNorm = normals.get(Integer.parseInt(vertexData[2]) - 1);
-        normalsArray[currentVertexPointer * 3] = currentNorm.x;
-        normalsArray[currentVertexPointer * 3 + 1] = currentNorm.y;
-        normalsArray[currentVertexPointer * 3 + 2] = currentNorm.z;
-    }
 
+        if(vertexData.length == 3) {
+            Vector2F currentTex = textures.get(Integer.parseInt(vertexData[1]) - 1);
+            textureArray[currentVertexPointer * 2] = currentTex.x;
+            textureArray[currentVertexPointer * 2 + 1] = 1 - currentTex.y;
+            Vector3F currentNorm = normals.get(Integer.parseInt(vertexData[2]) - 1);
+            normalsArray[currentVertexPointer * 3] = currentNorm.x;
+            normalsArray[currentVertexPointer * 3 + 1] = currentNorm.y;
+            normalsArray[currentVertexPointer * 3 + 2] = currentNorm.z;
+        } else if(vertexData.length == 2){
+            Vector3F currentNorm = normals.get(Integer.parseInt(vertexData[1]) - 1);
+            normalsArray[currentVertexPointer * 3] = currentNorm.x;
+            normalsArray[currentVertexPointer * 3 + 1] = currentNorm.y;
+            normalsArray[currentVertexPointer * 3 + 2] = currentNorm.z;
+        }
+
+        }
 
 }
