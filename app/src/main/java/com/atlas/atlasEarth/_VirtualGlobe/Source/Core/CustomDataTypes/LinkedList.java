@@ -2,15 +2,14 @@ package com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes;
 
 import android.util.Log;
 
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector3D;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.TriangleIndices.TriangleIndicesInt;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector3D;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
-public class LinkedList {
-
-    // Reference to first Node in list
-
-    // The last Node added to the LinkedList
+public class LinkedList<T> {
 
 
     public Node firstNode;
@@ -19,11 +18,7 @@ public class LinkedList {
 
 
     public LinkedList() {
-
-        // Here to show the first Node always starts as null
         firstNode = null;
-
-
     }
 
 
@@ -34,8 +29,9 @@ public class LinkedList {
     }
 
 
-    public <T> void insertFirstLink(T value, int index) {
-        if(isEmpty()){
+    @SuppressWarnings("unchecked")
+    public <B extends T> void insertFirstLink(B value, int index) {
+        if (isEmpty()) {
             lastNode = firstNode;
         }
         size++;
@@ -48,13 +44,14 @@ public class LinkedList {
 
     }
 
-    public <T> void insertLastLink(T position, int index){
+    @SuppressWarnings("unchecked")
+    public <B extends T> void insertLastLink(B value, int index) {
         size++;
-        Node node = new Node(position, index);
-        if(isEmpty()){
+        Node node = new Node(value, index);
+        if (isEmpty()) {
             firstNode = node;
             lastNode = node;
-        }else {
+        } else {
             lastNode.next = node;
             lastNode = node;
         }
@@ -72,7 +69,7 @@ public class LinkedList {
             size--;
         } else {
 
-           Log.d("debug","Empty LinkedList");
+            Log.d("debug", "Empty LinkedList");
 
         }
 
@@ -81,7 +78,6 @@ public class LinkedList {
 
 
     }
-
 
     public Node find(int index) {
 
@@ -117,7 +113,9 @@ public class LinkedList {
 
 
     public Node removeNode(int index) {
-
+        if (firstNode == null) {
+            return null;
+        }
         Node currentNode = firstNode;
         Node previousNode = firstNode;
 
@@ -129,7 +127,6 @@ public class LinkedList {
             if (currentNode.next == null) {
 
                 // bookName not found so leave the method
-
                 return null;
 
             } else {
@@ -168,17 +165,29 @@ public class LinkedList {
         return currentNode;
     }
 
+
+    @SuppressWarnings("unchecked")
+    public <B extends T> List<B> asArrayList() {
+
+        Node currentNode = firstNode;
+        List<B> arrayList = new ArrayList<>(size);
+        while (currentNode != null) {
+            arrayList.add((B) currentNode.value);
+            currentNode = currentNode.next;
+        }
+
+        return arrayList;
+    }
+
     public int size() {
         return size;
     }
 
 
-
-    public class Node <T> {
-
+    public class Node<B extends T> {
 
         // Set to public so getters & setters aren't needed
-        public Object value;
+        public B value;
         public int index;
 
 
@@ -189,18 +198,17 @@ public class LinkedList {
         public Node next;
 
 
-
-        public <T> Node(T value, int index) {
+        public Node(B value, int index) {
             this.value = value;
             this.index = index;
         }
 
 
         public String toString() {
-            if(value instanceof Vector3D) {
+            if (value instanceof Vector3D) {
                 return "Position: " + value.toString() + ", with index: " + index;
             }
-            if(value instanceof TriangleIndicesInt){
+            if (value instanceof TriangleIndicesInt) {
                 return "Indices: " + value.toString() + ", with index: " + index;
             }
             return "Unsolved Datatype";

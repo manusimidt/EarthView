@@ -9,7 +9,7 @@ import java.util.List;
 
 public class Queue {
 
-    private LinkedList linkedList = new LinkedList();
+    private LinkedList<TriangleIndicesInt> linkedList = new LinkedList<>();
     private int index = 0;
 
     public void enqueue(TriangleIndicesInt triangles){

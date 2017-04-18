@@ -3,8 +3,10 @@ package com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x;
 import android.content.Context;
 import android.opengl.GLES31;
 import android.renderscript.Matrix4f;
+import android.util.SparseArray;
 
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Camera;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.LinkedList;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Matrices.MatricesUtility;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Rendables.EarthModel.EarthModel;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Rendables.Post;
@@ -19,6 +21,7 @@ import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.ModelRenderer.Shapefil
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.States.RenderState;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -30,6 +33,7 @@ public class RendererGL3x {
     private ShapefileRenderer shapefileRenderer;
     private PostRenderer postRenderer;
     private List<Renderable> renderables;
+    private LinkedList posts;
 
 
     public RendererGL3x(Context context, RenderState renderState) {
@@ -47,6 +51,9 @@ public class RendererGL3x {
     public void postRendables(List<Renderable> renderables) {
         this.renderables = renderables;
     }
+    public void postPosts(LinkedList posts) {
+       this.posts = posts;
+    }
 
     public void render(Light light, Camera camera) {
         camera.calculateCameraPosition();
@@ -55,7 +62,6 @@ public class RendererGL3x {
         int renderableCounter = renderables.size();
         boolean lastRenderable = false;
         List<Renderable> shapefiles = new ArrayList<>();
-        List<Renderable> posts = new ArrayList<>();
         clearBuffers();
 
 
@@ -83,13 +89,11 @@ public class RendererGL3x {
                     shapefileRenderer.getShaderProgram().stop();
                 }
 
-            } else if (renderable instanceof Post) {
-                posts.add(renderable);
-                if (lastRenderable) {
-                    postRenderer.getShaderProgram().start();
-                    postRenderer.render(posts, camera, light);
-                    postRenderer.getShaderProgram().stop();
-                }
+            }
+            if(posts.size()>0){
+                postRenderer.getShaderProgram().start();
+                postRenderer.render(posts.<Renderable>asArrayList(), camera, light);
+                postRenderer.getShaderProgram().stop();
             }
         }
     }
@@ -119,6 +123,7 @@ public class RendererGL3x {
     public Matrix4f getProjectionMatrix() {
         return projectionMatrix;
     }
+
 
 
 }

@@ -10,10 +10,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.atlas.atlasEarth.R;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.LinkedList;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.TriangleIndices.TriangleIndicesInt;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Queue;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector3D;
 import com.atlas.atlasEarth.map.MapFragment;
 
 
@@ -55,32 +51,6 @@ public class MainActivity extends AppCompatActivity {
 
         final TabLayout tabLayout = (TabLayout) findViewById(R.id.mainTabLayout);
         tabLayout.setupWithViewPager(viewPager);
-
-        //TESTING AREA **********************************************************************************************
-        LinkedList linkedList = new LinkedList();
-        int index = 0;
-        linkedList.insertLastLink(new Vector3D(0.2, 4, 2), index++);
-        linkedList.insertLastLink(new Vector3D(0., 4, 25), index++);
-        linkedList.insertLastLink(new Vector3D(0.2, 4, 26), index++);
-        linkedList.insertLastLink(new Vector3D(0.2, 4, 27), index++);
-        linkedList.insertLastLink(new Vector3D(0.2, 4, 28), index++);
-        linkedList.insertLastLink(new Vector3D(0.2, 4, 29), index++);
-        linkedList.insertLastLink(new Vector3D(0.2, 4, 250), index++);
-
-        linkedList.insertFirstLink(new Vector3D(92, 14, 14), 999);
-
-        linkedList.insertFirstLink(new Vector3D(92, 14, 14), 999);
-
-        Queue queue = new Queue();
-        queue.enqueue(new TriangleIndicesInt(0, 3, 5));
-        queue.enqueue(new TriangleIndicesInt(0, 3, 4));
-        queue.enqueue(new TriangleIndicesInt(0, 7, 5));
-        queue.enqueue(new TriangleIndicesInt(5, 3, 5));
-
-        queue.dequeue();
-        queue.dequeue();
-        queue.dequeue();
-        queue.dequeue();
     }
 
 
@@ -235,12 +205,12 @@ public class MainActivity extends AppCompatActivity {
         void dY();
         void iZ();
         void dZ();
-       void iXR();
-       void dXR();
-       void iYR();
-       void dYR();
-       void iZR();
-       void dZR();
+        void iXR();
+        void dXR();
+        void iYR();
+        void dYR();
+        void iZR();
+        void dZR();
     }
 
     public interface CameraControlInterface {
@@ -259,7 +229,7 @@ public class MainActivity extends AppCompatActivity {
     public void setOnEarthControlListener(EarthControlInterface controlListener) {
         this.earthControlInterface = controlListener;
     }
-    public void setOnPostControlListener(PostControlInterface postControlListener){
+    public void setOnPostControlListener(PostControlInterface postControlListener) {
         this.postControlInterface = postControlListener;
     }
     public void setOnCameraControlListener(CameraControlInterface cameraControlListener) {

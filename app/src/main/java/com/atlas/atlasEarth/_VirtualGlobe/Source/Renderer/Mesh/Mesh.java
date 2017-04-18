@@ -14,6 +14,7 @@ import java.nio.Buffer;
 import java.nio.FloatBuffer;
 import java.util.List;
 
+
 public class Mesh {
 
 
@@ -32,17 +33,17 @@ public class Mesh {
     private byte indicesDataType = ByteFlags.NULL;
     private int vertexCount;
 
-    public Mesh() {
-
-    }
-
     /**
      * Special Constructor for higher performance
      */
     public Mesh(int indices[], float[] positions, float[] normals, float[] textureCoords) {
-      indicesDataType = ByteFlags.INT;
-      vertexCount = indices.length;
-      positionBufferRaw = BufferUtils.convertFloatArrayToFloatBuffer(positions);
+        if (positions.length < 3 || indices.length < 3) {
+            this.dispose();
+            throw new IllegalArgumentException("Mesh must contain at least three positions!");
+        }
+        indicesDataType = ByteFlags.INT;
+        vertexCount = indices.length;
+        positionBufferRaw = BufferUtils.convertFloatArrayToFloatBuffer(positions);
 
         if (normals != null) {
             normalBufferRaw = BufferUtils.convertFloatArrayToFloatBuffer(normals);
@@ -52,6 +53,9 @@ public class Mesh {
             textureBufferRaw = BufferUtils.convertFloatArrayToFloatBuffer(textureCoords);
         }
         indicesBufferRAW = BufferUtils.convertIntArrayToIntBuffer(indices);
+    }
+
+    public Mesh() {
     }
 
     public void addVertexAttributes(VertexAttributeCollection vertexAttributeCollection) {
@@ -104,25 +108,22 @@ public class Mesh {
 
 
         if (indicesDataType == ByteFlags.SHORT) {
-            indicesBuffer = new BufferGL3x(ByteFlags.ELEMENTARRAY_BUFFER, ByteFlags.STATIC_DRAW, indicesBufferRAW.limit()*2);
+            indicesBuffer = new BufferGL3x(ByteFlags.ELEMENTARRAY_BUFFER, ByteFlags.STATIC_DRAW, indicesBufferRAW.limit() * 2);
             indicesBuffer.setData(indicesBufferRAW);
         } else if (indicesDataType == ByteFlags.INT) {
-            indicesBuffer = new BufferGL3x(ByteFlags.ELEMENTARRAY_BUFFER, ByteFlags.STATIC_DRAW, indicesBufferRAW.limit()*4);
+            indicesBuffer = new BufferGL3x(ByteFlags.ELEMENTARRAY_BUFFER, ByteFlags.STATIC_DRAW, indicesBufferRAW.limit() * 4);
             indicesBuffer.setData(indicesBufferRAW);
         }
 
-     clear();
+        clearMesh();
     }
 
     public int getVertexCount() {
-        if (vertexCount < 1) {
-            throw new IllegalArgumentException("Empty Mesh");
-        }
         return vertexCount;
     }
 
 
-    public void clear() {
+    public void clearMesh() {
         trianglesInt = null;
         trianglesShort = null;
         positionBufferRaw = null;
@@ -132,13 +133,13 @@ public class Mesh {
         vertexAttributes = null;
     }
 
-    public void dispose(){
+    public void dispose() {
+        clearMesh();
         vertexArray.dispose();
         indicesBuffer.dispose();
     }
 
     public VertexArrayGL3x getVertexArray() {
-
         return vertexArray;
     }
 

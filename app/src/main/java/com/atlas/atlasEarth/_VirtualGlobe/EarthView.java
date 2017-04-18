@@ -1,19 +1,18 @@
 package com.atlas.atlasEarth._VirtualGlobe;
 
 import android.content.Context;
-import android.graphics.BitmapFactory;
 import android.opengl.GLES31;
 import android.opengl.GLSurfaceView;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 
-import com.atlas.atlasEarth.R;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Camera;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.LinkedList;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector3F;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Geometry.geographicCS.Ellipsoid;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Geometry.geographicCS.Geodetic2D;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Matrices.MatricesUtility;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Rendables.EarthModel.EarthModel;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Rendables.Post;
@@ -24,9 +23,9 @@ import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Light;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.States.RenderState;
 import com.atlas.atlasEarth.general.Utils;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -44,10 +43,10 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
     private RendererGL3x renderer;
     private TouchHandler touchHandler;
     private ScaleGestureDetector scaleGestureDetector;
-    private List<Renderable> shapefileRenderables;
-    private WorkerThread workerThread;
-    private List<Renderable> requestQueue;
+    //private List<Renderable> shapefileRenderables;
     Ellipsoid globeShape;
+    LinkedList<Renderable> posts;
+
 
     public EarthView(Context context) {
         super(context);
@@ -67,11 +66,13 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
         scaleGestureDetector = new ScaleGestureDetector(getContext(), new ScaleListener());
 
         globeShape = Ellipsoid.ScaledWgs84;
-        requestQueue = new ArrayList<>();
-        workerThread = new WorkerThread();
+        doneQueue = new ArrayList<>();
+        posts = new LinkedList<>();
+
+
     }
 
-    @SuppressWarnings("varargs")
+    @SuppressWarnings("Unchecked")
     @Override
     public void onSurfaceCreated(GL10 gl10, EGLConfig eglConfig) {
 
@@ -79,14 +80,7 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
         earthRenderable.onCreate();
         earthRenderable.activateVAO();
 
-        //requestQueue.add(new SpaceBackground(getContext()));
-        requestQueue.add(new Post(globeShape.ToVector3D(new Geodetic2D(0.0, 0.0)).toVector3F(), BitmapFactory.decodeResource(getResources(), R.drawable.tree), "test", "14.07.1999", getContext()));
-        requestQueue.add(new Post(globeShape.ToVector3D(new Geodetic2D(20.0, 0.0)).toVector3F(), BitmapFactory.decodeResource(getResources(), R.drawable.tree), "test", "14.07.1999", getContext()));
-        requestQueue.add(new Post(globeShape.ToVector3D(new Geodetic2D(40.0, 0.0)).toVector3F(), BitmapFactory.decodeResource(getResources(), R.drawable.tree), "test", "14.07.1999", getContext()));
-        requestQueue.add(new Post(globeShape.ToVector3D(new Geodetic2D(60.0, 0.0)).toVector3F(), BitmapFactory.decodeResource(getResources(), R.drawable.tree), "test", "14.07.1999", getContext()));
-        requestQueue.add(new Post(globeShape.ToVector3D(new Geodetic2D(80.0, 0.0)).toVector3F(), BitmapFactory.decodeResource(getResources(), R.drawable.tree), "test", "14.07.1999", getContext()));
-        doneQueue = new ArrayList<>(requestQueue.size());
-        renderables = new ArrayList<>(requestQueue.size() + 1);
+        renderables = new ArrayList<>();
         renderables.add(earthRenderable);
 
 
@@ -100,9 +94,6 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
         // }
 
 
-        workerThread.execute(requestQueue);
-
-
         light = new Light(new Vector3F(0.82f, 0.72f, 0.95f));
         camera = new Camera(earthRenderable);
         RenderState renderState = new RenderState();
@@ -111,12 +102,9 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
 
         touchHandler = new TouchHandler(MatricesUtility.createProjectionMatrix(getContext()), camera, getContext());
         touchHandler = new TouchHandler(renderer.getProjectionMatrix(), camera, getContext());
-        //System.gc();
     }
 
-    private void addRenderable(List<Renderable> renderable) {
-        doneQueue = renderable;
-    }
+
 
     @Override
     public void onSurfaceChanged(GL10 gl10, int width, int height) {
@@ -133,6 +121,10 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
                 renderable.activateVAO();
                 if (renderable.hasTexture()) {
                     renderable.loadTextures(getContext());
+
+                    if(renderable instanceof Post){
+                        posts.insertLastLink(renderable, ((Post) renderable).getId());
+                    }
                 }
                 renderables.add(renderable);
             }
@@ -140,6 +132,7 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
         }
 
         renderer.postRendables(renderables);
+        renderer.postPosts(posts);
         renderer.render(light, camera);
 
     }
@@ -148,7 +141,7 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
     public void onPause() {
         super.onPause();
         for (Renderable renderable : doneQueue) {
-            renderable.clear();
+            renderable.dispose();
         }
     }
 
@@ -156,6 +149,7 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
     public void onResume() {
         super.onResume();
     }
+
 
 
     public Light getLight() {
@@ -169,17 +163,21 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
         }
         return null;
     }
-    public List<Renderable> getShapefileRenderables() {
-        return shapefileRenderables;
-    }
+    //public List<Renderable> getShapefileRenderables() {
+    //    return shapefileRenderables;
+    //}
     public Renderable getEarth() {
         return renderables.get(0);
     }
-    public void addPosts(Post[] post) {
-            requestQueue.addAll(Arrays.asList(post));
-        new WorkerThread().execute(requestQueue);
+    public void addPosts(Post... posts) {
+        new WorkerThread().execute(posts);
     }
-    public Ellipsoid getEllipsiod(){
+    public void removePost(int... ids)throws ArrayIndexOutOfBoundsException{
+        for(int id : ids){
+            posts.removeNode(id);
+        }
+    }
+    public Ellipsoid getEllipsoid() {
         return globeShape;
     }
     public Camera getCamera() {
@@ -277,8 +275,7 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
     }
 
 
-    private class WorkerThread extends AsyncTask<List<Renderable>, Void, List<Renderable>> {
-
+    private class WorkerThread extends AsyncTask<Renderable, Void, Renderable[]> {
 
         @Override
         protected void onPreExecute() {
@@ -287,18 +284,18 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
 
         @SuppressWarnings("varargs")
         @Override
-        protected List<Renderable> doInBackground(List<Renderable>... params) {
-            for (Renderable renderable : params[0]) {
+        protected Renderable[] doInBackground(Renderable... params) {
+            for (Renderable renderable : params) {
                 renderable.onCreate();
                 renderable.setReady();
             }
-            return params[0];
+            return params;
         }
 
 
         @Override
-        protected void onPostExecute(List<Renderable> renderables) {
-            addRenderable(renderables);
+        protected void onPostExecute(Renderable[] renderables) {
+            doneQueue.addAll(Arrays.asList(renderables));
         }
     }
 }

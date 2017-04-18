@@ -17,11 +17,13 @@ import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Texture;
 public class Post extends Renderable {
 
     private Context context;
+    private int id = -1;
 
-    public Post(Vector3F position, Bitmap image, String name, String date, Context context) {
+    public Post(int postID, Vector3F position, Bitmap image, String name, String date, Context context) {
         super(position, 0, 0, 90, 0.5f);
         super.setTexture(new Texture(image));
         this.context = context;
+        this.id = postID;
     }
 
 
@@ -52,6 +54,7 @@ public class Post extends Renderable {
         mesh.getIndicesBuffer().unbind();
         VertexArrayNameGL3x.unbindAndDisableVAO();
     }
-
-
+    public int getId() {
+        return id;
+    }
 }

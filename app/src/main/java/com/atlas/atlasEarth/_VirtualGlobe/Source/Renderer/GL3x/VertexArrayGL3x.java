@@ -30,7 +30,6 @@ public class VertexArrayGL3x extends VertexArrayNameGL3x {
         unbindAndDisableVAO();
     }
 
-
     private void storeFloatBufferInVAO(int index, int dimension, FloatBuffer data) {
         BufferGL3x buffer = new BufferGL3x(ByteFlags.ARRAY_BUFFER, ByteFlags.STATIC_DRAW, data.capacity() * 4);
         buffer.setData(data);

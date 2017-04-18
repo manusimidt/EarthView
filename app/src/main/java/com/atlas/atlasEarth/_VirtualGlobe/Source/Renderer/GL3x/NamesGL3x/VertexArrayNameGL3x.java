@@ -21,7 +21,8 @@ public class VertexArrayNameGL3x {
         GLES31.glEnableVertexAttribArray(1);
         GLES31.glEnableVertexAttribArray(2);
     }
-     public static void unbindAndDisableVAO(){
+
+    public static void unbindAndDisableVAO(){
         GLES31.glDisableVertexAttribArray(0);
         GLES31.glDisableVertexAttribArray(1);
         GLES31.glDisableVertexAttribArray(2);

@@ -13,6 +13,13 @@ varying vec3 surfaceNormal;
 varying vec2 textureCoords;
 varying vec3 toLightVector;
 
+vec4 ModelToWindowCoordinates(vec4 v, mat4 modelViewPerspectiveMatrix, mat4 viewportTransformationMatrix)
+{
+    v = modelViewPerspectiveMatrix * v;                  // clip coordinates
+    v.xyz /= v.w;                                                  // normalized device coordinates
+    v.xyz = (viewportTransformationMatrix * vec4(v.xyz, 1.0)).xyz; // window coordinates
+    return v;
+}
 
 void main(){
      textureCoords = texture;

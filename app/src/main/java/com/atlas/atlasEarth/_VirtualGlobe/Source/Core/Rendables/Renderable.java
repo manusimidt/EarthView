@@ -114,8 +114,8 @@ public abstract class Renderable {
         return texture2;
     }
 
-    public void clear() {
-        mesh.clear();
+    public void dispose() {
+        mesh.dispose();
         mesh = null;
         texture0 = null;
         texture1 = null;

@@ -24,7 +24,7 @@ public class EarClippingOnEllipsoid {
         }
 
 
-        LinkedList remainingPositions = new LinkedList();
+        LinkedList<Vector3D> remainingPositions = new LinkedList<>();
 
         int index = 0;
         for (Vector3D position : positions) {
