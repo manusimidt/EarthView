@@ -3,13 +3,11 @@ package com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x;
 import android.content.Context;
 import android.opengl.GLES31;
 import android.renderscript.Matrix4f;
-import android.util.SparseArray;
 
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Camera;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.LinkedList;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Matrices.MatricesUtility;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Rendables.EarthModel.EarthModel;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Rendables.Post;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Rendables.Renderable;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Rendables.Shapefiles.ShapefileRenderable;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Rendables.SpaceBackground;
@@ -21,7 +19,6 @@ import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.ModelRenderer.Shapefil
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.States.RenderState;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 
@@ -52,7 +49,7 @@ public class RendererGL3x {
         this.renderables = renderables;
     }
     public void postPosts(LinkedList posts) {
-       this.posts = posts;
+        this.posts = posts;
     }
 
     public void render(Light light, Camera camera) {
@@ -83,14 +80,14 @@ public class RendererGL3x {
 
             } else if (renderable instanceof ShapefileRenderable) {
                 shapefiles.add(renderable);
-                if (lastRenderable){
+                if (lastRenderable) {
                     shapefileRenderer.getShaderProgram().start();
                     shapefileRenderer.render(shapefiles, camera);
                     shapefileRenderer.getShaderProgram().stop();
                 }
 
             }
-            if(posts.size()>0){
+            if (posts.size() > 0) {
                 postRenderer.getShaderProgram().start();
                 postRenderer.render(posts.<Renderable>asArrayList(), camera, light);
                 postRenderer.getShaderProgram().stop();
@@ -105,7 +102,7 @@ public class RendererGL3x {
         if (renderState.getDepthTest().isEnabled()) {
             GLES31.glEnable(GLES31.GL_DEPTH_TEST);
             GLES31.glDepthFunc(TypeconverterGL3x.convert(renderState.getDepthTest().getDepthTestFunction()));
-            GLES31.glDepthRangef(0.1f,50f);
+            GLES31.glDepthRangef(0.1f, 50f);
         }
         if (renderState.getFaceCulling().isEnabled()) {
             GLES31.glEnable(GLES31.GL_CULL_FACE);
@@ -123,7 +120,6 @@ public class RendererGL3x {
     public Matrix4f getProjectionMatrix() {
         return projectionMatrix;
     }
-
 
 
 }

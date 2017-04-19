@@ -86,51 +86,76 @@ public class MapFragment extends Fragment {
         ((MainActivity) getActivity()).setOnPostControlListener(new MainActivity.PostControlInterface() {
             @Override
             public void iX() {
-                earthView.getPost().increasePosition(0.5f, 0, 0);
+                for (Post post : earthView.getPost()) {
+                    post.increasePosition(0.5f, 0, 0);
+                }
             }
             @Override
             public void dX() {
-                earthView.getPost().increasePosition(-0.5f, 0, 0);
+                for (Post post : earthView.getPost()) {
+                    post.increasePosition(-0.5f, 0, 0);
+                }
             }
             @Override
             public void iY() {
-                earthView.getPost().increasePosition(0, 0.5f, 0);
+                for (Post post : earthView.getPost()) {
+                    post.increasePosition(0, 0.5f, 0);
+                }
             }
             @Override
             public void dY() {
-                earthView.getPost().increasePosition(0, -0.5f, 0);
+                for (Post post : earthView.getPost()) {
+                    post.increasePosition(0, -0.5f, 0);
+                }
             }
             @Override
             public void iZ() {
-                earthView.getPost().increasePosition(0, 0, 0.5f);
+                for (Post post : earthView.getPost()) {
+                    post.increasePosition(0, 0, 0.5f);
+                }
             }
             @Override
             public void dZ() {
-                earthView.getPost().increasePosition(0, 0, -0.5f);
+                for (Post post : earthView.getPost()) {
+                    post.increasePosition(0, 0, -0.5f);
+                }
             }
             @Override
             public void iXR() {
-                earthView.getPost().increaseRotation(30, 0, 0);
+                for (Post post : earthView.getPost()) {
+                    post.increaseRotation(30, 0, 0);
+                }
             }
             @Override
             public void dXR() {
-                earthView.getPost().increaseRotation(-30, 0, 0);
+                for (Post post : earthView.getPost()) {
+                    post.increaseRotation(-30, 0, 0);
+                }
             }
             @Override
             public void iYR() {
-                earthView.getPost().increaseRotation(0, 30, 0);
+                for (Post post : earthView.getPost()) {
+                    post.increaseRotation(0, 30, 0);
+                }
             }
+
             @Override
             public void dYR() {
-                earthView.getPost().increaseRotation(0, -30, 0);
+                for (Post post : earthView.getPost()) {
+                    post.increaseRotation(0, -30, 0);
+                }
             }
             @Override
             public void iZR() {
-                earthView.getPost().increaseRotation(0, 0, 30);
+                for (Post post : earthView.getPost()) {
+                    post.increaseRotation(0, 0, 30);
+                }
             }
             @Override
             public void dZR() {
-                earthView.getPost().increaseRotation(0, 0, -30);
+                for (Post post : earthView.getPost()) {
+                    post.increaseRotation(0, 0, -30);
+                }
             }
         });
 
@@ -145,19 +170,19 @@ public class MapFragment extends Fragment {
             }
             @Override
             public void iDist() {
-                //      earthView.getCamera().increaseDistanceToEarth(0.5f);
+                earthView.getCamera().increaseDistanceToEarth(0.5f);
             }
             @Override
             public void dDist() {
-                //      earthView.getCamera().increaseDistanceToEarth(-0.5f);
+                earthView.getCamera().increaseDistanceToEarth(-0.5f);
             }
             @Override
             public void iVA() {
-                //      earthView.getCamera().increaseViewAngle(30);
+                earthView.getCamera().increaseViewAngle(30);
             }
             @Override
             public void dVA() {
-                //      earthView.getCamera().increaseViewAngle(-30);
+                earthView.getCamera().increaseViewAngle(-30);
             }
         });
 
@@ -201,21 +226,22 @@ public class MapFragment extends Fragment {
             @Override
             public void run() {
                 earthView.addPosts(
-                        new Post(1,earthView.getEllipsoid().ToVector3D(new Geodetic2D(0.0, 0.0)).toVector3F(), BitmapFactory.decodeResource(getResources(), R.drawable.tree), "test", "14.07.1999", getContext()),
-                        new Post(2,earthView.getEllipsoid().ToVector3D(new Geodetic2D(20.0, 0.0)).toVector3F(), BitmapFactory.decodeResource(getResources(), R.drawable.tree), "test", "14.07.1999", getContext()),
-                        new Post(3,earthView.getEllipsoid().ToVector3D(new Geodetic2D(40.0, 0.0)).toVector3F(), BitmapFactory.decodeResource(getResources(), R.drawable.tree), "test", "14.07.1999", getContext()),
-                        new Post(4,earthView.getEllipsoid().ToVector3D(new Geodetic2D(60.0, 0.0)).toVector3F(), BitmapFactory.decodeResource(getResources(), R.drawable.tree), "test", "14.07.1999", getContext()),
-                        new Post(5,earthView.getEllipsoid().ToVector3D(new Geodetic2D(80.0, 0.0)).toVector3F(), BitmapFactory.decodeResource(getResources(), R.drawable.tree), "test", "14.07.1999", getContext())
+                        new Post(1, earthView, new Geodetic2D(0.0, 0.0), BitmapFactory.decodeResource(getResources(), R.drawable.bild), "test", "14.07.1999", getContext()),
+                        new Post(2, earthView, new Geodetic2D(20.0, 0.0), BitmapFactory.decodeResource(getResources(), R.drawable.bild), "test", "14.07.1999", getContext()),
+                        new Post(3, earthView, new Geodetic2D(40.0, 0.0), BitmapFactory.decodeResource(getResources(), R.drawable.bild), "test", "14.07.1999", getContext()),
+                        new Post(4, earthView, new Geodetic2D(60.0, 0.0), BitmapFactory.decodeResource(getResources(), R.drawable.bild), "test", "14.07.1999", getContext()),
+                        new Post(5, earthView, new Geodetic2D(80.0, 0.0), BitmapFactory.decodeResource(getResources(), R.drawable.bild), "test", "14.07.1999", getContext())
                 );
             }
-        },2000);
+        }, 2000);
 
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                earthView.removePost(2,3,4,5);
-            }
-        }, 15000);
+        //   handler.postDelayed(new Runnable() {
+        //       @Override
+        //       public void run() {
+        //           earthView.removePost(2,3,4,5);
+        //       }
+        //   }, 15000);
+
 
         return earthView;
     }

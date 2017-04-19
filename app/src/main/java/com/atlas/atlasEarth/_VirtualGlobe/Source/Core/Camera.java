@@ -114,6 +114,7 @@ public class Camera {
     public float getDistanceFromEarth(){
         return distanceFromEarth;
     }
-
-
+    public float getAngleAroundPlayer() {
+        return angleAroundPlayer;
+    }
 }

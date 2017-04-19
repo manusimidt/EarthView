@@ -1,11 +1,13 @@
 package com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.States;
 
 
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.ByteFlags;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.States.RenderStates.ColorMask;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.States.RenderStates.DepthTest;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.States.RenderStates.FaceCulling;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.States.RenderStates.ScissorTest;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.States.RenderStates.StencilTest;
+
 
 public class RenderState {
 
@@ -22,10 +24,14 @@ public class RenderState {
         scissorTest = new ScissorTest();
         colorMask = new ColorMask(true, true, true, true);
     }
-    public void loadGlobalDefaults(){
+    public void loadGlobalDefaults() {
         faceCulling.setEnabled(true);
+        faceCulling.setCullFace(ByteFlags.BACK);
+        faceCulling.setWindingOrder(ByteFlags.COUNTERCLOCKWISE);
+        depthTest.setDepthTestFunction(ByteFlags.LESS);
         depthTest.setEnabled(true);
     }
+
 
     public ColorMask getColorMask() {
         return colorMask;

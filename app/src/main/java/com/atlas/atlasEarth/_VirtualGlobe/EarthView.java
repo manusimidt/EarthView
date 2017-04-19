@@ -57,8 +57,9 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
 
         //Set the OpenGlVersion
         super.setEGLContextClientVersion(3);
+        super.setEGLConfigChooser(true);
         //configure the output of OpenGL
-        super.setEGLConfigChooser(8, 8, 8, 8, 0, 0);
+        super.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
         //Set the RendererGL3x
         super.setRenderer(this);
         // Render the view only when there is a change in the drawing data
@@ -155,13 +156,14 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
     public Light getLight() {
         return light;
     }
-    public Renderable getPost() {
+    public List<Post> getPost() {
+        List<Post> cache = new ArrayList<>();
         for (Renderable renderable : renderables) {
             if (renderable instanceof Post) {
-                return renderable;
+                cache.add((Post)renderable);
             }
         }
-        return null;
+        return cache;
     }
     //public List<Renderable> getShapefileRenderables() {
     //    return shapefileRenderables;

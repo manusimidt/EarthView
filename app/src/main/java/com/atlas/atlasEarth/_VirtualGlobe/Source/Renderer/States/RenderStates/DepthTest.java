@@ -3,9 +3,6 @@ package com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.States.RenderStates;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.ByteFlags;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.TypeconverterGL3x;
 
-/**
- * Created by Jonas on 2/11/2017.
- */
 
 public class DepthTest {
 

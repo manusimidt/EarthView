@@ -1,11 +1,9 @@
 package com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.States.RenderStates;
 
-/**
- * Created by Jonas on 2/13/2017.
- */
 
 public class ColorMask {
-private boolean red;
+
+    private boolean red;
     private boolean green;
     private boolean blue;
     private boolean alpha;
@@ -36,7 +34,7 @@ private boolean red;
     }
 
 
-    public boolean equals(ColorMask other){
+    public boolean equals(ColorMask other) {
         return this.red == other.red && this.blue == other.blue && this.green == other.green && this.alpha == other.alpha;
     }
 

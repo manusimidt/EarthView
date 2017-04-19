@@ -2,11 +2,9 @@ package com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.States.RenderStates;
 
 import android.support.constraint.solver.widgets.Rectangle;
 
-/**
- * Created by Jonas on 2/13/2017.
- */
 
 public class ScissorTest {
+
     private boolean enabled;
     private Rectangle rectangle;
 
