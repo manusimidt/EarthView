@@ -4,18 +4,21 @@ import android.content.Context;
 import android.opengl.GLES31;
 import android.renderscript.Matrix4f;
 
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Camera;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.LinkedList;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Matrices.MatricesUtility;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Rendables.EarthModel.EarthModel;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Rendables.EarthModel.RayCastedGlobe;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Rendables.Renderable;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Rendables.Shapefiles.ShapefileRenderable;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Rendables.SpaceBackground;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Testing.TestTriangle;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Testing.TestTriangleRenderer;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Light;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.ModelRenderer.BackgroundRenderer;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.ModelRenderer.EarthModelRenderer;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.ModelRenderer.PostRenderer;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.ModelRenderer.RayCastedGlobeRenderer;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.ModelRenderer.ShapefileRenderer;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Scene.SceneState;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.States.RenderState;
 
 import java.util.ArrayList;
@@ -26,19 +29,23 @@ public class RendererGL3x {
 
     private Matrix4f projectionMatrix;
     private EarthModelRenderer earthRenderer;
+    private RayCastedGlobeRenderer rayCastedGlobeRenderer;
     private BackgroundRenderer backgroundRenderer;
     private ShapefileRenderer shapefileRenderer;
     private PostRenderer postRenderer;
+    private TestTriangleRenderer testTriangleRenderer;
     private List<Renderable> renderables;
     private LinkedList posts;
 
 
-    public RendererGL3x(Context context, RenderState renderState) {
-        projectionMatrix = MatricesUtility.createProjectionMatrix(context);
+    public RendererGL3x(Context context, RenderState renderState, SceneState sceneState) {
+        projectionMatrix = sceneState.getProjectionMatrix();
         earthRenderer = new EarthModelRenderer(context, projectionMatrix);
+        rayCastedGlobeRenderer = new RayCastedGlobeRenderer(context, projectionMatrix);
         backgroundRenderer = new BackgroundRenderer(context, projectionMatrix);
         shapefileRenderer = new ShapefileRenderer(context, projectionMatrix);
         postRenderer = new PostRenderer(context, projectionMatrix);
+        testTriangleRenderer = new TestTriangleRenderer(context, projectionMatrix);
         forceRenderStates(renderState);
     }
 
@@ -52,9 +59,9 @@ public class RendererGL3x {
         this.posts = posts;
     }
 
-    public void render(Light light, Camera camera) {
-        camera.calculateCameraPosition();
-        light.calculateAngleByTime();
+    public void render(Light light, SceneState sceneState) {
+        sceneState.getCamera().calculateCameraPosition();
+        light.calculateAngle();
 
         int renderableCounter = renderables.size();
         boolean lastRenderable = false;
@@ -70,26 +77,39 @@ public class RendererGL3x {
 
             if (renderable instanceof SpaceBackground) {
                 backgroundRenderer.getShaderProgram().start();
-                backgroundRenderer.render(renderable, camera);
+                backgroundRenderer.render(renderable, sceneState.getCamera());
                 backgroundRenderer.getShaderProgram().stop();
 
             } else if (renderable instanceof EarthModel) {
                 earthRenderer.getShaderProgram().start();
-                earthRenderer.render(renderable, camera, light);
+                earthRenderer.render(renderable, sceneState.getCamera(), light);
                 earthRenderer.getShaderProgram().stop();
+
+            } else if (renderable instanceof RayCastedGlobe) {
+                rayCastedGlobeRenderer.getShaderProgram().start();
+                rayCastedGlobeRenderer.render(renderable, sceneState, light);
+                rayCastedGlobeRenderer.getShaderProgram().stop();
 
             } else if (renderable instanceof ShapefileRenderable) {
                 shapefiles.add(renderable);
                 if (lastRenderable) {
                     shapefileRenderer.getShaderProgram().start();
-                    shapefileRenderer.render(shapefiles, camera);
+                    shapefileRenderer.render(shapefiles, sceneState.getCamera());
                     shapefileRenderer.getShaderProgram().stop();
                 }
 
+            } else if (renderable instanceof TestTriangle) {
+               // GLES31.glDisable(GLES31.GL_DEPTH_TEST);
+                testTriangleRenderer.getShaderProgram().start();
+                testTriangleRenderer.render(renderable, sceneState.getCamera());
+                testTriangleRenderer.getShaderProgram().stop();
+               // GLES31.glEnable(GLES31.GL_DEPTH_TEST);
+               // GLES31.glDepthFunc(GLES31.GL_LESS);
+               // GLES31.glDepthRangef(0.1f, 50f);
             }
             if (posts.size() > 0) {
                 postRenderer.getShaderProgram().start();
-                postRenderer.render(posts.<Renderable>asArrayList(), camera, light);
+                postRenderer.render(posts.<Renderable>asArrayList(), sceneState.getCamera(), light);
                 postRenderer.getShaderProgram().stop();
             }
         }
@@ -99,22 +119,22 @@ public class RendererGL3x {
      * Worker Methods
      */
     private void forceRenderStates(RenderState renderState) {
-        if (renderState.getDepthTest().isEnabled()) {
-            GLES31.glEnable(GLES31.GL_DEPTH_TEST);
-            GLES31.glDepthFunc(TypeconverterGL3x.convert(renderState.getDepthTest().getDepthTestFunction()));
-            GLES31.glDepthRangef(0.1f, 50f);
-        }
-        if (renderState.getFaceCulling().isEnabled()) {
-            GLES31.glEnable(GLES31.GL_CULL_FACE);
-            GLES31.glCullFace(TypeconverterGL3x.convert(renderState.getFaceCulling().getCullFace()));
-            GLES31.glFrontFace(TypeconverterGL3x.convert(renderState.getFaceCulling().getWindingOrder()));
-        }
+      if (renderState.getDepthTest().isEnabled()) {
+         GLES31.glEnable(GLES31.GL_DEPTH_TEST);
+         GLES31.glDepthFunc(TypeconverterGL3x.convert(renderState.getDepthTest().getDepthTestFunction()));
+         GLES31.glDepthRangef(0.1f, 50f);
+      }
+      if (renderState.getFaceCulling().isEnabled()) {
+          GLES31.glEnable(GLES31.GL_CULL_FACE);
+          GLES31.glCullFace(TypeconverterGL3x.convert(renderState.getFaceCulling().getCullFace()));
+          GLES31.glFrontFace(TypeconverterGL3x.convert(renderState.getFaceCulling().getWindingOrder()));
+      }
     }
 
 
     private void clearBuffers() {
         GLES31.glClear(GLES31.GL_COLOR_BUFFER_BIT | GLES31.GL_DEPTH_BUFFER_BIT);
-        GLES31.glClearColor(0.005f, 0.005f, 0.02f, 1);
+        GLES31.glClearColor(0.05f, 0.05f, 0.1f, 1);
     }
 
     public Matrix4f getProjectionMatrix() {

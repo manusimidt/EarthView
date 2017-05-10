@@ -140,14 +140,13 @@ public class Post extends Renderable {
         super.mesh = new Mesh();
         super.mesh.addVertexAttributes(new VertexAttributeCollection(positions, normals, textureCoords));
         super.mesh.addTriangles(indices);
-        //super.mesh = ObjLoader.loadOBJ(R.raw.text_model_source, context);
+     //   super.mesh = ObjLoader.loadOBJ(R.raw.text_model_source, context);
     }
 
     @Override
     public void render(ShaderProgramGL3x shaderProgram) {
         PostShaderProgram postShaderProgram = (PostShaderProgram) shaderProgram;
 
-        mesh.getVertexArray().bindAndEnableVAO();
         postShaderProgram.loadTextureIdentifier();
 
         GLES31.glActiveTexture(GLES31.GL_TEXTURE0);
@@ -156,12 +155,16 @@ public class Post extends Renderable {
         postShaderProgram.loadTransformationMatrix(MatricesUtility.createTransformationMatrix(
                 getPosition(),
                 getRotX() + earthView.getCamera().getPitch(),
-                getRotY()+earthView.getCamera().getAngleAroundPlayer(),
+                getRotY()+earthView.getCamera().getAngleAroundEarth(),
                 getRotZ() + earthView.getCamera().getPitch(),
                 getScale()));
 
+
+        mesh.getVertexArray().bindAndEnableVAO();
         mesh.getIndicesBuffer().bind();
+
         GLES31.glDrawElements(GLES31.GL_TRIANGLES, mesh.getVertexCount(), mesh.getIndicesBuffer().getDataType(), 0);
+
         mesh.getIndicesBuffer().unbind();
         VertexArrayNameGL3x.unbindAndDisableVAO();
     }

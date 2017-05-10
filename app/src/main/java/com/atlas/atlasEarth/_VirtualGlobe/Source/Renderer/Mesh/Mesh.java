@@ -8,6 +8,7 @@ import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Ve
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector3F;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Tools.BufferUtils;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.BufferGL3x.BufferGL3x;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.TypeconverterGL3x;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.VertexArrayGL3x;
 
 import java.nio.Buffer;
@@ -32,6 +33,7 @@ public class Mesh {
 
     private byte indicesDataType = ByteFlags.NULL;
     private int vertexCount;
+    private byte frontFaceWindingOrder = ByteFlags.NULL;
 
     /**
      * Special Constructor for higher performance
@@ -83,6 +85,16 @@ public class Mesh {
     }
 
 
+    public byte getFrontFaceWindingOrder() {
+        return frontFaceWindingOrder;
+    }
+    public void setFrontFaceWindingOrder(byte frontFaceWindingOrder) {
+        if(!TypeconverterGL3x.testForValidity(frontFaceWindingOrder, ByteFlags.CLOCKWISE, ByteFlags.COUNTERCLOCKWISE)){
+            throw new IllegalArgumentException("Invalid Winding Order");
+        }
+        this.frontFaceWindingOrder = frontFaceWindingOrder;
+    }
+
     private void progressData() {
         positionBufferRaw = BufferUtils.convertFloatArrayToFloatBuffer(Vector3F.toArray(vertexAttributes.getPositions()));
         if (vertexAttributes.getNormals() != null) {
@@ -102,7 +114,6 @@ public class Mesh {
         vertexAttributes.clear();
     }
 
-
     public void activateVAO() {
         vertexArray = new VertexArrayGL3x(positionBufferRaw, normalBufferRaw, textureBufferRaw);
 
@@ -115,13 +126,12 @@ public class Mesh {
             indicesBuffer.setData(indicesBufferRAW);
         }
 
-        clearMesh();
+      //  clearMesh();
     }
 
     public int getVertexCount() {
         return vertexCount;
     }
-
 
     public void clearMesh() {
         trianglesInt = null;

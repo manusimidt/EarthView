@@ -4,7 +4,7 @@ package com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.ModelRenderer;
 import android.content.Context;
 import android.renderscript.Matrix4f;
 
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Camera;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Scene.Camera.Camera;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Rendables.Renderable;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Light;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Shader.EarthShaderProgram;
@@ -26,7 +26,6 @@ public class EarthModelRenderer {
         shaderProgram.loadViewMatrix(camera);
         shaderProgram.loadGridResolution(0.05f);
         renderable.render(shaderProgram);
-
     }
 
 

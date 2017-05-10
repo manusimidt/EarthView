@@ -1,5 +1,5 @@
 
-attribute vec3 position;
+in vec3 position;
 
 uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
@@ -8,9 +8,9 @@ uniform vec3 sunPosition;
 uniform vec3 cameraPosition;
 
 
-varying vec3 unitNormal;
-varying vec3 unitToLight;
-varying vec3 unitToCamera;
+out vec3 unitNormal;
+out vec3 unitToLight;
+out vec3 unitToCamera;
 
 mat4 rotationMatrix(vec3 axis, float angle)
 {

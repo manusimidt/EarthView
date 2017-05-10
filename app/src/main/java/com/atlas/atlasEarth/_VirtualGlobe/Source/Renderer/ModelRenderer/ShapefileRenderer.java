@@ -4,14 +4,11 @@ import android.content.Context;
 import android.opengl.GLES31;
 import android.renderscript.Matrix4f;
 
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Camera;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector3F;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector4F;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Scene.Camera.Camera;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Rendables.Renderable;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Shader.ShapefileShaderProgram;
 
 import java.util.List;
-import java.util.Random;
 
 
 public class ShapefileRenderer {

@@ -139,9 +139,8 @@ public static int convert(byte flag){
 
 }
 
-    public static void testForValidity(byte value, byte startingValue, byte endingValue){
-        if(!(value>= startingValue && value <=endingValue))
-            throw new IllegalArgumentException("Type conversion to OpenGL failed!");
+    public static boolean testForValidity(byte value, byte startingValue, byte endingValue){
+        return (startingValue <=value && value <=endingValue);
     }
     public static void testForBiggerZero(int value){
         if(value < 0 ){

@@ -14,7 +14,7 @@ class ShaderObjectGL3x {
 
     private int shaderID;
 
-    ShaderObjectGL3x(Context context, int shaderType, int rawID) {
+    ShaderObjectGL3x(Context context, int shaderType, int rawID, String globalConstants, String name) {
 
         try {
             if (shaderType != GLES31.GL_VERTEX_SHADER && shaderType != GLES31.GL_FRAGMENT_SHADER) {
@@ -27,22 +27,37 @@ class ShaderObjectGL3x {
 
         shaderID = GLES31.glCreateShader(shaderType);
         if (shaderType == GLES31.GL_FRAGMENT_SHADER) {
-            GLES31.glShaderSource(shaderID, loadFsConstants() + loadShader(context, rawID));
+            GLES31.glShaderSource(shaderID, getGLSLVersionHeader() + loadFsConstants() + globalConstants + loadShader(context, rawID));
         } else {
-            GLES31.glShaderSource(shaderID, loadShader(context, rawID));
+            GLES31.glShaderSource(shaderID, getGLSLVersionHeader() +globalConstants+  loadShader(context, rawID));
         }
         GLES31.glCompileShader(shaderID);
-        Log.d("Program", "Shader Type: " + shaderType + ", CompileLog: \n" + GLES31.glGetShaderInfoLog(shaderID));
+
+        //Debugging
+        int[] compileStatus = new int[1];
+        GLES31.glGetShaderiv(shaderID, GLES31.GL_COMPILE_STATUS,compileStatus,0);
+        if(compileStatus[0] == GLES31.GL_FALSE){
+            Log.d("Program", "COMPILE ERROR! Name: " + name +
+                    ", Shader Type: " + ((shaderType == GLES31.GL_VERTEX_SHADER)? "Vertex Shader" : "Fragment Shader") +
+                    ", CompileLog: \n" + GLES31.glGetShaderInfoLog(shaderID));
+            GLES31.glDeleteShader(shaderID);
+            shaderID = -1;
+        }else{
+            Log.d("Program", "Compile Successful. Name: " + name);
+        }
+
 
 
     }
 
+    private String getGLSLVersionHeader() {
+        return "#version 300 es \n";
+    }
+
     private String loadFsConstants() {
         return
-        "#extension GL_OES_standard_derivatives : enable\n" +
-                "precision mediump float;\n"+
-                "const float og_oneOverPi = " + (1 / Math.PI) + "; \n" +
-                "const float og_oneOverTwoPi = " + (1 / (Math.PI * 2)) + "; \n";
+                "#extension GL_OES_standard_derivatives : enable\n" +
+                        "precision mediump float;\n";
     }
 
     private String loadShader(Context context, int rawID) {
@@ -65,8 +80,9 @@ class ShaderObjectGL3x {
 
     }
 
-     int getShaderID() {
+    int getShaderID() {
         return shaderID;
     }
+
 }
 

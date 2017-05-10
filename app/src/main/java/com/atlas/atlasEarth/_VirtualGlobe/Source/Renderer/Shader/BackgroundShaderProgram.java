@@ -4,7 +4,7 @@ import android.content.Context;
 import android.renderscript.Matrix4f;
 
 import com.atlas.atlasEarth.R;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Camera;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Scene.Camera.Camera;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Matrices.MatricesUtility;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.ShaderGL3x.ShaderProgramGL3x;
 
@@ -20,13 +20,21 @@ public class BackgroundShaderProgram extends ShaderProgramGL3x {
     private static final int fsRawID = R.raw.background_fragment_shader;
 
     public BackgroundShaderProgram(Context context) {
-        super(context, vsRawID, fsRawID);
+        super(context, vsRawID, fsRawID, "BackgroundShaderProgram");
     }
 
     @Override
+    protected String globalConstantsVS() {
+        return "";
+    }
+    @Override
+    protected String globalConstantsFS() {
+        return "";
+    }
+    @Override
     protected void bindAttributes() {
         super.bindAttribute(0, "position");
-        super.bindAttribute(2, "texture");
+        super.bindAttribute(2, "texCoord");
     }
 
     @Override

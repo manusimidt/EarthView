@@ -4,7 +4,7 @@ import android.content.Context;
 import android.renderscript.Matrix4f;
 
 import com.atlas.atlasEarth.R;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Camera;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Scene.Camera.Camera;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Matrices.MatricesUtility;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.ShaderGL3x.ShaderProgramGL3x;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Light;
@@ -25,16 +25,23 @@ public class EarthShaderProgram extends ShaderProgramGL3x {
 
 
     public EarthShaderProgram(Context context) {
-        super(context, R.raw.earthmodel_vertex_shader, R.raw.earthmodel_fragment_shader);
+        super(context, R.raw.earthmodel_vertex_shader, R.raw.earthmodel_fragment_shader,"EarthShaderProgram");
 
 
     }
 
     @Override
+    protected String globalConstantsVS() {
+        return "";
+    }
+    @Override
+    protected String globalConstantsFS() {
+        return "const float og_oneOverPi = " + (1 / Math.PI) + "; \n" +
+                "const float og_oneOverTwoPi = " + (1 / (Math.PI * 2)) + "; \n";
+    }
+    @Override
     protected void bindAttributes() {
         super.bindAttribute(0, "position");
-        super.bindAttribute(1, "normal");
-        super.bindAttribute(2, "texture");
     }
 
     @Override

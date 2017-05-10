@@ -4,8 +4,8 @@ import android.content.Context;
 import android.renderscript.Matrix4f;
 
 import com.atlas.atlasEarth.R;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Camera;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Matrices.MatricesUtility;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Scene.Camera.Camera;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.ShaderGL3x.ShaderProgramGL3x;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Light;
 
@@ -13,22 +13,30 @@ import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Light;
 public class PostShaderProgram extends ShaderProgramGL3x {
 
     public PostShaderProgram(Context context) {
-        super(context, R.raw.post_vertex_shader, R.raw.post_fragment_shader);
+        super(context, R.raw.post_vertex_shader, R.raw.post_fragment_shader, "PostShaderProgram");
     }
 
     private int location_transMat;
     private int location_projectionMatrix;
     private int location_viewMatrix;
-       private int location_lightPosition;
+    private int location_lightPosition;
     private int location_lightColor;
     private int location_texture0;
 
 
     @Override
+    protected String globalConstantsVS() {
+        return "";
+    }
+    @Override
+    protected String globalConstantsFS() {
+        return "";
+    }
+    @Override
     protected void bindAttributes() {
         super.bindAttribute(0, "position");
         super.bindAttribute(1, "normal");
-        super.bindAttribute(2, "texture");
+        super.bindAttribute(2, "texCoord");
     }
 
     @Override
@@ -57,7 +65,7 @@ public class PostShaderProgram extends ShaderProgramGL3x {
         super.loadLight(location_lightPosition, location_lightColor, light);
     }
 
-    public void loadTextureIdentifier(){
+    public void loadTextureIdentifier() {
         super.loadInt(location_texture0, 0);
     }
 }

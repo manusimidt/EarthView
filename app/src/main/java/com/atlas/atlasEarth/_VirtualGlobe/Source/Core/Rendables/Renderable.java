@@ -27,8 +27,9 @@ public abstract class Renderable {
         this.scale = scale;
         mesh = new Mesh();
     }
-    public abstract void render(ShaderProgramGL3x shaderProgram);
     public abstract void onCreate();
+    public abstract void render(ShaderProgramGL3x shaderProgram);
+
 
     public void increaseRotation(float dx, float dy, float dz) {
         rotX += dx;

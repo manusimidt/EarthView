@@ -1,10 +1,7 @@
 package com.atlas.atlasEarth._VirtualGlobe.Source.Renderer;
 
-import android.util.Log;
-
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector3F;
 
-import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -51,6 +48,10 @@ public class Light {
 
         angle = incrementPerSecond * calendar.get(Calendar.SECOND);
         //angle = (calendar.get(Calendar.MILLISECOND) * incrementPerSecond/1000);
+        calculateCoordinates();
+    }
+    public void calculateAngle(){
+        angle +=0.004;
         calculateCoordinates();
     }
 

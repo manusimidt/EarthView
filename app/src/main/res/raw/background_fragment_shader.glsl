@@ -1,7 +1,8 @@
 uniform sampler2D texture0;
 
-varying vec2 textureCoords;
+in vec2 textureCoords;
+out vec4 fragmentColor;
 
 void main(){
-gl_FragColor = vec4(0.3, 0.3, 0.3, 1.0)*texture2D(texture0, textureCoords);
+fragmentColor = vec4(0.3, 0.3, 0.3, 1.0)*texture(texture0, textureCoords);
 }

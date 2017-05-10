@@ -3,7 +3,6 @@ package com.atlas.atlasEarth._VirtualGlobe.Source.Core.Rendables.EarthModel;
 import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.GLES31;
-import android.util.Log;
 
 import com.atlas.atlasEarth._VirtualGlobe.EarthViewOptions;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector3F;
@@ -36,7 +35,7 @@ class GeographicGlobe extends Renderable {
     public void render(ShaderProgramGL3x shaderProgram) {
 
         EarthShaderProgram earthShaderProgram = (EarthShaderProgram) shaderProgram;
-        mesh.getVertexArray().bindAndEnableVAO();
+
         earthShaderProgram.loadShineVariables(getTexture0().getShineDamper(), getTexture0().getReflectivity());
         earthShaderProgram.loadTextureIdentifier();
         earthShaderProgram.loadFullLightningOption(EarthViewOptions.isFullLightning());
@@ -54,12 +53,12 @@ class GeographicGlobe extends Renderable {
                 getRotZ(),
                 getScale()));
 
+        mesh.getVertexArray().bindAndEnableVAO();
         mesh.getIndicesBuffer().bind();
+
         GLES31.glDrawElements(GLES31.GL_TRIANGLES, mesh.getVertexCount(), mesh.getIndicesBuffer().getDataType(), 0);
-        mesh.getIndicesBuffer().bind();
 
-        Log.d("debug", "Earth Model Rotation: " + getRotX() + ", " + getRotY() + ", " + getRotZ());
-
+        mesh.getIndicesBuffer().unbind();
         VertexArrayNameGL3x.unbindAndDisableVAO();
     }
 

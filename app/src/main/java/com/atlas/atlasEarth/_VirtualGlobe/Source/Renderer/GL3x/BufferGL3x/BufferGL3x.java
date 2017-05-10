@@ -26,8 +26,12 @@ public class BufferGL3x extends BufferNameGL3x {
         this.bufferType = TypeconverterGL3x.convert(bufferType);
         this.usageHint = TypeconverterGL3x.convert(usageHint);
         this.sizeIinBytes = sizeInBytes;
-        TypeconverterGL3x.testForValidity(bufferType, ByteFlags.ARRAY_BUFFER, ByteFlags.UNIFORM_BUFFER);
-        TypeconverterGL3x.testForValidity(usageHint, ByteFlags.STREAM_DRAW, ByteFlags.DYNAMIC_COPY);
+        if(!TypeconverterGL3x.testForValidity(bufferType, ByteFlags.ARRAY_BUFFER, ByteFlags.UNIFORM_BUFFER)){
+            throw new IllegalArgumentException("Invalid BufferGL3x target");
+        }
+        if(!TypeconverterGL3x.testForValidity(usageHint, ByteFlags.STREAM_DRAW, ByteFlags.DYNAMIC_COPY)){
+            throw new IllegalArgumentException("Invalid BufferGL3x usage hint");
+        }
         TypeconverterGL3x.testForBiggerZero(sizeInBytes);
     }
 

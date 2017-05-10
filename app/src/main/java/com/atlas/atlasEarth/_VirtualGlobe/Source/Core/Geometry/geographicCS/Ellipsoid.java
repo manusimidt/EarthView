@@ -36,13 +36,12 @@ public class Ellipsoid {
 
     }
 
-    public Vector3D ToVector3D(Geodetic2D geodetic) {
-        return ToVector3D(new Geodetic3D(geodetic.getLongitude(), geodetic.getLatitude(), 0.0));
+    public Vector3D ToVector3D(Geodetic2D geodeticInRadians) {
+        return ToVector3D(new Geodetic3D(geodeticInRadians.getLongitude(), geodeticInRadians.getLatitude(), 0.0));
     }
-    public Vector3D ToVector3D(Geodetic3D geodetic) {
-        //Converting a geographicCoordinate IN RADIANS! into a WGS84 Coordinate
-        // TODO: 3/24/2017 surfacenormal 0,0,1.0!
-        Vector3D surfaceNormal = GeodeticSurfaceNormal(geodetic);
+    public Vector3D ToVector3D(Geodetic3D geodeticInRadians) {
+
+        Vector3D surfaceNormal = GeodeticSurfaceNormal(geodeticInRadians);
         Vector3D k = radiiSquared.multiplyComponents(surfaceNormal);
         double gamma = Math.sqrt(
                 (k.x * surfaceNormal.x) +
@@ -54,7 +53,7 @@ public class Ellipsoid {
         Vector3D rSurface = k.divideComponents(gamma);
 
 
-        rSurface.add(surfaceNormal.multiplyComponents(geodetic.getHeight()));
+        rSurface.add(surfaceNormal.multiplyComponents(geodeticInRadians.getHeight()));
         return rSurface;
     }
 
@@ -64,6 +63,11 @@ public class Ellipsoid {
     }
 
     public Vector3D GeodeticSurfaceNormal(Geodetic3D geodetic) {
+
+        /**
+         * See at @Link https://vvvv.org/blog/polar-spherical-and-geographic-coordinates
+         */
+
         double cosLatitude = Math.cos(geodetic.getLatitude());
 
         return new Vector3D(
@@ -130,5 +134,10 @@ public class Ellipsoid {
                 position.z / dc);
     }
 
-
+    public Vector3D getRadii() {
+        return radii;
+    }
+    public Vector3D getOneOverRadiiSquared(){
+        return oneOverRadiiSquared;
+    }
 }

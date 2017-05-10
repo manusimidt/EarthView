@@ -4,15 +4,14 @@ package com.atlas.atlasEarth._VirtualGlobe.Source.Core.Rendables;
 import android.content.Context;
 import android.opengl.GLES31;
 
-import com.atlas.atlasEarth.R;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.TriangleIndices.TriangleIndicesShort;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector2F;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector3F;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Matrices.MatricesUtility;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.ShaderGL3x.ShaderProgramGL3x;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.VertexArrayGL3x;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Mesh.VertexAttributeCollection;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Shader.BackgroundShaderProgram;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Texture;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +21,7 @@ public class SpaceBackground extends Renderable {
 
     public SpaceBackground(Context context) {
         super(new Vector3F(3, 1, -15), 0, 0, 0, 1);
-        super.setTexture(new Texture(R.drawable.space2));
+       // super.setTexture(new Texture(R.drawable.space2));
     }
 
 
@@ -54,7 +53,6 @@ public class SpaceBackground extends Renderable {
     @Override
     public void render(ShaderProgramGL3x shaderProgram) {
         BackgroundShaderProgram backgroundShaderProgram = (BackgroundShaderProgram) shaderProgram;
-        mesh.getVertexArray().bindAndEnableVAO();
         backgroundShaderProgram.loadTextureIdentifier();
 
         backgroundShaderProgram.loadTransformationMatrix(MatricesUtility.createTransformationMatrix(
@@ -67,9 +65,13 @@ public class SpaceBackground extends Renderable {
         GLES31.glActiveTexture(GLES31.GL_TEXTURE0);
         GLES31.glBindTexture(GLES31.GL_TEXTURE_2D, getTexture0().getTextureID());
 
+        mesh.getVertexArray().bindAndEnableVAO();
         mesh.getIndicesBuffer().bind();
+
         GLES31.glDrawElements(GLES31.GL_TRIANGLES, mesh.getVertexCount(), mesh.getIndicesBuffer().getDataType(), 0);
+
         mesh.getIndicesBuffer().unbind();
+        VertexArrayGL3x.unbindAndDisableVAO();
     }
 
 

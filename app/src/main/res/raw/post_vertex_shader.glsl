@@ -1,17 +1,17 @@
 
 
-attribute vec3 position;
-attribute vec3 normal;
-attribute vec2 texture;
+in vec3 position;
+in vec3 normal;
+in vec2 texCoord;
 
 uniform mat4 transformationMatrix;
 uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
 uniform vec3 lightPosition;
 
-varying vec3 surfaceNormal;
-varying vec2 textureCoords;
-varying vec3 toLightVector;
+out vec3 surfaceNormal;
+out vec2 textureCoords;
+out vec3 toLightVector;
 
 vec4 modelToWindowCoordinates(vec4 v, mat4 modelViewPerspectiveMatrix, mat4 viewportTransformationMatrix){
     v = modelViewPerspectiveMatrix * v;                  // clip coordinates
@@ -21,7 +21,7 @@ vec4 modelToWindowCoordinates(vec4 v, mat4 modelViewPerspectiveMatrix, mat4 view
 }
 
 void main(){
-    textureCoords = texture;
+    textureCoords = texCoord;
     surfaceNormal = normal;
     vec4 worldPosition = projectionMatrix * viewMatrix * transformationMatrix * vec4(position,1.0);
     toLightVector = lightPosition - worldPosition.xyz;

@@ -5,27 +5,31 @@ import android.opengl.GLES31;
 import android.opengl.GLSurfaceView;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.util.SparseArray;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Camera;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.LinkedList;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector3F;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Geometry.CSConverter;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Geometry.geographicCS.Ellipsoid;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Geometry.geographicCS.Geodetic3D;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Matrices.MatricesUtility;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Rendables.EarthModel.EarthModel;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Rendables.Post;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Rendables.Renderable;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Scene.Camera.Camera;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Scene.Camera.CameraLookAtUtility;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Testing.PointInWorldSpace;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Testing.TestTriangle;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.TouchHandeling.TouchHandler;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.RendererGL3x;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Light;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Scene.SceneState;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.States.RenderState;
 import com.atlas.atlasEarth.general.Utils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -39,13 +43,15 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
     private List<Renderable> doneQueue;
     private List<Renderable> renderables;
     private Light light;
-    private Camera camera;
+    private SceneState sceneState;
     private RendererGL3x renderer;
     private TouchHandler touchHandler;
     private ScaleGestureDetector scaleGestureDetector;
     //private List<Renderable> shapefileRenderables;
     Ellipsoid globeShape;
     LinkedList<Renderable> posts;
+
+    PointInWorldSpace pointInWorldspace;
 
 
     public EarthView(Context context) {
@@ -67,6 +73,7 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
         scaleGestureDetector = new ScaleGestureDetector(getContext(), new ScaleListener());
 
         globeShape = Ellipsoid.ScaledWgs84;
+        renderables = new ArrayList<>();
         doneQueue = new ArrayList<>();
         posts = new LinkedList<>();
 
@@ -77,12 +84,27 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
     @Override
     public void onSurfaceCreated(GL10 gl10, EGLConfig eglConfig) {
 
-        EarthModel earthRenderable = new EarthModel(getContext());
-        earthRenderable.onCreate();
-        earthRenderable.activateVAO();
+        Ellipsoid ellipsoid = Ellipsoid.ScaledWgs84;
+//RayCastedGlobe rayCastedGlobe = new RayCastedGlobe(getContext(),ellipsoid);
+//rayCastedGlobe.onCreate();
+//rayCastedGlobe.activateVAO();
+//renderables.add(rayCastedGlobe);
 
-        renderables = new ArrayList<>();
-        renderables.add(earthRenderable);
+
+        EarthModel earthModel = new EarthModel(getContext());
+        earthModel.onCreate();
+        earthModel.activateVAO();
+       renderables.add(earthModel);
+
+
+        TestTriangle testTriangle = new TestTriangle();
+       // testTriangle.setTriangle(
+       //         //globeShape.ToVector3D(CSConverter.toRadians(new Geodetic3D(0, 0, 0.1))).toVector3F().normalize(1),
+       //         //globeShape.ToVector3D(CSConverter.toRadians(new Geodetic3D(0, 10, 0.1))).toVector3F().normalize(1),
+       //         //globeShape.ToVector3D(CSConverter.toRadians(new Geodetic3D(10, 10, 0.1))).toVector3F().normalize(1));
+       //         new Vector3F(0, 0, -1).normalize(), new Vector3F(1.0000002f, 0, -1).normalize(), new Vector3F(0, 1.0000002f, -1).normalize());
+       // testTriangle.activateVAO();
+       // renderables.add(testTriangle);
 
 
         // shapefileRenderables = new ArrayList<>(1);
@@ -96,15 +118,28 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
 
 
         light = new Light(new Vector3F(0.82f, 0.72f, 0.95f));
-        camera = new Camera(earthRenderable);
+        Camera camera = new Camera(earthModel);
+        sceneState = new SceneState(camera, getContext());
         RenderState renderState = new RenderState();
         renderState.loadGlobalDefaults();
-        renderer = new RendererGL3x(getContext(), renderState);
+
+        renderer = new RendererGL3x(getContext(), renderState, sceneState);
+
+        // CameraLookAtUtility.lookAtGeodeticCoordinate(camera, ellipsoid, new Geodetic2D(0, 10), 5);
+        CameraLookAtUtility.lookFromTargetVectorToOrigin(camera, new Vector3F(2, 3, 1), 3);
+
 
         touchHandler = new TouchHandler(MatricesUtility.createProjectionMatrix(getContext()), camera, getContext());
         touchHandler = new TouchHandler(renderer.getProjectionMatrix(), camera, getContext());
-    }
 
+        pointInWorldspace = new PointInWorldSpace(camera,getContext(),
+                globeShape.ToVector3D(CSConverter.toRadians(new Geodetic3D(49.08147, 12.072807, 0.1))).toVector3F()
+              //  new Vector3F(1.0000002f, 0, -1).normalize(),
+              //  new Vector3F(0, 1.0000002f, -1).normalize(),
+              //  new Vector3F(1.0000002f,1.0000002f,-1).normalize()
+                 );
+
+    }
 
 
     @Override
@@ -123,7 +158,7 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
                 if (renderable.hasTexture()) {
                     renderable.loadTextures(getContext());
 
-                    if(renderable instanceof Post){
+                    if (renderable instanceof Post) {
                         posts.insertLastLink(renderable, ((Post) renderable).getId());
                     }
                 }
@@ -134,9 +169,19 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
 
         renderer.postRendables(renderables);
         renderer.postPosts(posts);
-        renderer.render(light, camera);
+        renderer.render(light, sceneState);
+
+         GLES31.glDisable(GLES31.GL_DEPTH_TEST);
+
+        pointInWorldspace.render();
+
+         GLES31.glEnable(GLES31.GL_DEPTH_TEST);
+         GLES31.glDepthFunc(GLES31.GL_LESS);
+         GLES31.glDepthRangef(0.1f, 50f);
+
 
     }
+
 
     @Override
     public void onPause() {
@@ -152,7 +197,6 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
     }
 
 
-
     public Light getLight() {
         return light;
     }
@@ -160,7 +204,7 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
         List<Post> cache = new ArrayList<>();
         for (Renderable renderable : renderables) {
             if (renderable instanceof Post) {
-                cache.add((Post)renderable);
+                cache.add((Post) renderable);
             }
         }
         return cache;
@@ -174,8 +218,8 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
     public void addPosts(Post... posts) {
         new WorkerThread().execute(posts);
     }
-    public void removePost(int... ids)throws ArrayIndexOutOfBoundsException{
-        for(int id : ids){
+    public void removePost(int... ids) throws ArrayIndexOutOfBoundsException {
+        for (int id : ids) {
             posts.removeNode(id);
         }
     }
@@ -183,7 +227,7 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
         return globeShape;
     }
     public Camera getCamera() {
-        return camera;
+        return sceneState.getCamera();
     }
     public static float getEarthViewHeight(Context context) {
         if (height == 0) {
@@ -224,10 +268,10 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
             case 1:
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
-                        touchHandler.setUp(x, y, camera);
+                        touchHandler.setUp(x, y, sceneState.getCamera());
                         break;
                     case MotionEvent.ACTION_MOVE:
-                        touchHandler.update(x, y, camera);
+                        touchHandler.update(x, y, sceneState.getCamera());
                         break;
                     case MotionEvent.ACTION_UP:
                         touchHandler.reset();
@@ -264,10 +308,10 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
             }
 
             if (detector.getScaleFactor() > 1) {
-                camera.decreaseZoom(eventTime - previousEventTime);
+                sceneState.getCamera().decreaseZoom(eventTime - previousEventTime);
                 Log.d("EarthControl", "Zooming in");
             } else {
-                camera.increaseZoom(eventTime - previousEventTime);
+                sceneState.getCamera().increaseZoom(eventTime - previousEventTime);
                 Log.d("EarthControl", "Zooming out");
             }
 

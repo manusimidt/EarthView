@@ -1,5 +1,7 @@
 uniform vec4 color;
 
+    out vec4 fragmentColor;
+
 void main(){
-    gl_FragColor = color;
+    fragmentColor = color;
 }

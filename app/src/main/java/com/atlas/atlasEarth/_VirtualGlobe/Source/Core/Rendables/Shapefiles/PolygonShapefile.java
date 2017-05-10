@@ -116,7 +116,6 @@ public class PolygonShapefile {
     public void render(ShaderProgramGL3x shaderProgram, Vector3F position, float rotX, float rotY, float rotZ, float scale) {
         ShapefileShaderProgram shapefileShaderProgram = (ShapefileShaderProgram) shaderProgram;
         for (Polygon polygon : polygons) {
-            polygon.getMesh().getVertexArray().bindAndEnableVAO();
 
             shapefileShaderProgram.loadColor(polygon.getColor());
 
@@ -127,10 +126,12 @@ public class PolygonShapefile {
                     rotZ,
                     scale));
 
+            polygon.getMesh().getVertexArray().bindAndEnableVAO();
             polygon.getMesh().getIndicesBuffer().bind();
-            GLES31.glDrawElements(GLES31.GL_TRIANGLES, polygon.getMesh().getVertexCount(), polygon.getMesh().getIndicesBuffer().getDataType(), 0);
-            polygon.getMesh().getIndicesBuffer().unbind();
 
+            GLES31.glDrawElements(GLES31.GL_TRIANGLES, polygon.getMesh().getVertexCount(), polygon.getMesh().getIndicesBuffer().getDataType(), 0);
+
+            polygon.getMesh().getIndicesBuffer().unbind();
             VertexArrayNameGL3x.unbindAndDisableVAO();
 
         }

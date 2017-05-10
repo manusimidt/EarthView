@@ -221,19 +221,19 @@ public class MapFragment extends Fragment {
             }
         });
 
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                earthView.addPosts(
-                        new Post(1, earthView, new Geodetic2D(0.0, 0.0), BitmapFactory.decodeResource(getResources(), R.drawable.bild), "test", "14.07.1999", getContext()),
-                        new Post(2, earthView, new Geodetic2D(20.0, 0.0), BitmapFactory.decodeResource(getResources(), R.drawable.bild), "test", "14.07.1999", getContext()),
-                        new Post(3, earthView, new Geodetic2D(40.0, 0.0), BitmapFactory.decodeResource(getResources(), R.drawable.bild), "test", "14.07.1999", getContext()),
-                        new Post(4, earthView, new Geodetic2D(60.0, 0.0), BitmapFactory.decodeResource(getResources(), R.drawable.bild), "test", "14.07.1999", getContext()),
-                        new Post(5, earthView, new Geodetic2D(80.0, 0.0), BitmapFactory.decodeResource(getResources(), R.drawable.bild), "test", "14.07.1999", getContext())
-                );
-            }
-        }, 2000);
+       //Handler handler = new Handler();
+       //handler.postDelayed(new Runnable() {
+       //    @Override
+       //    public void run() {
+       //        earthView.addPosts(
+       //                new Post(1, earthView, new Geodetic2D(0.0, 0.0), BitmapFactory.decodeResource(getResources(), R.drawable.bild), "test", "14.07.1999", getContext()),
+       //                new Post(2, earthView, new Geodetic2D(20.0, 0.0), BitmapFactory.decodeResource(getResources(), R.drawable.bild), "test", "14.07.1999", getContext()),
+       //                new Post(3, earthView, new Geodetic2D(40.0, 0.0), BitmapFactory.decodeResource(getResources(), R.drawable.bild), "test", "14.07.1999", getContext()),
+       //                new Post(4, earthView, new Geodetic2D(60.0, 0.0), BitmapFactory.decodeResource(getResources(), R.drawable.bild), "test", "14.07.1999", getContext()),
+       //                new Post(5, earthView, new Geodetic2D(80.0, 0.0), BitmapFactory.decodeResource(getResources(), R.drawable.bild), "test", "14.07.1999", getContext())
+       //        );
+       //    }
+       //}, 2000);
 
         //   handler.postDelayed(new Runnable() {
         //       @Override

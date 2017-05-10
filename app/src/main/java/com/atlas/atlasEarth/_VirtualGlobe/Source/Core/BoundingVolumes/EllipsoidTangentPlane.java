@@ -1,6 +1,5 @@
 package com.atlas.atlasEarth._VirtualGlobe.Source.Core.BoundingVolumes;
 
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.BoundingVolumes.AxisAlignedBoundingBox;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CollisionDetection.IntersectionTests;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector2D;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector3D;

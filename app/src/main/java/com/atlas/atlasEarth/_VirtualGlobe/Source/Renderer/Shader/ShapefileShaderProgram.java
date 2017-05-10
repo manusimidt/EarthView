@@ -4,7 +4,7 @@ import android.content.Context;
 import android.renderscript.Matrix4f;
 
 import com.atlas.atlasEarth.R;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Camera;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Scene.Camera.Camera;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector4F;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Matrices.MatricesUtility;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.ShaderGL3x.ShaderProgramGL3x;
@@ -18,9 +18,17 @@ public class ShapefileShaderProgram extends ShaderProgramGL3x{
 
 
     public ShapefileShaderProgram(Context context) {
-        super(context, R.raw.shapefile_vertex_shader, R.raw.shapefile_fragment_shader);
+        super(context, R.raw.shapefile_vertex_shader, R.raw.shapefile_fragment_shader, "ShapefileShaderProgram");
     }
 
+    @Override
+    protected String globalConstantsVS() {
+        return "";
+    }
+    @Override
+    protected String globalConstantsFS() {
+        return "";
+    }
     @Override
     protected void bindAttributes() {
         super.bindAttribute(0, "position");
