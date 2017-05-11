@@ -58,6 +58,6 @@ public class BufferGL3x extends BufferNameGL3x {
     }
 
     public void unbind() {
-        GLES31.glBindBuffer(0, super.getId());
+        GLES31.glBindBuffer(bufferType, 0);
     }
 }
