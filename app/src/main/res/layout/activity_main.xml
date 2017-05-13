@@ -11,12 +11,165 @@
         android:layout_height="40dp"
         android:layout_marginTop="15dp">
 
-        <LinearLayout android:id="@+id/controls"
+        <LinearLayout
+            android:id="@+id/controls"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
+            <LinearLayout
+                android:id="@+id/PointInWorldSpace"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
 
-            <LinearLayout android:id="@+id/Earth"
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:text="PIWS:   "
+                    android:textSize="16sp"/>
+
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:onClick="ePMPWIS"
+                    android:text="PM"
+                    />
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:onClick="eVMPWIS"
+                    android:text="VM"
+                    />
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:onClick="eTMPWIS"
+                    android:text="TM"
+                    />
+
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:onClick="iXPWIS"
+                    android:text="+X"
+                    />
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:onClick="dXPWIS"
+                    android:text="-X"
+                    />
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:onClick="iYPWIS"
+                    android:text="+Y"
+                    />
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:onClick="dYPWIS"
+                    android:text="-Y"
+                    />
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:onClick="iZPWIS"
+                    android:text="+Z"
+                    />
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:onClick="dZPWIS"
+                    android:text="-Z"
+                    />
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:onClick="iXRPWIS"
+                    android:text="+rZ"
+                    />
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:onClick="dXRPWIS"
+                    android:text="-rZ"
+                    />
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:onClick="iYRPWIS"
+                    android:text="+rY"
+                    />
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:onClick="dYRPWIS"
+                    android:text="-rY"
+                    />
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:onClick="iZRPWIS"
+                    android:text="+rZ"
+                    />
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:onClick="dZRPWIS"
+                    android:text="-rZ"
+                    />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/Earth"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
 
@@ -80,6 +233,7 @@
                     android:onClick="dZEarth"
                     android:text="-Z"
                     />
+
                 <Button
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -136,9 +290,11 @@
 
 
             </LinearLayout>
-            <LinearLayout android:id="@+id/Post"
-                          android:layout_width="wrap_content"
-                          android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:id="@+id/Post"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -200,6 +356,7 @@
                     android:onClick="dZPost"
                     android:text="-Z"
                     />
+
                 <Button
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -256,7 +413,9 @@
 
 
             </LinearLayout>
-            <LinearLayout android:id="@+id/Camera"
+
+            <LinearLayout
+                android:id="@+id/Camera"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
 
@@ -304,7 +463,6 @@
                     />
 
 
-
                 <Button
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -324,9 +482,11 @@
                     />
 
             </LinearLayout>
-            <LinearLayout android:id="@+id/LIGHT"
-                          android:layout_width="wrap_content"
-                          android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:id="@+id/LIGHT"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -399,7 +559,6 @@
                     />
 
             </LinearLayout>
-
 
 
         </LinearLayout>

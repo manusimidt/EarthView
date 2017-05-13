@@ -1,18 +1,14 @@
 package com.atlas.atlasEarth.map;
 
 
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.atlas.atlasEarth.R;
 import com.atlas.atlasEarth._VirtualGlobe.EarthView;
 import com.atlas.atlasEarth._VirtualGlobe.EarthViewOptions;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Geometry.geographicCS.Geodetic2D;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Rendables.Post;
 import com.atlas.atlasEarth.main.MainActivity;
 
@@ -31,6 +27,69 @@ public class MapFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         earthView = new EarthView(getContext());
+
+        ((MainActivity) getActivity()).setOnPIWSControlListener(new MainActivity.PIWSControlInterface() {
+            @Override
+            public void ePM() {
+                earthView.getPointInWorldSpace().useProjectionMatrix();
+            }
+            @Override
+            public void eVM() {
+                earthView.getPointInWorldSpace().useViewMatrix();
+            }
+            @Override
+            public void eTM() {
+                earthView.getPointInWorldSpace().useTransformationMatrix();
+            }
+            @Override
+            public void iX() {
+                earthView.getPointInWorldSpace().increasePositionX(0.1f);
+            }
+            @Override
+            public void dX() {
+                earthView.getPointInWorldSpace().increasePositionX(-0.1f);
+            }
+            @Override
+            public void iY() {
+                earthView.getPointInWorldSpace().increasePositionY(0.1f);
+            }
+            @Override
+            public void dY() {
+                earthView.getPointInWorldSpace().increasePositionY(-0.1f);
+            }
+            @Override
+            public void iZ() {
+                earthView.getPointInWorldSpace().increasePositionZ(0.1f);
+            }
+            @Override
+            public void dZ() {
+                earthView.getPointInWorldSpace().increasePositionZ(-0.1f);
+            }
+            @Override
+            public void iXR() {
+                earthView.getPointInWorldSpace().increaseRotX(30);
+            }
+            @Override
+            public void dXR() {
+                earthView.getPointInWorldSpace().increaseRotX(-30);
+            }
+            @Override
+            public void iYR() {
+                earthView.getPointInWorldSpace().increaseRotY(30);
+            }
+            @Override
+            public void dYR() {
+                earthView.getPointInWorldSpace().increaseRotY(-30);
+            }
+            @Override
+            public void iZR() {
+                earthView.getPointInWorldSpace().increaseRotZ(30);
+            }
+            @Override
+            public void dZR() {
+                earthView.getPointInWorldSpace().increaseRotZ(-30);
+            }
+        });
 
         ((MainActivity) getActivity()).setOnEarthControlListener(new MainActivity.EarthControlInterface() {
             @Override
@@ -221,19 +280,19 @@ public class MapFragment extends Fragment {
             }
         });
 
-       //Handler handler = new Handler();
-       //handler.postDelayed(new Runnable() {
-       //    @Override
-       //    public void run() {
-       //        earthView.addPosts(
-       //                new Post(1, earthView, new Geodetic2D(0.0, 0.0), BitmapFactory.decodeResource(getResources(), R.drawable.bild), "test", "14.07.1999", getContext()),
-       //                new Post(2, earthView, new Geodetic2D(20.0, 0.0), BitmapFactory.decodeResource(getResources(), R.drawable.bild), "test", "14.07.1999", getContext()),
-       //                new Post(3, earthView, new Geodetic2D(40.0, 0.0), BitmapFactory.decodeResource(getResources(), R.drawable.bild), "test", "14.07.1999", getContext()),
-       //                new Post(4, earthView, new Geodetic2D(60.0, 0.0), BitmapFactory.decodeResource(getResources(), R.drawable.bild), "test", "14.07.1999", getContext()),
-       //                new Post(5, earthView, new Geodetic2D(80.0, 0.0), BitmapFactory.decodeResource(getResources(), R.drawable.bild), "test", "14.07.1999", getContext())
-       //        );
-       //    }
-       //}, 2000);
+        //Handler handler = new Handler();
+        //handler.postDelayed(new Runnable() {
+        //    @Override
+        //    public void run() {
+        //        earthView.addPosts(
+        //                new Post(1, earthView, new Geodetic2D(0.0, 0.0), BitmapFactory.decodeResource(getResources(), R.drawable.bild), "test", "14.07.1999", getContext()),
+        //                new Post(2, earthView, new Geodetic2D(20.0, 0.0), BitmapFactory.decodeResource(getResources(), R.drawable.bild), "test", "14.07.1999", getContext()),
+        //                new Post(3, earthView, new Geodetic2D(40.0, 0.0), BitmapFactory.decodeResource(getResources(), R.drawable.bild), "test", "14.07.1999", getContext()),
+        //                new Post(4, earthView, new Geodetic2D(60.0, 0.0), BitmapFactory.decodeResource(getResources(), R.drawable.bild), "test", "14.07.1999", getContext()),
+        //                new Post(5, earthView, new Geodetic2D(80.0, 0.0), BitmapFactory.decodeResource(getResources(), R.drawable.bild), "test", "14.07.1999", getContext())
+        //        );
+        //    }
+        //}, 2000);
 
         //   handler.postDelayed(new Runnable() {
         //       @Override

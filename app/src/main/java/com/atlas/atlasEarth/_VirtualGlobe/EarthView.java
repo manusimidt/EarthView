@@ -79,12 +79,11 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
     @Override
     public void onSurfaceCreated(GL10 gl10, EGLConfig eglConfig) {
 
-        Ellipsoid ellipsoid = Ellipsoid.ScaledWgs84;
-//RayCastedGlobe rayCastedGlobe = new RayCastedGlobe(getContext(),ellipsoid);
-//rayCastedGlobe.onCreate();
-//rayCastedGlobe.activateVAO();
-//renderables.add(rayCastedGlobe);
-
+             Ellipsoid ellipsoid = Ellipsoid.ScaledWgs84;
+     //RayCastedGlobe rayCastedGlobe = new RayCastedGlobe(getContext(),ellipsoid);
+     //rayCastedGlobe.onCreate();
+     //rayCastedGlobe.activateVAO();
+     //renderables.add(rayCastedGlobe);
 
         EarthModel earthModel = new EarthModel(getContext());
         earthModel.onCreate();
@@ -110,9 +109,9 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
         pointInWorldspace = new PointInWorldSpace(null, getContext(),
                //new Vector3F(0.02f,0.02f,0)
                 globeShape.ToVector3D(CSConverter.toRadians(new Geodetic3D(49.08147, 12.072807, 0.1))).toVector3F()
-                //  new Vector3F(1.0000002f, 0, -1).normalize(),
-                //  new Vector3F(0, 1.0000002f, -1).normalize(),
-                //  new Vector3F(1.0000002f,1.0000002f,-1).normalize()
+                //new Vector3F(1.0000002f, 0, -1).normalize(),
+                //new Vector3F(0, 1.0000002f, -1).normalize(),
+                //new Vector3F(1.0000002f,1.0000002f,-1).normalize()
         );
 
 

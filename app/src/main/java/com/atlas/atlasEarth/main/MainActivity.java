@@ -20,6 +20,8 @@ public class MainActivity extends AppCompatActivity {
     EarthControlInterface earthControlInterface;
     PostControlInterface postControlInterface;
     CameraControlInterface cameraControlInterface;
+    PIWSControlInterface piwsControlInterface;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,10 +36,10 @@ public class MainActivity extends AppCompatActivity {
                 switch (position) {
                     case 0:
                         return new MapFragment();
-                   /* case 1:
+                    /*case 1:
                         return new MapFragment();
                     case 2:
-                        return new BlankFragment();
+                        return new EffectFragment();
                         */
                 }
                 return null;
@@ -51,6 +53,53 @@ public class MainActivity extends AppCompatActivity {
 
         final TabLayout tabLayout = (TabLayout) findViewById(R.id.mainTabLayout);
         tabLayout.setupWithViewPager(viewPager);
+    }
+
+
+    public void ePMPWIS(View view) {
+        piwsControlInterface.ePM();
+    }
+    public void eVMPWIS(View view) {
+        piwsControlInterface.eVM();
+    }
+    public void eTMPWIS(View view) {
+        piwsControlInterface.eTM();
+    }
+    public void iXPWIS(View view) {
+        piwsControlInterface.iX();
+    }
+    public void dXPWIS(View view) {
+        piwsControlInterface.dX();
+    }
+    public void iYPWIS(View view) {
+        piwsControlInterface.iY();
+    }
+    public void dYPWIS(View view) {
+        piwsControlInterface.dY();
+    }
+    public void iZPWIS(View view) {
+        piwsControlInterface.iZ();
+    }
+    public void dZPWIS(View view) {
+        piwsControlInterface.dZ();
+    }
+    public void iXRPWIS(View view) {
+        piwsControlInterface.iXR();
+    }
+    public void dXRPWIS(View view) {
+        piwsControlInterface.dXR();
+    }
+    public void iYRPWIS(View view) {
+        piwsControlInterface.iYR();
+    }
+    public void dYRPWIS(View view) {
+        piwsControlInterface.dYR();
+    }
+    public void iZRPWIS(View view) {
+        piwsControlInterface.iZR();
+    }
+    public void dZRPWIS(View view) {
+        piwsControlInterface.dZR();
     }
 
 
@@ -181,6 +230,25 @@ public class MainActivity extends AppCompatActivity {
         void dZLight();
     }
 
+    public interface PIWSControlInterface {
+
+        void ePM();
+        void eVM();
+        void eTM();
+        void iX();
+        void dX();
+        void iY();
+        void dY();
+        void iZ();
+        void dZ();
+        void iXR();
+        void dXR();
+        void iYR();
+        void dYR();
+        void iZR();
+        void dZR();
+    }
+
     public interface EarthControlInterface {
 
         void iX();
@@ -223,6 +291,10 @@ public class MainActivity extends AppCompatActivity {
         void dVA();
     }
 
+
+    public void setOnPIWSControlListener(PIWSControlInterface piwsControlListener){
+        this.piwsControlInterface = piwsControlListener;
+    }
     public void setOnLightControlListener(LightControlInterface controlListener) {
         this.lightControlInterface = controlListener;
     }
