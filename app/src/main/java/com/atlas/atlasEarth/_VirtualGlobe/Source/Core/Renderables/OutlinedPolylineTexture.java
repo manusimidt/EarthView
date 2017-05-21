@@ -1,7 +1,7 @@
-package com.atlas.atlasEarth._VirtualGlobe.Source.Core.Rendables;
+package com.atlas.atlasEarth._VirtualGlobe.Source.Core.Renderables;
 
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.DrawState;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.States.RenderState;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.States.RenderStatesHolder;
 
 /**
  * Created by Jonas on 3/21/2017.
@@ -17,8 +17,8 @@ public class OutlinedPolylineTexture {
 
     public OutlinedPolylineTexture()
     {
-        RenderState renderState = new RenderState();
-        renderState.getFaceCulling().setEnabled(false);
+        RenderStatesHolder renderStates = new RenderStatesHolder();
+        renderStates.getFaceCulling().disable();
        // renderState.Blending.Enabled = true;
        // renderState.Blending.SourceRGBFactor = SourceBlendingFactor.SourceAlpha;
        // renderState.Blending.SourceAlphaFactor = SourceBlendingFactor.SourceAlpha;
@@ -26,7 +26,7 @@ public class OutlinedPolylineTexture {
        // renderState.Blending.DestinationAlphaFactor = DestinationBlendingFactor.OneMinusSourceAlpha;
 
         drawState = new DrawState();
-        drawState.setRenderState(renderState);
+        drawState.setRenderStates(renderStates);
 
         width = 3;
         outlineWidth = 2;

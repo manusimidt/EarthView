@@ -1,7 +1,8 @@
 package com.atlas.atlasEarth._VirtualGlobe.Source.Core.Geometry.cartesianCS.Tessellation;
 
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector3F;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.ByteFlags;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.TriangleIndices.TriangleIndicesShort;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector3F;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Mesh.Mesh;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Mesh.VertexAttributeCollection;
 
@@ -28,18 +29,18 @@ public class SubdivisionSphereTessellator {
         positions.add(new Vector3F(-rootSixDivByThree, -rootTwoDivByThree, -oneThird));
         positions.add(new Vector3F(rootSixDivByThree, -rootTwoDivByThree, -oneThird));
 
-        subdivide(positions, triangles , new TriangleIndicesShort((short) 0, (short) 1, (short) 2), numberOfSubdivisions);
-        subdivide(positions, triangles , new TriangleIndicesShort((short) 0, (short) 2, (short) 3), numberOfSubdivisions);
-        subdivide(positions, triangles , new TriangleIndicesShort((short) 0, (short) 3, (short) 1), numberOfSubdivisions);
-        subdivide(positions, triangles , new TriangleIndicesShort((short) 1, (short) 3, (short) 2), numberOfSubdivisions);
+        subdivide(positions, triangles, new TriangleIndicesShort((short) 0, (short) 1, (short) 2), numberOfSubdivisions);
+        subdivide(positions, triangles, new TriangleIndicesShort((short) 0, (short) 2, (short) 3), numberOfSubdivisions);
+        subdivide(positions, triangles, new TriangleIndicesShort((short) 0, (short) 3, (short) 1), numberOfSubdivisions);
+        subdivide(positions, triangles, new TriangleIndicesShort((short) 1, (short) 3, (short) 2), numberOfSubdivisions);
 
 
-        mesh.addVertexAttributes(new VertexAttributeCollection(positions));
+        mesh.addVertexAttributes(new VertexAttributeCollection(positions,null, null, ByteFlags.GL_TRIANGLES));
         mesh.addTriangles(triangles);
         return mesh;
     }
 
-    private static void subdivide(List<Vector3F> positions, List<TriangleIndicesShort> triangles , TriangleIndicesShort triangle, int level) {
+    private static void subdivide(List<Vector3F> positions, List<TriangleIndicesShort> triangles, TriangleIndicesShort triangle, int level) {
         if (level > 0) {
 
             positions.add((positions.get(triangle.getT0()).add(positions.get(triangle.getT1())).multiplyComponents(0.5f)).normalize());
@@ -53,10 +54,10 @@ public class SubdivisionSphereTessellator {
             // Subdivide input triangle into four triangles
 
             --level;
-            subdivide(positions, triangles , new TriangleIndicesShort(triangle.getT0(), i01, i20), level);
-            subdivide(positions, triangles , new TriangleIndicesShort(i01, triangle.getT1(), i12), level);
-            subdivide(positions, triangles , new TriangleIndicesShort(i01, i12, i20), level);
-            subdivide(positions, triangles , new TriangleIndicesShort(i20, i12, triangle.getT2()), level);
+            subdivide(positions, triangles, new TriangleIndicesShort(triangle.getT0(), i01, i20), level);
+            subdivide(positions, triangles, new TriangleIndicesShort(i01, triangle.getT1(), i12), level);
+            subdivide(positions, triangles, new TriangleIndicesShort(i01, i12, i20), level);
+            subdivide(positions, triangles, new TriangleIndicesShort(i20, i12, triangle.getT2()), level);
         } else {
             triangles.add(triangle);
         }

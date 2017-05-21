@@ -10,7 +10,17 @@ import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.NamesGL3x.VertexA
 import java.nio.FloatBuffer;
 
 
+/**
+ * Class representing a VertexArray in Java
+ */
+
 public class VertexArrayGL3x extends VertexArrayNameGL3x {
+
+    /**
+     * @param positionBuffer The position Data as {@link java.nio.Buffer} Object which should be loaded in the VAO(0)
+     * @param normalBuffer The normals Data as {@link java.nio.Buffer} Object which should be loaded in the VAO(1)
+     * @param textureBuffer The texture Coordinates Data as {@link java.nio.Buffer} Object which should be loaded in the VAO(2)
+     */
 
     public VertexArrayGL3x(FloatBuffer positionBuffer, @Nullable FloatBuffer normalBuffer, @Nullable FloatBuffer textureBuffer) {
         bindAndEnableVAO();
@@ -31,7 +41,7 @@ public class VertexArrayGL3x extends VertexArrayNameGL3x {
     }
 
     private void storeFloatBufferInVAO(int index, int dimension, FloatBuffer data) {
-        BufferGL3x buffer = new BufferGL3x(ByteFlags.ARRAY_BUFFER, ByteFlags.STATIC_DRAW, data.capacity() * 4);
+        BufferGL3x buffer = new BufferGL3x(ByteFlags.GL_ARRAY_BUFFER, ByteFlags.GL_STATIC_DRAW, data.capacity() * 4);
         buffer.setData(data);
         GLES31.glEnableVertexAttribArray(index);
         GLES31.glVertexAttribPointer(index, dimension, GLES31.GL_FLOAT, false, 0, 0);

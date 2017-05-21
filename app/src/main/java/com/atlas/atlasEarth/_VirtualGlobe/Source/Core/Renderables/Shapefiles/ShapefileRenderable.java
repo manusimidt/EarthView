@@ -1,11 +1,11 @@
-package com.atlas.atlasEarth._VirtualGlobe.Source.Core.Rendables.Shapefiles;
+package com.atlas.atlasEarth._VirtualGlobe.Source.Core.Renderables.Shapefiles;
 
 import android.content.Context;
 import android.content.res.Resources;
 
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector3F;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Geometry.geographicCS.Ellipsoid;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Rendables.Renderable;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Renderables.Renderable;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Scene.Shapefile.ShapeType;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Scene.Shapefile.Shapefile;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Scene.Shapefile.ShapefileAppearance;

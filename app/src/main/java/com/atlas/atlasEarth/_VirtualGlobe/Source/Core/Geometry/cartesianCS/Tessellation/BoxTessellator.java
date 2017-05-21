@@ -61,7 +61,7 @@ public class BoxTessellator {
         indices.add(new TriangleIndicesShort((short) 0,(short) 1,(short) 5));    // Side: plane y = -corner.Y
         indices.add(new TriangleIndicesShort((short) 0,(short) 5,(short) 4));
 
-        mesh.addVertexAttributes(new VertexAttributeCollection(positions, null, null));
+        mesh.addVertexAttributes(new VertexAttributeCollection(positions, null, null, ByteFlags.GL_TRIANGLES));
         mesh.addTriangles(indices);
         return mesh;
     }

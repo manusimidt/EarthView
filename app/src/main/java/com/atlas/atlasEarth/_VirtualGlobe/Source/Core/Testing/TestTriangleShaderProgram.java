@@ -38,7 +38,7 @@ public class TestTriangleShaderProgram extends ShaderProgramGL3x {
     protected void getAllUniformLocations() {
         location_projectionMatrix = super.getUniformLocation("projectionMatrix");
         location_viewMatrix = super.getUniformLocation("viewMatrix");
-        location_transMat = super.getUniformLocation("transformationMatrix");
+        location_transMat = super.getUniformLocation("modelMatrix");
     }
 
     public void loadTransformationMatrix(Matrix4f transformation) {

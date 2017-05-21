@@ -1,4 +1,4 @@
-package com.atlas.atlasEarth._VirtualGlobe.Source.Core.Rendables.EarthModel;
+package com.atlas.atlasEarth._VirtualGlobe.Source.Core.Renderables.EarthModel;
 
 import android.content.Context;
 import android.opengl.GLES31;
@@ -8,7 +8,7 @@ import com.atlas.atlasEarth._VirtualGlobe.EarthViewOptions;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector3F;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Geometry.cartesianCS.Tessellation.BoxTessellator;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Geometry.geographicCS.Ellipsoid;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Rendables.Renderable;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Renderables.Renderable;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.NamesGL3x.VertexArrayNameGL3x;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.ShaderGL3x.ShaderProgramGL3x;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Shader.RayCastedEarthShaderProgram;
@@ -23,7 +23,7 @@ public class RayCastedGlobe extends Renderable {
 
     public RayCastedGlobe(Context context, Ellipsoid ellipsoid) {
         super(new Vector3F(0, 0, 0), 0, 0, 0, 1);
-        this.ellipsoid =ellipsoid;
+        this.ellipsoid = ellipsoid;
         this.context = context;super.setTexture(configureDayTexture(R.drawable.texture1_5));
       //  super.setTexture(configureNightTexture(R.drawable.texture_night));
     }
@@ -73,7 +73,7 @@ public class RayCastedGlobe extends Renderable {
         mesh.getVertexArray().bindAndEnableVAO();
         mesh.getIndicesBuffer().bind();
 
-        GLES31.glDrawElements(GLES31.GL_TRIANGLES, mesh.getVertexCount(), mesh.getIndicesBuffer().getDataType(), 0);
+        GLES31.glDrawElements(mesh.getDrawModeGL3x(), mesh.getVertexCount(), mesh.getIndicesBuffer().getDataTypeGL3x(), 0);
 
         mesh.getIndicesBuffer().unbind();
         VertexArrayNameGL3x.unbindAndDisableVAO();

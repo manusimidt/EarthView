@@ -1,10 +1,11 @@
-package com.atlas.atlasEarth._VirtualGlobe.Source.Core.Rendables;
+package com.atlas.atlasEarth._VirtualGlobe.Source.Core.Renderables;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.opengl.GLES31;
 
 import com.atlas.atlasEarth._VirtualGlobe.EarthView;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.ByteFlags;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.TriangleIndices.TriangleIndicesShort;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector2F;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector3F;
@@ -138,7 +139,7 @@ public class Post extends Renderable {
         normals.add(new Vector3F(0, 1, 0));
 
         super.mesh = new Mesh();
-        super.mesh.addVertexAttributes(new VertexAttributeCollection(positions, normals, textureCoords));
+        super.mesh.addVertexAttributes(new VertexAttributeCollection(positions, normals, textureCoords, ByteFlags.GL_TRIANGLES));
         super.mesh.addTriangles(indices);
      //   super.mesh = ObjLoader.loadOBJ(R.raw.text_model_source, context);
     }
@@ -152,7 +153,7 @@ public class Post extends Renderable {
         GLES31.glActiveTexture(GLES31.GL_TEXTURE0);
         GLES31.glBindTexture(GLES31.GL_TEXTURE_2D, getTexture0().getTextureID());
 
-        postShaderProgram.loadTransformationMatrix(MatricesUtility.createTransformationMatrix(
+        postShaderProgram.loadModelMatrix(MatricesUtility.createModelMatrix(
                 getPosition(),
                 getRotX() + earthView.getCamera().getPitch(),
                 getRotY()+earthView.getCamera().getAngleAroundEarth(),
@@ -163,7 +164,7 @@ public class Post extends Renderable {
         mesh.getVertexArray().bindAndEnableVAO();
         mesh.getIndicesBuffer().bind();
 
-        GLES31.glDrawElements(GLES31.GL_TRIANGLES, mesh.getVertexCount(), mesh.getIndicesBuffer().getDataType(), 0);
+        GLES31.glDrawElements(mesh.getDrawModeGL3x(), mesh.getVertexCount(), mesh.getIndicesBuffer().getDataTypeGL3x(), 0);
 
         mesh.getIndicesBuffer().unbind();
         VertexArrayNameGL3x.unbindAndDisableVAO();

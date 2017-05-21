@@ -12,16 +12,21 @@ import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Light;
 
 public class PostShaderProgram extends ShaderProgramGL3x {
 
+    //Matrices
+    private int location_modelMatrix;
+    private int location_projectionMatrix;
+    private int location_viewMatrix;
+
+    //Lightning
+    private int location_lightPosition;
+    private int location_lightColor;
+
+    private int location_texture0;
+
+
     public PostShaderProgram(Context context) {
         super(context, R.raw.post_vertex_shader, R.raw.post_fragment_shader, "PostShaderProgram");
     }
-
-    private int location_transMat;
-    private int location_projectionMatrix;
-    private int location_viewMatrix;
-    private int location_lightPosition;
-    private int location_lightColor;
-    private int location_texture0;
 
 
     @Override
@@ -41,16 +46,18 @@ public class PostShaderProgram extends ShaderProgramGL3x {
 
     @Override
     protected void getAllUniformLocations() {
-        location_transMat = super.getUniformLocation("transformationMatrix");
+        location_modelMatrix = super.getUniformLocation("modelMatrix");
         location_projectionMatrix = super.getUniformLocation("projectionMatrix");
         location_viewMatrix = super.getUniformLocation("viewMatrix");
+
         location_lightPosition = super.getUniformLocation("lightPosition");
         location_lightColor = super.getUniformLocation("lightColor");
+
         location_texture0 = super.getUniformLocation("texture0");
     }
 
-    public void loadTransformationMatrix(Matrix4f transformation) {
-        super.loadMatrix(location_transMat, transformation);
+    public void loadModelMatrix(Matrix4f transformation) {
+        super.loadMatrix(location_modelMatrix, transformation);
     }
 
     public void loadProjectionMatrix(Matrix4f projection) {

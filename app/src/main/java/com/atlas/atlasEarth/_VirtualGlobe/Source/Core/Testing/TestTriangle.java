@@ -2,17 +2,16 @@ package com.atlas.atlasEarth._VirtualGlobe.Source.Core.Testing;
 
 import android.opengl.GLES31;
 
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.ByteFlags;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector3F;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Matrices.MatricesUtility;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Rendables.Renderable;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Renderables.Renderable;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.NamesGL3x.VertexArrayNameGL3x;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.ShaderGL3x.ShaderProgramGL3x;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Mesh.Mesh;
 
 
-/**
- * Created by Jonas on 5/7/2017.
- */
+
 
 public class TestTriangle extends Renderable {
 
@@ -22,7 +21,7 @@ public class TestTriangle extends Renderable {
 
 
     public void setTriangle(Vector3F p1, Vector3F p2, Vector3F p3) {
-        Mesh mesh = new Mesh(
+        super.mesh = new Mesh(
                 new int[]{
                         0, 1, 2
                 }, new float[]{
@@ -31,8 +30,8 @@ public class TestTriangle extends Renderable {
                 p1.x, p1.y, p1.z,
         },
                 null,
-                null);
-        super.mesh = mesh;
+                null,
+                ByteFlags.GL_TRIANGLES);
     }
 
     @Override
@@ -46,7 +45,7 @@ public class TestTriangle extends Renderable {
 
         TestTriangleShaderProgram testTriangleShaderProgram = (TestTriangleShaderProgram) shaderProgram;
 
-        testTriangleShaderProgram.loadTransformationMatrix(MatricesUtility.createTransformationMatrix(
+        testTriangleShaderProgram.loadTransformationMatrix(MatricesUtility.createModelMatrix(
                 getPosition(),
                 getRotX(),
                 getRotY(),
@@ -56,7 +55,7 @@ public class TestTriangle extends Renderable {
         mesh.getVertexArray().bindAndEnableVAO();
         mesh.getIndicesBuffer().bind();
 
-        GLES31.glDrawElements(GLES31.GL_TRIANGLES, mesh.getVertexCount(), mesh.getIndicesBuffer().getDataType(), 0);
+        GLES31.glDrawElements(mesh.getDrawModeGL3x(), mesh.getVertexCount(), mesh.getIndicesBuffer().getDataTypeGL3x(), 0);
 
         mesh.getIndicesBuffer().unbind();
         VertexArrayNameGL3x.unbindAndDisableVAO();

@@ -3,7 +3,6 @@ package com.atlas.atlasEarth._VirtualGlobe.Source.Core.Testing;
 import android.content.Context;
 import android.opengl.GLES31;
 import android.renderscript.Matrix4f;
-import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector3F;
@@ -15,9 +14,13 @@ import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 
 
+/**
+ * External Renderer, for debugging
+ */
 public class PointInWorldSpace {
 
-    private Vector3F[] position;
+
+    private Vector3F[] positions;
     private Matrix4f projectionMatrix;
     private Camera camera;
     private int programID;
@@ -40,7 +43,7 @@ public class PointInWorldSpace {
     private float rotY;
     private float rotZ;
 
-    public PointInWorldSpace(@Nullable Camera camera, Context context, Vector3F... position) {
+    public PointInWorldSpace(Camera camera, Context context, Vector3F... positions) {
         useProjectionMatrix = true;
         useTransformationMatrix = true;
         useViewMatrix = true;
@@ -51,10 +54,10 @@ public class PointInWorldSpace {
         rotY = 0;
         rotZ = 0;
 
-        this.position = position;
+        this.positions = positions;
         this.camera = camera;
 
-        if (position.length % 3 == 0) {
+        if (positions.length % 3 == 0) {
             mode = GLES31.GL_TRIANGLES;
         } else {
             mode = GLES31.GL_POINTS;
@@ -70,10 +73,11 @@ public class PointInWorldSpace {
         vaoID = createVAO();
 
         bindAndEnableVAO();
-        storeDataInVertexArray(BufferUtils.convertVector3FArrayToFloatBuffer(position));
+        storeDataInVertexArray(BufferUtils.convertVector3FArrayToFloatBuffer(positions));
         unbindAndDisableVAO();
 
         programID = createProgram();
+
         GLES31.glUseProgram(programID);
         loadMatrix(uniform_projectionMatrix, projectionMatrix);
         GLES31.glUseProgram(0);
@@ -84,13 +88,11 @@ public class PointInWorldSpace {
         GLES31.glUseProgram(programID);
         GLES31.glBindVertexArray(vaoID);
 
-        if (camera != null) {
-            loadMatrix(uniform_viewMatrix, MatricesUtility.createViewMatrix(camera));
-        }
 
-        loadMatrix(uniform_translationMatrix, MatricesUtility.createTransformationMatrix(
-                new Vector3F(positionX, positionY, positionZ), rotX, rotY, rotZ, 1)
-        );
+        loadMatrix(uniform_viewMatrix, MatricesUtility.createViewMatrix(camera));
+        loadMatrix(uniform_translationMatrix,
+                MatricesUtility.createModelMatrix(
+                        new Vector3F(positionX, positionY, positionZ), rotX, rotY, rotZ, 1));
 
         loadBoolean(uniform_useProjectionMatrix, useProjectionMatrix);
         loadBoolean(uniform_useTranslationMatrix, useTransformationMatrix);
@@ -98,11 +100,13 @@ public class PointInWorldSpace {
 
         bindAndEnableVAO();
 
-        if (position.length == 3) {
+
+        if (positions.length == 3) {
             GLES31.glDrawElements(mode, 3, GLES31.GL_UNSIGNED_SHORT, getIndicesBuffer());
         } else {
-            GLES31.glDrawArrays(mode, 0, position.length);
+            GLES31.glDrawArrays(mode, 0, positions.length);
         }
+
 
         unbindAndDisableVAO();
         GLES31.glUseProgram(0);
@@ -120,12 +124,15 @@ public class PointInWorldSpace {
         GLES31.glLinkProgram(id);
         Log.d("Program", "Node Log: \n" + GLES31.glGetProgramInfoLog(id));
 
+
         uniform_projectionMatrix = getUniformLocation(id, "projectionMatrix");
         uniform_translationMatrix = getUniformLocation(id, "transformationMatrix");
         uniform_viewMatrix = getUniformLocation(id, "viewMatrix");
         uniform_useProjectionMatrix = getUniformLocation(id, "useProjectionMatrix");
         uniform_useTranslationMatrix = getUniformLocation(id, "useTransformationMatrix");
         uniform_useViewMatrix = getUniformLocation(id, "useViewMatrix");
+        Log.d("debug", "variables : " + uniform_projectionMatrix + ", " + uniform_translationMatrix + ", " + uniform_viewMatrix);
+        Log.d("debug", "variables : " + uniform_useProjectionMatrix + ", " + uniform_useTranslationMatrix + ", " + uniform_useViewMatrix);
         return id;
     }
 
@@ -136,7 +143,7 @@ public class PointInWorldSpace {
         GLES31.glShaderSource(id, (shaderType == GLES31.GL_VERTEX_SHADER) ? vertexShader : fragmentShader);
 
         GLES31.glCompileShader(id);
-        Log.d("Program", "Shader Type: " + shaderType + ", CompileLog: \n" + GLES31.glGetShaderInfoLog(id));
+        Log.d("Program", "Shader Type xxx: " + shaderType + ", CompileLog: \n" + GLES31.glGetShaderInfoLog(id));
         return id;
     }
 
@@ -153,11 +160,10 @@ public class PointInWorldSpace {
         GLES31.glGenBuffers(1, id, 0);
 
         GLES31.glBindBuffer(GLES31.GL_ARRAY_BUFFER, id[0]);
-        GLES31.glBufferData(GLES31.GL_ARRAY_BUFFER, position.length * 3 * 4, vertexData, GLES31.GL_STATIC_DRAW);
+        GLES31.glBufferData(GLES31.GL_ARRAY_BUFFER, positions.length * 3 * 4, vertexData, GLES31.GL_STATIC_DRAW);
 
         GLES31.glVertexAttribPointer(0, 3, GLES31.GL_FLOAT, false, 0, 0);
     }
-
 
 
     public ShortBuffer getIndicesBuffer() {
@@ -175,11 +181,9 @@ public class PointInWorldSpace {
         GLES31.glUniformMatrix4fv(location, 1, false, matrix4f.getArray(), 0);
     }
 
-
     protected void loadBoolean(int location, boolean value) {
         GLES31.glUniform1i(location, value ? 1 : 0);
     }
-
 
     private void bindAndEnableVAO() {
         GLES31.glBindVertexArray(vaoID);
@@ -198,17 +202,31 @@ public class PointInWorldSpace {
             "     uniform mat4 projectionMatrix;\n" +
             "     uniform mat4 viewMatrix;\n" +
             "     uniform mat4 transformationMatrix;\n" +
-            "     uniform float useProjectionMatrix;\n" +
-            "     uniform float useViewMatrix;\n" +
-            "     uniform float useTransformationMatrix;\n" +
+            "     uniform bool useProjectionMatrix;\n" +
+            "     uniform bool useViewMatrix;\n" +
+            "     uniform bool useTransformationMatrix;\n" +
             "\n" +
             "     void main(){\n" +
             "\n" +
             "        gl_PointSize = 30.0;\n" +
             "\n" +
-            "    \n" +
+            "        if(useProjectionMatrix && useViewMatrix && useTransformationMatrix){\n" +
             "            gl_Position = projectionMatrix * viewMatrix * transformationMatrix * position;\n" +
-            "        \n" +
+            "        }else if(useProjectionMatrix && useViewMatrix){\n" +
+            "            gl_Position = projectionMatrix * viewMatrix  * position;\n" +
+            "        }else if(useViewMatrix && useTransformationMatrix){\n" +
+            "            gl_Position = viewMatrix * transformationMatrix * position;\n" +
+            "        }else if(useProjectionMatrix && useTransformationMatrix){\n" +
+            "            gl_Position = projectionMatrix * transformationMatrix * position;\n" +
+            "        }else if(useProjectionMatrix){\n" +
+            "            gl_Position = projectionMatrix * position;\n" +
+            "        }else if(useViewMatrix){\n" +
+            "            gl_Position = viewMatrix * position;\n" +
+            "        }else if(useTransformationMatrix){\n" +
+            "            gl_Position = transformationMatrix * position;\n" +
+            "        }else{\n" +
+            "            gl_Position = position;\n" +
+            "        }\n" +
             "        }\n";
 
 

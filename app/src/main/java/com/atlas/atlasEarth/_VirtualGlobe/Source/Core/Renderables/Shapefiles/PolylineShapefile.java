@@ -1,4 +1,4 @@
-package com.atlas.atlasEarth._VirtualGlobe.Source.Core.Rendables.Shapefiles;
+package com.atlas.atlasEarth._VirtualGlobe.Source.Core.Renderables.Shapefiles;
 
 /**
  * Created by Jonas on 3/19/2017.

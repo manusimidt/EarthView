@@ -4,9 +4,10 @@ import android.content.Context;
 import android.renderscript.Matrix4f;
 
 import com.atlas.atlasEarth._VirtualGlobe.EarthView;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Scene.Camera.Camera;
+import com.atlas.atlasEarth._VirtualGlobe.EarthViewOptions;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector3F;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector4F;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Scene.Camera.Camera;
 
 
 public class MatricesUtility {
@@ -37,7 +38,8 @@ public class MatricesUtility {
 
         return rotation;
     }
-   /* public static Matrix4f lookAt(Vector3F eye, Vector3F target, Vector3F up){
+    @Deprecated
+    public static Matrix4f lookAt(Vector3F eye, Vector3F target, Vector3F up, boolean a){
         float[] asdf = new float[]{1,2,3};
         Vector3F zaxis = (eye.substract(target)).normalize();    // The "forward" vector.
         Vector3F xaxis = (up.cross(zaxis)).normalize();// The "right" vector.
@@ -73,25 +75,25 @@ public class MatricesUtility {
          Matrix4f result = orientation;
         orientation.multiply(translation);
         return result;
-    }*/
+    }
 
-    public static Matrix4f createTransformationMatrix(Vector3F transformation, float rx, float ry, float rz, float scale) {
+    public static Matrix4f createModelMatrix(Vector3F transformation, float rx, float ry, float rz, float scale) {
+        //TranslationMatrix * RotationMatrix * ScaleMatrix
+        Matrix4f modelMatrix = new Matrix4f();
+        modelMatrix.translate(transformation.x, transformation.y, transformation.z);
+        modelMatrix.rotate(rx, 1, 0, 0);
+        modelMatrix.rotate(ry, 0, 1, 0);
+        modelMatrix.rotate(rz, 0, 0, 1);
+        modelMatrix.scale(scale, scale, scale);
 
-        Matrix4f transformationMatrix = new Matrix4f();
-        transformationMatrix.translate(transformation.x, transformation.y, transformation.z);
-        transformationMatrix.rotate(rx, 1, 0, 0);//+90
-        transformationMatrix.rotate(ry, 0, 1, 0);
-        transformationMatrix.rotate(rz, 0, 0, 1);//-90
-        transformationMatrix.scale(scale, scale, scale);
-
-        return transformationMatrix;
+        return modelMatrix;
     }
 
     public static Matrix4f createProjectionMatrix(Context context) {
 
-        final float FOV = 50;
-        final float NEAR_PLANE = 0.1f;
-        final float FAR_PLANE = 150;
+        final float FOV = EarthViewOptions.getFieldOfView();
+        final float NEAR_PLANE = 0.1f; // Keep as high as possible
+        final float FAR_PLANE = 150; //Keep as low as possible
 
         float aspectRatio = EarthView.getEarthViewWidth(context) / EarthView.getEarthViewHeight(context);
         float y_scale = (float) ((1f / Math.tan(Math.toRadians(FOV / 2f))) * aspectRatio);

@@ -3,7 +3,8 @@ package com.atlas.atlasEarth._VirtualGlobe.Source.Core.Scene.Camera;
 import android.util.Log;
 
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector3F;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Rendables.Renderable;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Renderables.Renderable;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.ShaderGL3x.ShaderProgramGL3x;
 
 
 public class Camera {
@@ -19,7 +20,19 @@ public class Camera {
     public Camera(Renderable earthRenderable) {
         this.earthRenderable = earthRenderable;
     }
-    public Camera() {
+    public Camera(Vector3F position) {
+        Renderable renderable = new Renderable(position,0,0,0,1) {
+            @Override
+            public void onCreate() {
+
+            }
+
+            @Override
+            public void render(ShaderProgramGL3x shaderProgram) {
+
+            }
+        };
+        this.earthRenderable =renderable;
     }
     /**
      * Zooming
@@ -108,6 +121,11 @@ public class Camera {
     }
     public void setPosition(Vector3F position) {
         this.position = position;
+    }
+    public void setPosition(float x, float y, float z){
+        this.position.x = x;
+        this.position.y = y;
+        this.position.z = z;
     }
     public float getPitch() {
         return pitch;

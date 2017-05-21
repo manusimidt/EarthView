@@ -1,37 +1,32 @@
 package com.atlas.atlasEarth._VirtualGlobe.Source.Renderer;
 
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Rendables.Renderable;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Renderables.Renderable;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Shader.EarthShaderProgram;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.States.RenderState;
-
-/**
- * DrawState will delete the VAO Array lists, stored in the memory, and will allocate them into GPU Buffers.
- * Therefore VAO Editing isn't possible after the DrawState Object is created
- */
+import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.States.RenderStatesHolder;
 
 
 public class DrawState {
-    private RenderState renderState;
+    private RenderStatesHolder renderStates;
     private EarthShaderProgram shaderProgram;
     private Renderable renderable;
 
     public DrawState(){
-        renderState = new RenderState();
+        renderStates = new RenderStatesHolder();
     }
-    public DrawState(RenderState renderState, EarthShaderProgram earthShaderProgram, Renderable renderable) {
-        this.renderState = renderState;
+    public DrawState(RenderStatesHolder renderStates, EarthShaderProgram earthShaderProgram, Renderable renderable) {
+        this.renderStates = renderStates;
         this.shaderProgram = earthShaderProgram;
         earthShaderProgram.start();
         this.renderable = renderable;
 
     }
 
-    public RenderState getRenderState() {
-        return renderState;
+    public RenderStatesHolder getRenderStates() {
+        return renderStates;
     }
 
-    public void setRenderState(RenderState renderState) {
-        this.renderState = renderState;
+    public void setRenderStates(RenderStatesHolder renderStates) {
+        this.renderStates = renderStates;
     }
 
     public EarthShaderProgram getShaderProgram() {

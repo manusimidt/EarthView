@@ -2,7 +2,9 @@
   <dictionary name="Jonas">
     <words>
       <w>coords</w>
+      <w>gles</w>
       <w>renderable</w>
+      <w>renderables</w>
       <w>shapefile</w>
       <w>shapefiles</w>
     </words>

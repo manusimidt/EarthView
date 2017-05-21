@@ -3,6 +3,7 @@ package com.atlas.atlasEarth._VirtualGlobe.Source.Core.ExternalMeshData;
 import android.content.Context;
 import android.util.Log;
 
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.ByteFlags;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector2F;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector3F;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Mesh.Mesh;
@@ -92,7 +93,7 @@ public class ObjLoader {
             indicesArray[i] = indices.get(i);
         }
 
-        return new Mesh(indicesArray, positionArray, sortedNormals, sortedTextures);
+        return new Mesh(indicesArray, positionArray, sortedNormals, sortedTextures, ByteFlags.GL_TRIANGLES);
     }
 
     private static void sortVertexData(String[] vertexData, List<Integer> indices,

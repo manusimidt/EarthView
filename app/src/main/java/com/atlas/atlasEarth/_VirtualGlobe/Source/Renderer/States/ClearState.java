@@ -3,13 +3,11 @@ package com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.States;
 import android.graphics.Color;
 
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.States.RenderStates.ColorMask;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.States.RenderStates.ScissorTest;
 
 
 public class ClearState {
 
 
-    private ScissorTest scissorTest;
     private ColorMask colorMask;
     private boolean depthMask;
     private int frontStencilTest = ~0;
@@ -21,10 +19,9 @@ public class ClearState {
 
     public ClearState() {
 
-        scissorTest = new ScissorTest();
         colorMask = new ColorMask(true, true, true, true);
         depthMask = true;
-color = Color.WHITE;
+        color = Color.WHITE;
         depth = 1;
         stencil = 0;
     }
@@ -67,14 +64,6 @@ color = Color.WHITE;
 
     public void setFrontStencilTest(int frontStencilTest) {
         this.frontStencilTest = frontStencilTest;
-    }
-
-    public ScissorTest getScissorTest() {
-        return scissorTest;
-    }
-
-    public void setScissorTest(ScissorTest scissorTest) {
-        this.scissorTest = scissorTest;
     }
 
     public int getStencil() {

@@ -9,23 +9,31 @@ import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Ve
 
 import java.util.List;
 
+
 /**
- * Here is all VAO index related data stored.
+ * Container for all VAO related Data.
+ * Used for com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Mesh
  */
+
 public class VertexAttributeCollection {
 
     private List<Vector3F> positions = null;
     private List<Vector3F> normals = null;
     private List<Vector2F> textureCoordinates = null;
+    private byte mode;
 
-    public VertexAttributeCollection(@NonNull List<Vector3F> positions) {
-        this.positions = positions;
-    }
 
-    public VertexAttributeCollection(@NonNull List<Vector3F> positions, @Nullable List<Vector3F> normals, @Nullable List<Vector2F> textureCoordinates) {
+    /**
+     * @param positions          3D Positions for VAO in Euclidean Space
+     * @param normals            3D Normals, could be null
+     * @param textureCoordinates 3D Texture Coordinates, could be null
+     * @param mode               Draw mode for glDraw...() (ie: GL_TRIANGLES)
+     */
+    public VertexAttributeCollection(@NonNull List<Vector3F> positions, @Nullable List<Vector3F> normals, @Nullable List<Vector2F> textureCoordinates, byte mode) {
         this.positions = positions;
         this.normals = normals;
         this.textureCoordinates = textureCoordinates;
+        this.mode = mode;
     }
 
     public List<Vector3F> getPositions() {
@@ -38,6 +46,10 @@ public class VertexAttributeCollection {
 
     public List<Vector2F> getTextureCoordinates() {
         return textureCoordinates;
+    }
+
+    public byte getMode() {
+        return mode;
     }
 
     public void clear() {
@@ -53,5 +65,6 @@ public class VertexAttributeCollection {
             textureCoordinates.clear();
             textureCoordinates = null;
         }
+        mode = 0;
     }
 }

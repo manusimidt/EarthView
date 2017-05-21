@@ -1,11 +1,12 @@
 
-in vec3 position;
+layout(location = 0) in vec3 position;
 
-uniform mat4 projectionMatrix;
+uniform mat4 modelMatrix;
 uniform mat4 viewMatrix;
-uniform mat4 transformationMatrix;
-uniform vec3 sunPosition;
-uniform vec3 cameraPosition;
+uniform mat4 projectionMatrix;
+
+uniform vec3 lightPosition;
+uniform vec3 eyePosition;
 
 
 out vec3 unitNormal;
@@ -25,14 +26,15 @@ mat4 rotationMatrix(vec3 axis, float angle)
                 0.0,                                0.0,                                0.0,                                1.0);
 }
 
+
 void main(){
 
     mat4 preRotation  = rotationMatrix(vec3(1,0,-1), 3.141592);
 
-    vec4 worldPosition = transformationMatrix * vec4(position,1.0);
+    vec4 worldPosition = modelMatrix * vec4(position,1.0);
     gl_Position = projectionMatrix * viewMatrix * worldPosition;
     unitNormal = normalize(position);
-    unitToLight = normalize(sunPosition - worldPosition.xyz);
-    unitToCamera = normalize(cameraPosition - worldPosition.xyz);
+    unitToLight = normalize(lightPosition - worldPosition.xyz);
+    unitToCamera = normalize(eyePosition - worldPosition.xyz);
 
 }

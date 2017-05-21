@@ -6,6 +6,11 @@ import com.atlas.atlasEarth._VirtualGlobe.Source.Core.MathTools;
 import java.util.List;
 
 
+/**
+ * Class Representing a three dimensional vector with float'S
+ */
+
+
 public class Vector3F {
 
     public float x, y, z;
@@ -40,7 +45,7 @@ public class Vector3F {
         }
 
     }
-    public Vector3F normalize(int length) {
+    public Vector3F normalize(float length) {
         normalize();
         return multiplyComponents(length);
     }

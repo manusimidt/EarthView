@@ -10,17 +10,18 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.atlas.atlasEarth.R;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Testing.ControlInterfaces;
 import com.atlas.atlasEarth.map.MapFragment;
 
 
 public class MainActivity extends AppCompatActivity {
 
 
-    LightControlInterface lightControlInterface;
-    EarthControlInterface earthControlInterface;
-    PostControlInterface postControlInterface;
-    CameraControlInterface cameraControlInterface;
-    PIWSControlInterface piwsControlInterface;
+    ControlInterfaces.LightControlInterface lightControlInterface;
+    ControlInterfaces.EarthControlInterface earthControlInterface;
+    ControlInterfaces.PostControlInterface postControlInterface;
+    ControlInterfaces.CameraControlInterface cameraControlInterface;
+    ControlInterfaces.PIWSControlInterface piwsControlInterface;
 
 
     @Override
@@ -219,92 +220,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public interface LightControlInterface {
-
-        void fullLight();
-        void iXLight();
-        void dXLight();
-        void iYLight();
-        void dYLight();
-        void iZLight();
-        void dZLight();
-    }
-
-    public interface PIWSControlInterface {
-
-        void ePM();
-        void eVM();
-        void eTM();
-        void iX();
-        void dX();
-        void iY();
-        void dY();
-        void iZ();
-        void dZ();
-        void iXR();
-        void dXR();
-        void iYR();
-        void dYR();
-        void iZR();
-        void dZR();
-    }
-
-    public interface EarthControlInterface {
-
-        void iX();
-        void dX();
-        void iY();
-        void dY();
-        void iZ();
-        void dZ();
-        void iXR();
-        void dXR();
-        void iYR();
-        void dYR();
-        void iZR();
-        void dZR();
-    }
-
-    public interface PostControlInterface {
-
-        void iX();
-        void dX();
-        void iY();
-        void dY();
-        void iZ();
-        void dZ();
-        void iXR();
-        void dXR();
-        void iYR();
-        void dYR();
-        void iZR();
-        void dZR();
-    }
-
-    public interface CameraControlInterface {
-
-        void iPitch();
-        void dPitch();
-        void iDist();
-        void dDist();
-        void iVA();
-        void dVA();
-    }
 
 
-    public void setOnPIWSControlListener(PIWSControlInterface piwsControlListener){
+    public void setOnPIWSControlListener(ControlInterfaces.PIWSControlInterface piwsControlListener){
         this.piwsControlInterface = piwsControlListener;
     }
-    public void setOnLightControlListener(LightControlInterface controlListener) {
+    public void setOnLightControlListener(ControlInterfaces.LightControlInterface controlListener) {
         this.lightControlInterface = controlListener;
     }
-    public void setOnEarthControlListener(EarthControlInterface controlListener) {
+    public void setOnEarthControlListener(ControlInterfaces.EarthControlInterface controlListener) {
         this.earthControlInterface = controlListener;
     }
-    public void setOnPostControlListener(PostControlInterface postControlListener) {
+    public void setOnPostControlListener(ControlInterfaces.PostControlInterface postControlListener) {
         this.postControlInterface = postControlListener;
     }
-    public void setOnCameraControlListener(CameraControlInterface cameraControlListener) {
+    public void setOnCameraControlListener(ControlInterfaces.CameraControlInterface cameraControlListener) {
         this.cameraControlInterface = cameraControlListener;
     }
 }

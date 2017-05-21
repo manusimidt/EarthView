@@ -1,4 +1,4 @@
-package com.atlas.atlasEarth._VirtualGlobe.Source.Core.Rendables.Shapefiles;
+package com.atlas.atlasEarth._VirtualGlobe.Source.Core.Renderables.Shapefiles;
 
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.ByteFlags;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector2D;

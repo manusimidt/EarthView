@@ -1,34 +1,39 @@
 package com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.States.RenderStates;
 
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.ByteFlags;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.TypeconverterGL3x;
 
 
-public class DepthTest {
+public class DepthTest extends RenderState {
 
-    private boolean enabled;
     private byte depthTestFunction;
 
 
     public DepthTest() {
-        enabled = false;
-        depthTestFunction = ByteFlags.LESS;
+        super();
+        depthTestFunction = ByteFlags.GL_LESS;
     }
 
+    @Override
+    public void enable() {
+        super.enable();
+    }
+
+    @Override
+    public void disable() {
+        super.disable();
+    }
+
+    @Override
     public boolean isEnabled() {
-        return enabled;
+        return super.isEnabled();
     }
 
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
 
     public byte getDepthTestFunction() {
         return depthTestFunction;
     }
 
     public void setDepthTestFunction(byte depthTestFunction) {
-        TypeconverterGL3x.testForValidity(depthTestFunction, ByteFlags.NEVER, ByteFlags.ALWAYS);
         this.depthTestFunction = depthTestFunction;
     }
 }

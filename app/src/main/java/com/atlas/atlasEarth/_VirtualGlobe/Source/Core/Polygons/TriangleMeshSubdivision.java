@@ -2,10 +2,10 @@ package com.atlas.atlasEarth._VirtualGlobe.Source.Core.Polygons;
 
 import android.util.Log;
 
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Queue;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector3D;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Edge;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Queue;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.TriangleIndices.TriangleIndicesInt;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector3D;
 
 import java.util.HashMap;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.atlas.atlasEarth._VirtualGlobe.Source.Core.Rendables.Shapefiles;
+package com.atlas.atlasEarth._VirtualGlobe.Source.Core.Renderables.Shapefiles;
 
 import android.content.Context;
 

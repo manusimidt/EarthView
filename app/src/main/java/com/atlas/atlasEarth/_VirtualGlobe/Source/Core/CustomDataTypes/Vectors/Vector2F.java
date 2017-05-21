@@ -3,6 +3,10 @@ package com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors;
 
 import java.util.List;
 
+/**
+ * Class Representing a two dimensional with float'S
+ */
+
 public class Vector2F {
 
     public float x, y;

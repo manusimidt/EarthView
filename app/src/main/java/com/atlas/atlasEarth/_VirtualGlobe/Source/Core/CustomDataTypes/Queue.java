@@ -1,6 +1,5 @@
-package com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors;
+package com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes;
 
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.LinkedList;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.TriangleIndices.TriangleIndicesInt;
 
 import java.util.ArrayList;

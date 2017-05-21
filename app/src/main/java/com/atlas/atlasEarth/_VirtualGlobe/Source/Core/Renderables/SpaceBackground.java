@@ -1,9 +1,10 @@
-package com.atlas.atlasEarth._VirtualGlobe.Source.Core.Rendables;
+package com.atlas.atlasEarth._VirtualGlobe.Source.Core.Renderables;
 
 
 import android.content.Context;
 import android.opengl.GLES31;
 
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.ByteFlags;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.TriangleIndices.TriangleIndicesShort;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector2F;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector3F;
@@ -15,6 +16,9 @@ import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Shader.BackgroundShade
 
 import java.util.ArrayList;
 import java.util.List;
+
+
+
 
 public class SpaceBackground extends Renderable {
 
@@ -42,7 +46,7 @@ public class SpaceBackground extends Renderable {
         positions.add(new Vector3F(1, 1, 0));
         textureCoords.add(new Vector2F(1, 0));
 
-        mesh.addVertexAttributes(new VertexAttributeCollection(positions, null, textureCoords));
+        mesh.addVertexAttributes(new VertexAttributeCollection(positions, null, textureCoords, ByteFlags.GL_TRIANGLES));
 
         List<TriangleIndicesShort> triangles = new ArrayList<>(2);
         triangles.add(new TriangleIndicesShort((short) 0, (short) 1, (short) 2));
@@ -55,7 +59,7 @@ public class SpaceBackground extends Renderable {
         BackgroundShaderProgram backgroundShaderProgram = (BackgroundShaderProgram) shaderProgram;
         backgroundShaderProgram.loadTextureIdentifier();
 
-        backgroundShaderProgram.loadTransformationMatrix(MatricesUtility.createTransformationMatrix(
+        backgroundShaderProgram.loadModelMatrix(MatricesUtility.createModelMatrix(
                 getPosition(),
                 getRotX(),
                 getRotY(),

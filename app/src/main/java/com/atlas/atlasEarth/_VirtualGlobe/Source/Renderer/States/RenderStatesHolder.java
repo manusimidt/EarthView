@@ -5,31 +5,29 @@ import com.atlas.atlasEarth._VirtualGlobe.Source.Core.ByteFlags;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.States.RenderStates.ColorMask;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.States.RenderStates.DepthTest;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.States.RenderStates.FaceCulling;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.States.RenderStates.ScissorTest;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.States.RenderStates.StencilTest;
 
 
-public class RenderState {
+/**
+ * Container class for OpenGL RenderState
+ * (Classes which extend {@link com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.States.RenderStates.RenderState})
+ */
+public class RenderStatesHolder {
 
     private DepthTest depthTest;
     private FaceCulling faceCulling;
-    private StencilTest stencilTest;
-    private ScissorTest scissorTest;
     private ColorMask colorMask;
 
-    public RenderState() {
+    public RenderStatesHolder() {
         depthTest = new DepthTest();
         faceCulling = new FaceCulling();
-        stencilTest = new StencilTest();
-        scissorTest = new ScissorTest();
         colorMask = new ColorMask(true, true, true, true);
     }
     public void loadGlobalDefaults() {
-        faceCulling.setEnabled(true);
-        faceCulling.setCullFace(ByteFlags.BACK);
+        faceCulling.enable();
+        faceCulling.setCullFace(ByteFlags.GL_BACK);
         faceCulling.setWindingOrder(ByteFlags.COUNTERCLOCKWISE);
-        depthTest.setDepthTestFunction(ByteFlags.LESS);
-        depthTest.setEnabled(true);
+        depthTest.setDepthTestFunction(ByteFlags.GL_LESS);
+        depthTest.enable();
     }
 
 
@@ -57,19 +55,4 @@ public class RenderState {
         this.faceCulling = faceCulling;
     }
 
-    public ScissorTest getScissorTest() {
-        return scissorTest;
-    }
-
-    public void setScissorTest(ScissorTest scissorTest) {
-        this.scissorTest = scissorTest;
-    }
-
-    public StencilTest getStencilTest() {
-        return stencilTest;
-    }
-
-    public void setStencilTest(StencilTest stencilTest) {
-        this.stencilTest = stencilTest;
-    }
 }

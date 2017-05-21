@@ -8,7 +8,7 @@ import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Ve
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector3F;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Tools.BufferUtils;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.BufferGL3x.BufferGL3x;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.TypeconverterGL3x;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.TypeConverterGL3x;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.VertexArrayGL3x;
 
 import java.nio.Buffer;
@@ -32,18 +32,36 @@ public class Mesh {
     private BufferGL3x indicesBuffer;
 
     private byte indicesDataType = ByteFlags.NULL;
-    private int vertexCount;
     private byte frontFaceWindingOrder = ByteFlags.NULL;
+    private byte mode = ByteFlags.NULL;
+    private int vertexCount;
+
+
+    /**
+     * Required Empty Constructor for modular Mesh
+     */
+    public Mesh() {
+
+    }
+
 
     /**
      * Special Constructor for higher performance
+     *
+     * @param indices       Indices for GLES31.glDrawElements()
+     * @param positions     3D Positions for VAO in Euclidean Space
+     * @param normals       3D Normals, could be null
+     * @param textureCoords 3D Texture Coordinates, could be null
+     * @param mode          Draw mode for glDraw...() (ie: GL_TRIANGLES)
      */
-    public Mesh(int indices[], float[] positions, float[] normals, float[] textureCoords) {
+    public Mesh(int indices[], float[] positions, float[] normals, float[] textureCoords, byte mode) {
+        this.mode = mode;
         if (positions.length < 3 || indices.length < 3) {
             this.dispose();
-            throw new IllegalArgumentException("Mesh must contain at least three positions!");
+            throw new IllegalArgumentException("Mesh must contain at least one position with three coordinates!");
         }
-        indicesDataType = ByteFlags.INT;
+
+        indicesDataType = ByteFlags.GL_INT;
         vertexCount = indices.length;
         positionBufferRaw = BufferUtils.convertFloatArrayToFloatBuffer(positions);
 
@@ -57,11 +75,10 @@ public class Mesh {
         indicesBufferRAW = BufferUtils.convertIntArrayToIntBuffer(indices);
     }
 
-    public Mesh() {
-    }
 
     public void addVertexAttributes(VertexAttributeCollection vertexAttributeCollection) {
         this.vertexAttributes = vertexAttributeCollection;
+        this.mode = vertexAttributeCollection.getMode();
         if (indicesDataType != ByteFlags.NULL) {
             progressData();
         }
@@ -72,10 +89,11 @@ public class Mesh {
 
         if (triangles.get(triangles.size() - 1) instanceof TriangleIndicesShort) {
             this.trianglesShort = (List<TriangleIndicesShort>) triangles;
-            indicesDataType = ByteFlags.SHORT;
-        } else if (triangles.get(triangles.size() - 1) instanceof TriangleIndicesInt) {
+            indicesDataType = ByteFlags.GL_SHORT;
+        }
+        else if (triangles.get(triangles.size() - 1) instanceof TriangleIndicesInt) {
             this.trianglesInt = (List<TriangleIndicesInt>) triangles;
-            indicesDataType = ByteFlags.INT;
+            indicesDataType = ByteFlags.GL_INT;
         }
 
         vertexCount = triangles.size() * 3;
@@ -89,9 +107,6 @@ public class Mesh {
         return frontFaceWindingOrder;
     }
     public void setFrontFaceWindingOrder(byte frontFaceWindingOrder) {
-        if(!TypeconverterGL3x.testForValidity(frontFaceWindingOrder, ByteFlags.CLOCKWISE, ByteFlags.COUNTERCLOCKWISE)){
-            throw new IllegalArgumentException("Invalid Winding Order");
-        }
         this.frontFaceWindingOrder = frontFaceWindingOrder;
     }
 
@@ -104,9 +119,9 @@ public class Mesh {
             textureBufferRaw = BufferUtils.convertFloatArrayToFloatBuffer(Vector2F.toArray(vertexAttributes.getTextureCoordinates()));
         }
 
-        if (indicesDataType == ByteFlags.INT) {
+        if (indicesDataType == ByteFlags.GL_INT) {
             indicesBufferRAW = BufferUtils.convertIntArrayToIntBuffer(TriangleIndicesInt.convertToIntArray(trianglesInt));
-        } else if (indicesDataType == ByteFlags.SHORT) {
+        } else if (indicesDataType == ByteFlags.GL_SHORT) {
             indicesBufferRAW = BufferUtils.convertShortArrayToShortBuffer(TriangleIndicesShort.convertToShortArray(trianglesShort));
         } else {
             throw new IllegalArgumentException("No indices are assigned!!");
@@ -117,23 +132,27 @@ public class Mesh {
     public void activateVAO() {
         vertexArray = new VertexArrayGL3x(positionBufferRaw, normalBufferRaw, textureBufferRaw);
 
-
-        if (indicesDataType == ByteFlags.SHORT) {
-            indicesBuffer = new BufferGL3x(ByteFlags.ELEMENTARRAY_BUFFER, ByteFlags.STATIC_DRAW, indicesBufferRAW.limit() * 2);
+        if (indicesDataType == ByteFlags.GL_SHORT) {
+            indicesBuffer = new BufferGL3x(ByteFlags.GL_ELEMENTARRAY_BUFFER, ByteFlags.GL_STATIC_DRAW, indicesBufferRAW.limit() * 2);
             indicesBuffer.setData(indicesBufferRAW);
-        } else if (indicesDataType == ByteFlags.INT) {
-            indicesBuffer = new BufferGL3x(ByteFlags.ELEMENTARRAY_BUFFER, ByteFlags.STATIC_DRAW, indicesBufferRAW.limit() * 4);
+        } else if (indicesDataType == ByteFlags.GL_INT) {
+            indicesBuffer = new BufferGL3x(ByteFlags.GL_ELEMENTARRAY_BUFFER, ByteFlags.GL_STATIC_DRAW, indicesBufferRAW.limit() * 4);
             indicesBuffer.setData(indicesBufferRAW);
         }
 
-      //  clearMesh();
+        clearMesh();
     }
 
     public int getVertexCount() {
         return vertexCount;
     }
 
-    public void clearMesh() {
+    public int getDrawModeGL3x() {
+        return TypeConverterGL3x.convert(TypeConverterGL3x.Category_RENDER_MODE, mode);
+    }
+
+
+    private void clearMesh() {
         trianglesInt = null;
         trianglesShort = null;
         positionBufferRaw = null;

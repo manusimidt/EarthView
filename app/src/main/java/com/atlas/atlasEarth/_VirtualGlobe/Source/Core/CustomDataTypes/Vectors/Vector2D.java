@@ -4,6 +4,10 @@ package com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors;
 
 import java.util.List;
 
+/**
+ * Class Representing a two dimensional with doubles'S
+ */
+
 public class Vector2D {
 
     public double x, y;

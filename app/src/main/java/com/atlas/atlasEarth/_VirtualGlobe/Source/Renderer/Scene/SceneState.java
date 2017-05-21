@@ -3,13 +3,13 @@ package com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Scene;
 import android.content.Context;
 import android.renderscript.Matrix4f;
 
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Scene.Camera.Camera;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Matrices.Matrix4x2f;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Matrices.MatricesUtility;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Scene.Camera.Camera;
 
 
 /**
- * Created by Jonas on 2/11/2017.
+ * Class for storing all Scene related data (such as lightning, the camera, the frustum)
  */
 
 public class SceneState {

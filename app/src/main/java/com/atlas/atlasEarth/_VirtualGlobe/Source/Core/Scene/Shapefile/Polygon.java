@@ -1,17 +1,17 @@
 package com.atlas.atlasEarth._VirtualGlobe.Source.Core.Scene.Shapefile;
 
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.BoundingVolumes.EllipsoidTangentPlane;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.ByteFlags;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.TriangleIndices.TriangleIndicesInt;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector2D;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector3D;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector4F;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Geometry.CSConverter;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.BoundingVolumes.EllipsoidTangentPlane;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.TriangleIndices.TriangleIndicesInt;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Geometry.geographicCS.Ellipsoid;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Polygons.EarClippingOnEllipsoid;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Polygons.TriangleMeshSubdivision;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Polygons.TriangleMeshSubdivisionResult;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Rendables.Shapefiles.SimplePolygonAlgorithms;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Renderables.Shapefiles.SimplePolygonAlgorithms;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Mesh.Mesh;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Mesh.VertexAttributeCollection;
 
@@ -65,7 +65,7 @@ public class Polygon {
             result.getPositions().set(i, globeShape.scaleToGeodeticSurface(result.getPositions().get(i)));
         }
 
-        mesh.addVertexAttributes(new VertexAttributeCollection(Vector3D.toVector3FArray(result.getPositions()), null, null));
+        mesh.addVertexAttributes(new VertexAttributeCollection(Vector3D.toVector3FArray(result.getPositions()), null, null, ByteFlags.GL_TRIANGLES));
         mesh.addTriangles(result.getIndices());
 
         Random random = new Random();

@@ -14,9 +14,10 @@ import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Geometry.CSConverter;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Geometry.geographicCS.Ellipsoid;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Geometry.geographicCS.Geodetic3D;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Matrices.MatricesUtility;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Rendables.EarthModel.EarthModel;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Rendables.Post;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Rendables.Renderable;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Renderables.EarthModel.EarthModel;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Renderables.EarthModel.RayCastedGlobe;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Renderables.Post;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Renderables.Renderable;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Scene.Camera.Camera;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Scene.Camera.CameraLookAtUtility;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Testing.PointInWorldSpace;
@@ -24,7 +25,7 @@ import com.atlas.atlasEarth._VirtualGlobe.Source.Core.TouchHandeling.TouchHandle
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.RendererGL3x;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Light;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Scene.SceneState;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.States.RenderState;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.States.RenderStatesHolder;
 import com.atlas.atlasEarth.general.Utils;
 
 import java.util.ArrayList;
@@ -46,8 +47,8 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
     private RendererGL3x renderer;
     private TouchHandler touchHandler;
     private ScaleGestureDetector scaleGestureDetector;
-    Ellipsoid globeShape;
-    LinkedList<Renderable> posts;
+    private Ellipsoid globeShape;
+    private LinkedList<Renderable> posts;
 
     PointInWorldSpace pointInWorldspace;
 
@@ -63,7 +64,7 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
         super.setEGLConfigChooser(true);
         super.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
         super.setRenderer(this);
-        // Render the view only when there is a change in the drawing data
+        //Render the view only when there is a change in the drawing data
         //super.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
         scaleGestureDetector = new ScaleGestureDetector(getContext(), new ScaleListener());
 
@@ -79,11 +80,11 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
     @Override
     public void onSurfaceCreated(GL10 gl10, EGLConfig eglConfig) {
 
-             Ellipsoid ellipsoid = Ellipsoid.ScaledWgs84;
-     //RayCastedGlobe rayCastedGlobe = new RayCastedGlobe(getContext(),ellipsoid);
-     //rayCastedGlobe.onCreate();
-     //rayCastedGlobe.activateVAO();
-     //renderables.add(rayCastedGlobe);
+        Ellipsoid ellipsoid = Ellipsoid.UnitSphere;
+        RayCastedGlobe rayCastedGlobe = new RayCastedGlobe(getContext(), ellipsoid);
+        rayCastedGlobe.onCreate();
+        rayCastedGlobe.activateVAO();
+        renderables.add(rayCastedGlobe);
 
         EarthModel earthModel = new EarthModel(getContext());
         earthModel.onCreate();
@@ -94,10 +95,10 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
         light = new Light(new Vector3F(0.82f, 0.72f, 0.95f));
         Camera camera = new Camera(earthModel);
         sceneState = new SceneState(camera, getContext());
-        RenderState renderState = new RenderState();
-        renderState.loadGlobalDefaults();
+        RenderStatesHolder renderStates = new RenderStatesHolder();
+        renderStates.loadGlobalDefaults();
 
-        renderer = new RendererGL3x(getContext(), renderState, sceneState);
+        renderer = new RendererGL3x(getContext(), renderStates, sceneState);
 
         // CameraLookAtUtility.lookAtGeodeticCoordinate(camera, ellipsoid, new Geodetic2D(0, 10), 5);
         CameraLookAtUtility.lookFromTargetVectorToOrigin(camera, new Vector3F(2, 3, 1), 3);
@@ -106,19 +107,14 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
         touchHandler = new TouchHandler(MatricesUtility.createProjectionMatrix(getContext()), camera, getContext());
         touchHandler = new TouchHandler(renderer.getProjectionMatrix(), camera, getContext());
 
-        pointInWorldspace = new PointInWorldSpace(null, getContext(),
-               //new Vector3F(0.02f,0.02f,0)
+        pointInWorldspace = new PointInWorldSpace(camera, getContext(),
                 globeShape.ToVector3D(CSConverter.toRadians(new Geodetic3D(49.08147, 12.072807, 0.1))).toVector3F()
-                //new Vector3F(1.0000002f, 0, -1).normalize(),
-                //new Vector3F(0, 1.0000002f, -1).normalize(),
-                //new Vector3F(1.0000002f,1.0000002f,-1).normalize()
         );
-
 
 
     }
 
-    public PointInWorldSpace getPointInWorldSpace(){
+    public PointInWorldSpace getPointInWorldSpace() {
         return pointInWorldspace;
     }
 
@@ -152,13 +148,8 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
         renderer.postPosts(posts);
         renderer.render(light, sceneState);
 
-        GLES31.glDisable(GLES31.GL_DEPTH_TEST);
 
         pointInWorldspace.render();
-
-        GLES31.glEnable(GLES31.GL_DEPTH_TEST);
-        GLES31.glDepthFunc(GLES31.GL_LESS);
-        GLES31.glDepthRangef(0.1f, 50f);
 
 
     }
@@ -181,6 +172,7 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
     public Light getLight() {
         return light;
     }
+
     public List<Post> getPost() {
         List<Post> cache = new ArrayList<>();
         for (Renderable renderable : renderables) {
@@ -190,32 +182,37 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
         }
         return cache;
     }
-    //public List<Renderable> getShapefileRenderables() {
-    //    return shapefileRenderables;
-    //}
+
+
     public Renderable getEarth() {
         return renderables.get(0);
     }
+
     public void addPosts(Post... posts) {
         new WorkerThread().execute(posts);
     }
+
     public void removePost(int... ids) throws ArrayIndexOutOfBoundsException {
         for (int id : ids) {
             posts.removeNode(id);
         }
     }
+
     public Ellipsoid getEllipsoid() {
         return globeShape;
     }
+
     public Camera getCamera() {
         return sceneState.getCamera();
     }
+
     public static float getEarthViewHeight(Context context) {
         if (height == 0) {
             height = Utils.getDisplayDimensions(context, false) - Utils.dpToPixel(55, context) - Utils.getStatusBarHeight(context);
         }
         return height;
     }
+
     public static float getEarthViewWidth(Context context) {
         if (width == 0) {
             width = Utils.getDisplayDimensions(context, true);
@@ -239,9 +236,10 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
      */
         return super.dispatchTouchEvent(event);
     }
+
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-
+        super.requestRender();
         float x = event.getX();
         float y = event.getY();
 
@@ -271,6 +269,7 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
 
         return true;
     }
+
     private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
 
         private long previousEventTime = 0;

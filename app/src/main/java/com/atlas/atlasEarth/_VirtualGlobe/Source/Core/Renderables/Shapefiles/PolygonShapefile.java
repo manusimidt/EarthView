@@ -1,8 +1,7 @@
-package com.atlas.atlasEarth._VirtualGlobe.Source.Core.Rendables.Shapefiles;
+package com.atlas.atlasEarth._VirtualGlobe.Source.Core.Renderables.Shapefiles;
 
 import android.graphics.Color;
 import android.opengl.GLES31;
-import android.util.Log;
 
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector2D;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector3D;
@@ -11,7 +10,7 @@ import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Geometry.CSConverter;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Geometry.geographicCS.Ellipsoid;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Geometry.geographicCS.Geodetic3D;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Matrices.MatricesUtility;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Rendables.OutlinedPolylineTexture;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Renderables.OutlinedPolylineTexture;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Scene.Shapefile.Polygon;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Scene.Shapefile.ShapeType;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Scene.Shapefile.Shapefile;
@@ -104,9 +103,6 @@ public class PolygonShapefile {
 
         }
 
-
-        Log.d("debug", "Ready");
-
     }
 
     public List<Polygon> getPolygons() {
@@ -119,7 +115,7 @@ public class PolygonShapefile {
 
             shapefileShaderProgram.loadColor(polygon.getColor());
 
-            shapefileShaderProgram.loadTransformationMatrix(MatricesUtility.createTransformationMatrix(
+            shapefileShaderProgram.loadModelMatrix(MatricesUtility.createModelMatrix(
                     position,
                     rotX,
                     rotY,
@@ -129,7 +125,7 @@ public class PolygonShapefile {
             polygon.getMesh().getVertexArray().bindAndEnableVAO();
             polygon.getMesh().getIndicesBuffer().bind();
 
-            GLES31.glDrawElements(GLES31.GL_TRIANGLES, polygon.getMesh().getVertexCount(), polygon.getMesh().getIndicesBuffer().getDataType(), 0);
+            GLES31.glDrawElements(polygon.getMesh().getDrawModeGL3x(), polygon.getMesh().getVertexCount(), polygon.getMesh().getIndicesBuffer().getDataTypeGL3x(), 0);
 
             polygon.getMesh().getIndicesBuffer().unbind();
             VertexArrayNameGL3x.unbindAndDisableVAO();

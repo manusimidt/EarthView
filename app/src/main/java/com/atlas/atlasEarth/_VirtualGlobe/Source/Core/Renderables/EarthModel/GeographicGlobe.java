@@ -1,4 +1,4 @@
-package com.atlas.atlasEarth._VirtualGlobe.Source.Core.Rendables.EarthModel;
+package com.atlas.atlasEarth._VirtualGlobe.Source.Core.Renderables.EarthModel;
 
 import android.content.Context;
 import android.opengl.GLES20;
@@ -9,7 +9,7 @@ import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Ve
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Geometry.cartesianCS.Tessellation.SubdivisionSphereTessellator;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Geometry.geographicCS.Ellipsoid;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Matrices.MatricesUtility;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Rendables.Renderable;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Renderables.Renderable;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.NamesGL3x.VertexArrayNameGL3x;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.ShaderGL3x.ShaderProgramGL3x;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Shader.EarthShaderProgram;
@@ -46,7 +46,7 @@ class GeographicGlobe extends Renderable {
         GLES31.glActiveTexture(GLES20.GL_TEXTURE1);
         GLES31.glBindTexture(GLES31.GL_TEXTURE_2D, getTexture1().getTextureID());
 
-        earthShaderProgram.loadTransformationMatrix(MatricesUtility.createTransformationMatrix(
+        earthShaderProgram.loadModelMatrix(MatricesUtility.createModelMatrix(
                 getPosition(),
                 getRotX(),
                 getRotY(),
@@ -56,7 +56,7 @@ class GeographicGlobe extends Renderable {
         mesh.getVertexArray().bindAndEnableVAO();
         mesh.getIndicesBuffer().bind();
 
-        GLES31.glDrawElements(GLES31.GL_TRIANGLES, mesh.getVertexCount(), mesh.getIndicesBuffer().getDataType(), 0);
+        GLES31.glDrawElements(mesh.getDrawModeGL3x(), mesh.getVertexCount(), mesh.getIndicesBuffer().getDataTypeGL3x(), 0);
 
         mesh.getIndicesBuffer().unbind();
         VertexArrayNameGL3x.unbindAndDisableVAO();

@@ -10,9 +10,10 @@ uniform mat4x2 modelZToClipCoordinates;
 uniform sampler2D texture0; //Day Texture
 uniform sampler2D texture1; //NightTexture
 
-uniform vec3 sunPosition;
-uniform vec3 cameraPosition;
-uniform vec3 cameraPositionSquared;
+uniform vec3 lightPosition;
+uniform vec3 lightColor;
+uniform vec3 eyePosition;
+uniform vec3 eyePositionSquared;
 uniform vec3 globeOneOverRadiiSquared;
 uniform vec4 diffuseSpecularAmbientShininess;
 
@@ -92,25 +93,25 @@ vec4 dayColor(vec3 normal, vec3 toLight, vec3 toEye, vec4 diffuseSpecularAmbient
 
 
 void main(){
-     vec3 rayDirection = normalize(worldPosition - sunPosition);
-     Intersection i = rayIntersectEllipsoid(cameraPosition, cameraPosition * cameraPosition, rayDirection, globeOneOverRadiiSquared);
+     vec3 rayDirection = normalize(worldPosition - lightPosition);
+     Intersection i = rayIntersectEllipsoid(eyePosition, eyePositionSquared, rayDirection, globeOneOverRadiiSquared);
 
      if (i.Intersects){
-        vec3 position = cameraPosition + (i.NearTime * rayDirection);
+        vec3 position = eyePosition + (i.NearTime * rayDirection);
         vec3 normal = geodeticSurfaceNormal(position, globeOneOverRadiiSquared);
 
         vec3 toLight = normalize(/*og_cameraLightPosition -*/ position);
-        vec3 toEye = normalize(cameraPosition - position);
+        vec3 toEye = normalize(eyePosition - position);
 
         float intensity = lightIntensity(normal, toLight, toEye, diffuseSpecularAmbientShininess);
 
         fragmentColor = intensity * texture(texture0, computeTextureCoordinates(normal));
 
         if (useAverageDepth > 0.5){
-            position = cameraPosition + (mix(i.NearTime, i.FarTime, 0.5) * rayDirection);
+            position = eyePosition + (mix(i.NearTime, i.FarTime, 0.5) * rayDirection);
         }
 
-        //gl_FragDepth = computeWorldPositionDepth(position, modelZToClipCoordinates);
+        gl_FragDepth = computeWorldPositionDepth(position, modelZToClipCoordinates);
 
 
      }else{

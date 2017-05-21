@@ -69,7 +69,7 @@ public class LinkedList<T> {
             size--;
         } else {
 
-            Log.d("debug", "Empty LinkedList");
+            Log.w("debug", "Empty LinkedList!!!");
 
         }
 
@@ -104,7 +104,7 @@ public class LinkedList<T> {
                 }
             }
         } else {
-            System.out.println("Empty LinkedList");
+            Log.w("debug", "Empty Linked List!!");
         }
 
 
@@ -155,9 +155,6 @@ public class LinkedList<T> {
             // the Node you want to delete to the Node that's
             // next previously pointed to the reference to remove
 
-            System.out.println("FOUND A MATCH");
-            System.out.println("currentNode: " + currentNode);
-            System.out.println("firstNode: " + firstNode);
             previousNode.next = currentNode.next;
             size--;
         }

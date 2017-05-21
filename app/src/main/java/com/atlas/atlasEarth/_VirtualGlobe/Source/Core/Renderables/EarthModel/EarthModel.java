@@ -1,4 +1,4 @@
-package com.atlas.atlasEarth._VirtualGlobe.Source.Core.Rendables.EarthModel;
+package com.atlas.atlasEarth._VirtualGlobe.Source.Core.Renderables.EarthModel;
 
 
 import android.content.Context;

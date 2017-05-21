@@ -3,7 +3,7 @@ package com.atlas.atlasEarth._VirtualGlobe.Source.Core.Testing;
 import android.content.Context;
 import android.renderscript.Matrix4f;
 
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Rendables.Renderable;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Renderables.Renderable;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Scene.Camera.Camera;
 
 

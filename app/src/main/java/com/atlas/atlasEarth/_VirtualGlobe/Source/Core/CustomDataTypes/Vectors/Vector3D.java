@@ -5,6 +5,10 @@ package com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Class Representing a three dimensional with doubles'S
+ */
+
 public class Vector3D {
 
     public double x, y, z;

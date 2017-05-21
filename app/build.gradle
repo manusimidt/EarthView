@@ -12,6 +12,9 @@ android {
         renderscriptTargetApi 25
         renderscriptSupportModeEnabled true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testOptions {
+            unitTests.returnDefaultValues = true
+        }
     }
 
 

@@ -7,6 +7,10 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 
+/**
+ * Class representing a point light source
+ */
+
 public class Light {
     private Vector3F position;
     private Vector3F color;
@@ -15,6 +19,9 @@ public class Light {
     private float angle = 0;
     private float tilt = -20;
 
+    /**
+     * @param color Color of the Light
+     */
     public Light(Vector3F color) {
         this.color = color;
         this.position = new Vector3F(distanceToEarth, distanceToEarth, 0);
@@ -55,9 +62,7 @@ public class Light {
         calculateCoordinates();
     }
 
-    /**
-     * Getter & Setter
-     */
+
     public Vector3F getColor() {
         return color;
     }

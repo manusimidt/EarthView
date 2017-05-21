@@ -1,10 +1,10 @@
 
 
-in vec3 position;
-in vec3 normal;
-in vec2 texCoord;
+layout(location = 0) in vec3 position;
+layout(location = 1) in vec3 normal;
+layout(location = 2) in vec2 texCoord;
 
-uniform mat4 transformationMatrix;
+uniform mat4 modelMatrix;
 uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
 uniform vec3 lightPosition;
@@ -23,7 +23,7 @@ vec4 modelToWindowCoordinates(vec4 v, mat4 modelViewPerspectiveMatrix, mat4 view
 void main(){
     textureCoords = texCoord;
     surfaceNormal = normal;
-    vec4 worldPosition = projectionMatrix * viewMatrix * transformationMatrix * vec4(position,1.0);
+    vec4 worldPosition = projectionMatrix * viewMatrix * modelMatrix * vec4(position,1.0);
     toLightVector = lightPosition - worldPosition.xyz;
     gl_Position = worldPosition;
     //gl_Position = modelToWindowCoordinates(vec4(position, 1.0),viewMatrix,transformationMatrix);
