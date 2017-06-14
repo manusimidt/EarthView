@@ -22,6 +22,7 @@ public class RenderStatesHolder {
         faceCulling = new FaceCulling();
         colorMask = new ColorMask(true, true, true, true);
     }
+
     public void loadGlobalDefaults() {
         faceCulling.enable();
         faceCulling.setCullFace(ByteFlags.GL_BACK);
@@ -53,6 +54,17 @@ public class RenderStatesHolder {
 
     public void setFaceCulling(FaceCulling faceCulling) {
         this.faceCulling = faceCulling;
+    }
+
+
+
+    public void markChangedRenderStates(RenderStatesHolder renderStatesHolder2) {
+        if (!(this.getDepthTest().equals(renderStatesHolder2.getDepthTest()))) {
+            DepthTest.setDirty();
+        }
+        if (this.getFaceCulling().equals(renderStatesHolder2.getFaceCulling())){
+            FaceCulling.setDirty();
+        }
     }
 
 }

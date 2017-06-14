@@ -4,16 +4,15 @@ package com.atlas.atlasEarth._VirtualGlobe.Source.Core.TouchHandeling;
 import android.content.Context;
 import android.renderscript.Matrix4f;
 
-
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector3F;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Scene.Camera.Camera;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Matrices.MatricesUtility;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Scene.Camera.Camera;
 
 public class TouchHandler {
 
     private Vector3F currentRay;
-    private Matrix4f inversedProjectionMatrix;
-    private Matrix4f inversedViewMatrix;
+    private Matrix4f inverseProjectionMatrix;
+    private Matrix4f inverseViewMatrix;
     private Camera camera;
     private Context context;
     private GLTouchEvent staticTouchPoint;
@@ -22,25 +21,26 @@ public class TouchHandler {
 
 
     public TouchHandler(Matrix4f projectionMatrix, Camera camera, Context context) {
-        this.inversedProjectionMatrix = projectionMatrix;
-        this.inversedProjectionMatrix.inverse();
-        inversedViewMatrix = MatricesUtility.createViewMatrix(camera);
-        inversedViewMatrix.inverse();
+        this.inverseProjectionMatrix = projectionMatrix;
+        this.inverseProjectionMatrix.inverse();
+        inverseViewMatrix = MatricesUtility.createViewMatrix(camera);
+        inverseViewMatrix.inverse();
         this.camera = camera;
         this.context = context;
-        staticTouchPoint = new GLTouchEvent(inversedProjectionMatrix, inversedViewMatrix, context);
+        staticTouchPoint = new GLTouchEvent(inverseProjectionMatrix, inverseViewMatrix, context);
     }
 
     public void setUp(float touchX, float touchY, Camera camera){
-        inversedViewMatrix = MatricesUtility.createViewMatrix(camera);
-        inversedViewMatrix.inverse();
-        staticTouchPoint.updateTouchEvent(inversedViewMatrix, touchX, touchY);
+        inverseViewMatrix = MatricesUtility.createViewMatrix(camera);
+        inverseViewMatrix.inverse();
+        staticTouchPoint.updateTouchEvent(inverseViewMatrix, touchX, touchY);
         dynamicTouchPoint = GLTouchEvent.copyEvent(context, staticTouchPoint);
     }
+
     public void update(float touchX, float touchY, Camera camera) {
-        inversedViewMatrix = MatricesUtility.createViewMatrix(camera);
-        inversedViewMatrix.inverse();
-        dynamicTouchPoint.updateTouchEvent(inversedViewMatrix, touchX, touchY);
+        inverseViewMatrix = MatricesUtility.createViewMatrix(camera);
+        inverseViewMatrix.inverse();
+        dynamicTouchPoint.updateTouchEvent(inverseViewMatrix, touchX, touchY);
         calculateCameraRotation();
     }
     public void reset(){

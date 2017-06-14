@@ -129,6 +129,7 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
     @Override
     public void onDrawFrame(GL10 gl10) {
 
+
         if (doneQueue.size() != 0) {
             for (Renderable renderable : doneQueue) {
                 renderable.activateVAO();
@@ -150,8 +151,6 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
 
 
         pointInWorldspace.render();
-
-
     }
 
 

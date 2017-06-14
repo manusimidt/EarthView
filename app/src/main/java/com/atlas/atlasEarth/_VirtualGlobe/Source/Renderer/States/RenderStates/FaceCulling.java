@@ -3,16 +3,33 @@ package com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.States.RenderStates;
 
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.ByteFlags;
 
+
 public class FaceCulling extends RenderState {
 
 
     private byte cullFace;
     private byte windingOrder;
+    private static boolean dirty = true;
 
 
     public FaceCulling() {
         cullFace = ByteFlags.GL_BACK;
         windingOrder = ByteFlags.COUNTERCLOCKWISE;
+    }
+
+
+    public static void setDirty() {
+        FaceCulling.dirty = true;
+    }
+
+    @Override
+    public boolean isDirty() {
+        return FaceCulling.dirty;
+    }
+
+    @Override
+    public void isSynced() {
+        FaceCulling.dirty = false;
     }
 
 
@@ -48,4 +65,13 @@ public class FaceCulling extends RenderState {
     }
 
 
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof FaceCulling)) {
+            return false;
+        }
+        return (this.isEnabled() == ((FaceCulling) obj).isEnabled()) &&
+                this.getCullFace() == ((FaceCulling) obj).getCullFace() &&
+                this.getWindingOrder() == ((FaceCulling) obj).getCullFace();
+    }
 }

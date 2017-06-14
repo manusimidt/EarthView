@@ -9,6 +9,11 @@ import android.opengl.GLUtils;
 
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Texture;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
 
 /**
  * Class for Loading Textures to OpenGL
@@ -24,12 +29,26 @@ public class TextureLoaderGL3x {
     public static void loadTexture(Context context, Texture texture) {
         Bitmap bitmap;
 
-        if(texture.getResourceID()!=0) {
+        if (texture.getResourceID() != 0) {
             //if the Texture contains a resource id, take the Bitmap from it
             final BitmapFactory.Options options = new BitmapFactory.Options();
             options.inScaled = false;   // No pre-scaling
-              bitmap = BitmapFactory.decodeResource(context.getResources(), texture.getResourceID(), options);
-        }else{
+            bitmap = BitmapFactory.decodeResource(context.getResources(), texture.getResourceID(), options);
+
+        } else if (!texture.getUrl().isEmpty()) {
+            try {
+                URL url = new URL(texture.getUrl());
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setDoInput(true);
+                connection.connect();
+                InputStream input = connection.getInputStream();
+                bitmap = BitmapFactory.decodeStream(input);
+            } catch (IOException e) {
+                e.printStackTrace();
+                bitmap = texture.getBitmap();
+            }
+
+        } else {
             //if the Texture contains a Bitmap take the Bitmap
             bitmap = texture.getBitmap();
         }

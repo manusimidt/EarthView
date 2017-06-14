@@ -7,6 +7,9 @@
     <uses-feature android:name="android.hardware.Camera2.full" android:required="true"/>
     <uses-feature android:name="android.hardware.location" android:required="true"/>
     <uses-feature android:name="android.hardware.touchscreen.multitouch" android:required="true"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET"/>
+
 
 
     <application

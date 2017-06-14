@@ -10,13 +10,14 @@ import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.NamesGL3x.Texture
  * Class for a Texture for OpenGL, loaded by {@link com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.TextureLoaderGL3x}
  */
 
-public class Texture {
+public class Texture extends TextureNameGL3x{
 
     private int resourceID = 0;
-    private int textureID;
+    private String url = "";
     private float shineDamper = 1; //Stride in which the camera can be to catch the reflection vektor
     private float reflectivity = 0; //Length of the reflection vector
     private Bitmap bitmap = null;
+
 
     /**
      * Load a texture out of a Resource folder
@@ -24,7 +25,6 @@ public class Texture {
      */
     public Texture(int resourceID) {
         this.resourceID = resourceID;
-        textureID = new TextureNameGL3x().getTextureID();
     }
 
     /**
@@ -33,24 +33,29 @@ public class Texture {
      */
     public Texture(Bitmap bitmap){
         this.bitmap = bitmap;
-        textureID = new TextureNameGL3x().getTextureID();
     }
 
-    // TODO: 5/16/2017 Load a Texture from the Server to OpenGL for Posts
-    @Deprecated
-    private Texture(String url){
-
+    /**
+     * @param url the url of the Bitmap which should be loaded to OpenGL
+     */
+    public Texture(String url){
+        this.url = url;
     }
 
     public int getResourceID() {
         return resourceID;
     }
+
+    public String getUrl() {
+        return url;
+    }
+
     public Bitmap getBitmap(){
         return bitmap;
     }
 
     public int getTextureID() {
-        return textureID;
+        return super.getTextureID();
     }
 
     public float getReflectivity() {

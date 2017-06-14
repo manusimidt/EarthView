@@ -33,8 +33,6 @@ const vec4 og_diffuseSpecularAmbientShininess = vec4(0.2,0.2,0.2,1);
     vec2 computeTextureCoordinates(vec3 normal)
     {
         return vec2(atan(normal.y, normal.x) * og_oneOverTwoPi + 0.5, asin(normal.z) * og_oneOverPi + 0.5);
-        //return vec2(atan(normal.x, normal.z) * 0.5 * og_oneOverTwoPi + 0.5, normal.y  * 0.5 + 0.5);
-        //return vec2(asin(normal.x)* og_oneOverPi+0.5, asin(normal.y)*og_oneOverPi+0.5);
     }
 
     vec4 nightColor(vec3 normal)

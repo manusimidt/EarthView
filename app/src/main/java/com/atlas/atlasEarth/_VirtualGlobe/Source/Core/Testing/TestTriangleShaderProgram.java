@@ -9,9 +9,7 @@ import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Scene.Camera.Camera;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.ShaderGL3x.ShaderProgramGL3x;
 
 
-/**
- * Created by Jonas on 5/7/2017.
- */
+
 
 public class TestTriangleShaderProgram extends ShaderProgramGL3x {
     private int location_projectionMatrix;

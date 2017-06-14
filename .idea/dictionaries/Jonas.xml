@@ -2,11 +2,14 @@
   <dictionary name="Jonas">
     <words>
       <w>coords</w>
+      <w>geocoding</w>
+      <w>geomentry</w>
       <w>gles</w>
       <w>renderable</w>
       <w>renderables</w>
       <w>shapefile</w>
       <w>shapefiles</w>
+      <w>vertify</w>
     </words>
   </dictionary>
 </component>

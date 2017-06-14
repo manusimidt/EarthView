@@ -9,6 +9,10 @@ import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Ve
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Matrices.MatricesUtility;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Scene.Camera.Camera;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Tools.BufferUtils;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.RenderStateAdapterGL3x;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.States.RenderStates.DepthTest;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.States.RenderStates.FaceCulling;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.States.RenderStatesHolder;
 
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
@@ -42,10 +46,12 @@ public class PointInWorldSpace {
     private float rotX;
     private float rotY;
     private float rotZ;
+    private RenderStatesHolder renderStatesHolder;
 
     public PointInWorldSpace(Camera camera, Context context, Vector3F... positions) {
         useProjectionMatrix = true;
         useTransformationMatrix = true;
+        renderStatesHolder = new RenderStatesHolder();
         useViewMatrix = true;
         positionX = 0;
         positionY = 0;
@@ -81,10 +87,16 @@ public class PointInWorldSpace {
         GLES31.glUseProgram(programID);
         loadMatrix(uniform_projectionMatrix, projectionMatrix);
         GLES31.glUseProgram(0);
+
     }
 
 
     public void render() {
+        RenderStateAdapterGL3x.setDirty();
+        DepthTest.setDirty();
+        FaceCulling.setDirty();
+        GLES31.glDisable(GLES31.GL_DEPTH_TEST);
+        GLES31.glDisable(GLES31.GL_CULL_FACE);
         GLES31.glUseProgram(programID);
         GLES31.glBindVertexArray(vaoID);
 

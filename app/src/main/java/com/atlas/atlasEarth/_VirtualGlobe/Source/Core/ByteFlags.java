@@ -89,26 +89,42 @@ public class ByteFlags {
     /**
      * All negative values are not implemented in the GL3x Converter!!!
      */
+    public static final byte UNKNOWN_ERROR = -1;
     //-----ShapeFiles------//
     //ShapeType
-    public static final byte NULL_SHAPE = -1;
-    public static final byte POINT = -2;
-    public static final byte POLYLINE = -3;
-    public static final byte POLYGON = -4;
-    public static final byte MULTITOUCH = -5;
-    public static final byte POINT_Z = -6;
-    public static final byte POLYLINE_Z = -7;
-    public static final byte POLYGON_Z = -8;
-    public static final byte MULTI_POINT_Z = -9;
-    public static final byte POINT_M = -10;
-    public static final byte POLYLINE_M = -11;
-    public static final byte POLYGON_M = -12;
-    public static final byte MULTI_POINT_M = -13;
-    public static final byte MULTIPATCH = -14;
+    public static final byte NULL_SHAPE = -2;
+    public static final byte POINT = -3;
+    public static final byte POLYLINE = -4;
+    public static final byte POLYGON = -5;
+    public static final byte MULTITOUCH = -6;
+    public static final byte POINT_Z = -7;
+    public static final byte POLYLINE_Z = -8;
+    public static final byte POLYGON_Z = -9;
+    public static final byte MULTI_POINT_Z = -10;
+    public static final byte POINT_M = -11;
+    public static final byte POLYLINE_M = -12;
+    public static final byte POLYGON_M = -13;
+    public static final byte MULTI_POINT_M = -14;
+    public static final byte MULTIPATCH = -15;
     //~ShapeType
     //~-----ShapeFiles------//
 
     //-----MeshDataTypes-----//
 
     //~----MeshDataTypes-----//
+
+    //-----GeocodingAPIFailureCodes----//
+    public static final byte EMPTY_RESULT = -50;
+    public static final byte ZERO_RESULTS = -51;
+    public static final byte OVER_QUERY_LIMIT = -52;
+    public static final byte REQUEST_DENIED = -53;
+    public static final byte INVALID_REQUEST = -54;
+
+    //-----GeocodingApiLocationTypes------//
+    public static final byte ROOFTOP = -55;
+    public static final byte RANGE_INTERPOLATED = -56;
+    public static final byte GEOMETRIC_CENTER = -57;
+    public static final byte APPROXIMATE = -58;
+
+
 }

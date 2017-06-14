@@ -11,10 +11,13 @@ import android.view.ViewGroup;
 import com.atlas.atlasEarth._VirtualGlobe.EarthView;
 import com.atlas.atlasEarth._VirtualGlobe.EarthViewOptions;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector3F;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Geometry.geographicCS.Geodetic2D;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Matrices.MatricesUtility;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Renderables.Post;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Scene.Camera.Camera;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Testing.ControlInterfaces;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Network.AddressToGeographicConverter;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Network.GeoData.Address;
 import com.atlas.atlasEarth.main.MainActivity;
 
 
@@ -331,7 +334,7 @@ public class MapFragment extends Fragment {
             }
         });
 
-        Camera camera = new Camera(new Vector3F(0,0,0));
+        Camera camera = new Camera(new Vector3F(0, 0, 0));
         camera.setPosition(0, 0, 5);
         camera.calculateCameraPosition();
         Matrix4f expected = MatricesUtility.createViewMatrix(camera);
@@ -339,6 +342,23 @@ public class MapFragment extends Fragment {
                 new Vector3F(0, 0, 5),
                 new Vector3F(0, 0, 0),
                 new Vector3F(0, 1, 0));
+        earthView.addPosts(new Post(1, earthView, new Geodetic2D(0, 0)));
+
+
+        AddressToGeographicConverter addressToGeographicConverter = new AddressToGeographicConverter(new AddressToGeographicConverter.AddressToGeographicConverterCallback() {
+            @Override
+            public void onSuccess(Address[] coordinates) {
+
+            }
+
+            @Override
+            public void onFailure(byte errorCode) {
+
+            }
+        });
+        addressToGeographicConverter.convert("Carl Loewe Str 7");
+
+
         return earthView;
     }
 

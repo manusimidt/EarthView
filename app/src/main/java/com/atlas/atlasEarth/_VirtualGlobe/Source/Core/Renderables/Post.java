@@ -1,6 +1,5 @@
 package com.atlas.atlasEarth._VirtualGlobe.Source.Core.Renderables;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.opengl.GLES31;
 
@@ -24,22 +23,59 @@ import java.util.List;
 
 public class Post extends Renderable {
 
-    private Context context;
     private int id = -1;
     private EarthView earthView;
 
-    public Post(int postID, EarthView earthView, Geodetic2D coordinates, Bitmap image, String name, String date, Context context) {
+    public Post(int postID, EarthView earthView, Geodetic2D coordinates, Bitmap image) {
         super(earthView.getEllipsoid().ToVector3D(coordinates).toVector3F(), 0, 0, 0, 0.5f);
         super.setTexture(new Texture(image));
-        this.context = context;
         this.id = postID;
         this.earthView = earthView;
     }
 
+    public Post(int postID, EarthView earthView, Geodetic2D coordinates) {
+        super(earthView.getEllipsoid().ToVector3D(coordinates).toVector3F(), 0, 0, 0, 0.5f);
+        String url = "http://www.bento.de/upload/images/imager/upload/images/714064/trumpmeme_eff89a5985a475378cd3170917df5aaf.jpg";
+        super.setTexture(new Texture(url));
+        this.id = postID;
+        this.earthView = earthView;
+    }
 
     @Override
     public void onCreate() {
 
+        super.mesh = loadBasicCube();
+        //   super.mesh = ObjLoader.loadOBJ(R.raw.text_model_source, context);
+    }
+
+
+    @Override
+    public void render(ShaderProgramGL3x shaderProgram) {
+        PostShaderProgram postShaderProgram = (PostShaderProgram) shaderProgram;
+
+        postShaderProgram.loadTextureIdentifier();
+
+        GLES31.glActiveTexture(GLES31.GL_TEXTURE0);
+        GLES31.glBindTexture(GLES31.GL_TEXTURE_2D, getTexture0().getTextureID());
+
+        postShaderProgram.loadModelMatrix(MatricesUtility.createModelMatrix(
+                getPosition(),
+                getRotX() + earthView.getCamera().getPitch(),
+                getRotY() + earthView.getCamera().getAngleAroundEarth(),
+                getRotZ() + earthView.getCamera().getPitch(),
+                getScale()));
+
+
+        mesh.getVertexArray().bindAndEnableVAO();
+        mesh.getIndicesBuffer().bind();
+
+        GLES31.glDrawElements(mesh.getDrawModeGL3x(), mesh.getVertexCount(), mesh.getIndicesBuffer().getDataTypeGL3x(), 0);
+
+        mesh.getIndicesBuffer().unbind();
+        VertexArrayNameGL3x.unbindAndDisableVAO();
+    }
+
+    private Mesh loadBasicCube() {
         List<Vector3F> positions = new ArrayList<>();
         List<Vector3F> normals = new ArrayList<>();
         List<Vector2F> textureCoords = new ArrayList<>();
@@ -138,37 +174,12 @@ public class Post extends Renderable {
         normals.add(new Vector3F(0, 1, 0));
         normals.add(new Vector3F(0, 1, 0));
 
-        super.mesh = new Mesh();
-        super.mesh.addVertexAttributes(new VertexAttributeCollection(positions, normals, textureCoords, ByteFlags.GL_TRIANGLES));
-        super.mesh.addTriangles(indices);
-     //   super.mesh = ObjLoader.loadOBJ(R.raw.text_model_source, context);
+        Mesh mesh = new Mesh();
+        mesh.addVertexAttributes(new VertexAttributeCollection(positions, normals, textureCoords, ByteFlags.GL_TRIANGLES));
+        mesh.addTriangles(indices);
+        return mesh;
     }
 
-    @Override
-    public void render(ShaderProgramGL3x shaderProgram) {
-        PostShaderProgram postShaderProgram = (PostShaderProgram) shaderProgram;
-
-        postShaderProgram.loadTextureIdentifier();
-
-        GLES31.glActiveTexture(GLES31.GL_TEXTURE0);
-        GLES31.glBindTexture(GLES31.GL_TEXTURE_2D, getTexture0().getTextureID());
-
-        postShaderProgram.loadModelMatrix(MatricesUtility.createModelMatrix(
-                getPosition(),
-                getRotX() + earthView.getCamera().getPitch(),
-                getRotY()+earthView.getCamera().getAngleAroundEarth(),
-                getRotZ() + earthView.getCamera().getPitch(),
-                getScale()));
-
-
-        mesh.getVertexArray().bindAndEnableVAO();
-        mesh.getIndicesBuffer().bind();
-
-        GLES31.glDrawElements(mesh.getDrawModeGL3x(), mesh.getVertexCount(), mesh.getIndicesBuffer().getDataTypeGL3x(), 0);
-
-        mesh.getIndicesBuffer().unbind();
-        VertexArrayNameGL3x.unbindAndDisableVAO();
-    }
     public int getId() {
         return id;
     }
