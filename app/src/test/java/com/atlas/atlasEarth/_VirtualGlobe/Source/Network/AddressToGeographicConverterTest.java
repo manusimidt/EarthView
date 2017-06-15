@@ -23,7 +23,7 @@ public class AddressToGeographicConverterTest {
 
             }
         });
-        converter.convert("Carl Loewe Str.7");
+       // converter.convert("Carl Loewe Str.7");
 
     }
 

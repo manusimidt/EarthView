@@ -1,7 +1,6 @@
 package com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.ModelRenderer;
 
 import android.content.Context;
-import android.opengl.GLES31;
 import android.renderscript.Matrix4f;
 
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Renderables.Renderable;
@@ -23,12 +22,12 @@ public class ShapefileRenderer {
     }
 
     public void render(List<Renderable> polygons, Camera camera) {
-        GLES31.glCullFace(GLES31.GL_CW);
+
         shaderProgram.loadViewMatrix(camera);
         for (Renderable polygon : polygons) {
             polygon.render(shaderProgram);
         }
-        GLES31.glCullFace(GLES31.GL_CCW);
+
     }
 
 

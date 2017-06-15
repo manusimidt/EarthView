@@ -108,7 +108,7 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
         touchHandler = new TouchHandler(renderer.getProjectionMatrix(), camera, getContext());
 
         pointInWorldspace = new PointInWorldSpace(camera, getContext(),
-                globeShape.ToVector3D(CSConverter.toRadians(new Geodetic3D(49.08147, 12.072807, 0.1))).toVector3F()
+                globeShape.ToVector3D(CSConverter.toRadians(new Geodetic3D(0, 0, 0.1))).toVector3F()
         );
 
 

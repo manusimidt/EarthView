@@ -26,7 +26,6 @@ public class MapFragment extends Fragment {
 
     public MapFragment() {
         // Required empty public constructor
-
     }
 
     EarthView earthView;
@@ -342,13 +341,12 @@ public class MapFragment extends Fragment {
                 new Vector3F(0, 0, 5),
                 new Vector3F(0, 0, 0),
                 new Vector3F(0, 1, 0));
-        earthView.addPosts(new Post(1, earthView, new Geodetic2D(0, 0)));
-
-
         AddressToGeographicConverter addressToGeographicConverter = new AddressToGeographicConverter(new AddressToGeographicConverter.AddressToGeographicConverterCallback() {
             @Override
-            public void onSuccess(Address[] coordinates) {
-
+            public void onSuccess(Address[] addresses) {
+                for (Address address : addresses) {
+                    earthView.addPosts(new Post(1, earthView, new Geodetic2D(address.getLocation()[0], address.getLocation()[1])));
+                }
             }
 
             @Override
@@ -357,6 +355,8 @@ public class MapFragment extends Fragment {
             }
         });
         addressToGeographicConverter.convert("Carl Loewe Str 7");
+
+
 
 
         return earthView;

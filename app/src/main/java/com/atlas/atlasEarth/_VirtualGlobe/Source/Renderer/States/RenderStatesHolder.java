@@ -26,7 +26,6 @@ public class RenderStatesHolder {
     public void loadGlobalDefaults() {
         faceCulling.enable();
         faceCulling.setCullFace(ByteFlags.GL_BACK);
-        faceCulling.setWindingOrder(ByteFlags.COUNTERCLOCKWISE);
         depthTest.setDepthTestFunction(ByteFlags.GL_LESS);
         depthTest.enable();
     }

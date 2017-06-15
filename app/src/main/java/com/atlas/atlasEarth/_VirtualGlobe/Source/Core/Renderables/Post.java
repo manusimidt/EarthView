@@ -43,8 +43,8 @@ public class Post extends Renderable {
 
     @Override
     public void onCreate() {
-
-        super.mesh = loadBasicCube();
+        super.mesh = loadBasicPlane();
+        //super.mesh = loadBasicCube();
         //   super.mesh = ObjLoader.loadOBJ(R.raw.text_model_source, context);
     }
 
@@ -178,6 +178,42 @@ public class Post extends Renderable {
         mesh.addVertexAttributes(new VertexAttributeCollection(positions, normals, textureCoords, ByteFlags.GL_TRIANGLES));
         mesh.addTriangles(indices);
         return mesh;
+    }
+
+    private Mesh loadBasicPlane(){
+        List<Vector3F> positions = new ArrayList<>();
+        List<Vector3F> normals = new ArrayList<>();
+        List<Vector2F> textureCoords = new ArrayList<>();
+        List<TriangleIndicesShort> indices = new ArrayList<>();
+
+        positions.add(new Vector3F(-0.5f, 0.5f, 0f));     //P0 //0
+        positions.add(new Vector3F(-0.5f, -0.5f, 0f));    //P1 //1
+        positions.add(new Vector3F(0.5f, -0.5f, 0f));     //P2 //2
+        positions.add(new Vector3F(0.5f, 0.5f, 0f));      //P3 //3
+
+        indices.add(new TriangleIndicesShort((short) 0, (short) 3, (short) 1));//1
+        indices.add(new TriangleIndicesShort((short) 3, (short) 2, (short) 1));//2
+
+        normals.add(new Vector3F(0, 0, 1f));
+        normals.add(new Vector3F(0, 0, 1f));
+        normals.add(new Vector3F(0, 0, 1f));
+        normals.add(new Vector3F(0, 0, 1f));
+
+        textureCoords.add(new Vector2F(1.0f, 0.0f));
+        textureCoords.add(new Vector2F(1.0f, 1.0f));
+        textureCoords.add(new Vector2F(0.0f, 1.0f));
+        textureCoords.add(new Vector2F(0.0f, 0.0f));
+
+
+
+        Mesh mesh = new Mesh();
+        mesh.setFrontFaceWindingOrder(ByteFlags.CLOCKWISE);
+        mesh.addTriangles(indices);
+        mesh.addVertexAttributes(new VertexAttributeCollection(positions, normals, textureCoords, ByteFlags.GL_TRIANGLES));
+
+        return mesh;
+
+
     }
 
     public int getId() {

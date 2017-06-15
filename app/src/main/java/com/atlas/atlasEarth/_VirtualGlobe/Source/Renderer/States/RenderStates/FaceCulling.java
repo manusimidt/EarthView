@@ -8,13 +8,11 @@ public class FaceCulling extends RenderState {
 
 
     private byte cullFace;
-    private byte windingOrder;
     private static boolean dirty = true;
 
 
     public FaceCulling() {
         cullFace = ByteFlags.GL_BACK;
-        windingOrder = ByteFlags.COUNTERCLOCKWISE;
     }
 
 
@@ -56,13 +54,7 @@ public class FaceCulling extends RenderState {
         return cullFace;
     }
 
-    public void setWindingOrder(byte windingOrder) {
-        this.windingOrder = windingOrder;
-    }
 
-    public byte getWindingOrder() {
-        return windingOrder;
-    }
 
 
     @Override
@@ -71,7 +63,6 @@ public class FaceCulling extends RenderState {
             return false;
         }
         return (this.isEnabled() == ((FaceCulling) obj).isEnabled()) &&
-                this.getCullFace() == ((FaceCulling) obj).getCullFace() &&
-                this.getWindingOrder() == ((FaceCulling) obj).getCullFace();
+                this.getCullFace() == ((FaceCulling) obj).getCullFace();
     }
 }

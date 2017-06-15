@@ -83,6 +83,10 @@ public class RendererGL3x {
             }
 
             /*
+             * Set the Front Face
+             */
+            renderStateAdapter.fetchFrontFace(renderable.getWindingOrder());
+            /*
             * Handle RenderStates for each Renderable, if the Renderable has no specific
             * RenderState sync the default
             */

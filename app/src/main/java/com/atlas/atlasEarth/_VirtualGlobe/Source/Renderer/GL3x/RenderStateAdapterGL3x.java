@@ -5,6 +5,9 @@ import android.support.annotation.NonNull;
 
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.States.RenderStatesHolder;
 
+import static com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.TypeConverterGL3x.Category_FACET_CULLING;
+import static com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.TypeConverterGL3x.Category_WINDING_ORDER;
+
 
 /**
  * Class for Syncing RenderStates in OpenGL
@@ -53,8 +56,7 @@ public class RenderStateAdapterGL3x {
             if (renderStates.getFaceCulling().isDirty()) {
                 if (renderStates.getFaceCulling().isEnabled()) {
                     GLES31.glEnable(GLES31.GL_CULL_FACE);
-                    GLES31.glCullFace(TypeConverterGL3x.convert(TypeConverterGL3x.Category_FACET_CULLING, renderStates.getFaceCulling().getCullFace()));
-                    GLES31.glFrontFace(TypeConverterGL3x.convert(TypeConverterGL3x.Category_WINDING_ORDER, renderStates.getFaceCulling().getWindingOrder()));
+                    GLES31.glCullFace(TypeConverterGL3x.convert(Category_FACET_CULLING, renderStates.getFaceCulling().getCullFace()));
                 } else {
                     GLES31.glDisable(GLES31.GL_CULL_FACE);
                 }
@@ -70,6 +72,10 @@ public class RenderStateAdapterGL3x {
 
     public static void setDirty() {
         dirty = true;
+    }
+
+    public void fetchFrontFace(byte frontFace){
+        GLES31.glFrontFace(TypeConverterGL3x.convert(Category_WINDING_ORDER, frontFace));
     }
 
 

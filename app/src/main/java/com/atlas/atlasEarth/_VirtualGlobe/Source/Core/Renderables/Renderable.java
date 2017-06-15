@@ -114,6 +114,9 @@ public abstract class Renderable {
         }
     }
 
+    public byte getWindingOrder(){
+        return mesh.getFrontFaceWindingOrder();
+    }
     public void setRotZ(float rotZ) {
         this.rotZ = rotZ;
     }

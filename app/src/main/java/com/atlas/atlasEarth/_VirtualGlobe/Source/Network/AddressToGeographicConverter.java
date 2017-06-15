@@ -97,12 +97,12 @@ public class AddressToGeographicConverter {
                     Log.i("Geocoding", "Request successful, reading Addresses");
                     return true;
                 case "ZERO_RESULTS":
-                    callback.onFailure(ZERO_RESULTS);
                     Log.w("Geocoding", "No results were found!");
+                    callback.onFailure(ZERO_RESULTS);
                     break;
                 case "OVER_QUERY_LIMIT":
-                    callback.onFailure(OVER_QUERY_LIMIT);
                     Log.e("Geocoding", "Unknown error occurred while reading Google Geocoding Request!");
+                    callback.onFailure(OVER_QUERY_LIMIT);
                     break;
                 case "REQUEST_DENIED":
                     callback.onFailure(REQUEST_DENIED);
@@ -111,12 +111,12 @@ public class AddressToGeographicConverter {
                     callback.onFailure(INVALID_REQUEST);
                     break;
                 case "UNKNOWN_ERROR":
-                    callback.onFailure(UNKNOWN_ERROR);
                     Log.e("Geocoding", "Unknown error occurred while reading Google Geocoding Request!");
+                    callback.onFailure(UNKNOWN_ERROR);
                     break;
                 default:
-                    callback.onFailure(UNKNOWN_ERROR);
                     Log.e("Geocoding", "Can not resolve Status from Google Geocoding API! STATUS : " + status.toString());
+                    callback.onFailure(UNKNOWN_ERROR);
             }
             return false;
         }

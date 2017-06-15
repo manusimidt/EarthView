@@ -35,6 +35,7 @@ public class SubdivisionSphereTessellator {
         subdivide(positions, triangles, new TriangleIndicesShort((short) 1, (short) 3, (short) 2), numberOfSubdivisions);
 
 
+        mesh.setFrontFaceWindingOrder(ByteFlags.COUNTERCLOCKWISE);
         mesh.addVertexAttributes(new VertexAttributeCollection(positions,null, null, ByteFlags.GL_TRIANGLES));
         mesh.addTriangles(triangles);
         return mesh;

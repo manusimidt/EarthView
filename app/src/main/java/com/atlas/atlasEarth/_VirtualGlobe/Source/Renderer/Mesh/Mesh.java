@@ -90,15 +90,16 @@ public class Mesh {
         if (triangles.get(triangles.size() - 1) instanceof TriangleIndicesShort) {
             this.trianglesShort = (List<TriangleIndicesShort>) triangles;
             indicesDataType = ByteFlags.GL_SHORT;
-        }
-        else if (triangles.get(triangles.size() - 1) instanceof TriangleIndicesInt) {
+        } else if (triangles.get(triangles.size() - 1) instanceof TriangleIndicesInt) {
             this.trianglesInt = (List<TriangleIndicesInt>) triangles;
             indicesDataType = ByteFlags.GL_INT;
         }
 
         vertexCount = triangles.size() * 3;
 
-        progressData();
+        if (vertexAttributes != null) {
+            progressData();
+        }
 
     }
 
@@ -106,6 +107,7 @@ public class Mesh {
     public byte getFrontFaceWindingOrder() {
         return frontFaceWindingOrder;
     }
+
     public void setFrontFaceWindingOrder(byte frontFaceWindingOrder) {
         this.frontFaceWindingOrder = frontFaceWindingOrder;
     }

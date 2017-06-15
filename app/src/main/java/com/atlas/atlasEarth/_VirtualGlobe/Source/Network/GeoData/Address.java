@@ -95,6 +95,7 @@ public class Address {
             }
         }
     }
+
     private void extractGeometry(JSONObject geometry) throws JSONException {
 
         switch (geometry.getString("location_type")) {
