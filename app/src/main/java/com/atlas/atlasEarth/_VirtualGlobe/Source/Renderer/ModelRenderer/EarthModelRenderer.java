@@ -5,9 +5,10 @@ import android.content.Context;
 import android.renderscript.Matrix4f;
 
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Renderables.Renderable;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Scene.Camera.Camera;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Light;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Scene.SceneState;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Shader.EarthShaderProgram;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Sun;
+
 
 public class EarthModelRenderer {
 
@@ -21,10 +22,18 @@ public class EarthModelRenderer {
         shaderProgram.stop();
     }
 
-    public void render(Renderable renderable, Camera camera, Light light) {
-        shaderProgram.loadLight(light);
-        shaderProgram.loadViewMatrix(camera);
-        shaderProgram.loadGridResolution(0.05f);
+    public void render(Renderable renderable, SceneState sceneState, Sun sun) {
+        shaderProgram.loadSun(sun);
+        shaderProgram.loadViewMatrix(sceneState.getCamera());
+
+
+        shaderProgram.loadShineVariables(
+                sceneState.getDiffuseIntensity(),
+                sceneState.getSpecularIntensity(),
+                sceneState.getAmbientIntensity(),
+                sceneState.getShininess());
+
+
         renderable.render(shaderProgram);
     }
 

@@ -57,31 +57,19 @@ public class SceneState {
         return ambientIntensity;
     }
 
-    public void setAmbientIntensity(float ambientIntensity) {
-        this.ambientIntensity = ambientIntensity;
-    }
 
     public float getDiffuseIntensity() {
         return diffuseIntensity;
     }
 
-    public void setDiffuseIntensity(float diffuseIntensity) {
-        this.diffuseIntensity = diffuseIntensity;
-    }
 
     public float getShininess() {
         return shininess;
     }
 
-    public void setShininess(float shininess) {
-        this.shininess = shininess;
-    }
 
     public float getSpecularIntensity() {
         return specularIntensity;
     }
 
-    public void setSpecularIntensity(float specularIntensity) {
-        this.specularIntensity = specularIntensity;
-    }
 }

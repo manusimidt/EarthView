@@ -1,5 +1,6 @@
 package com.atlas.atlasEarth._VirtualGlobe.Source.Renderer;
 
+import com.atlas.atlasEarth._VirtualGlobe.AdvancedEarthViewOptions;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector3F;
 
 import java.util.Calendar;
@@ -11,20 +12,45 @@ import java.util.GregorianCalendar;
  * Class representing a point light source
  */
 
-public class Light {
+public class Sun {
+
     private Vector3F position;
-    private Vector3F color;
+    private Vector3F sunlightColor;
+    private Vector3F sunNightShininessColor;
 
     private final float distanceToEarth = 100;
     private float angle = 0;
     private float tilt = -20;
 
+
     /**
-     * @param color Color of the Light
+     * Empty Constructor
      */
-    public Light(Vector3F color) {
-        this.color = color;
+
+    public Sun() {
+        this(AdvancedEarthViewOptions.sunlightColor);
+    }
+
+
+    /**
+     * @param sunlightColor Color of the sunlight
+     */
+
+    private Sun(Vector3F sunlightColor) {
+        this(sunlightColor, AdvancedEarthViewOptions.sunNightShininessColor);
+    }
+
+
+    /**
+     * @param sunlightColor          Color of the sunlight
+     * @param sunNightShininessColor Color of the light, reflected from the moon.
+     *                               (Night light-color)
+     */
+
+    private Sun(Vector3F sunlightColor, Vector3F sunNightShininessColor) {
         this.position = new Vector3F(distanceToEarth, distanceToEarth, 0);
+        this.sunlightColor = sunlightColor;
+        this.sunNightShininessColor = sunNightShininessColor;
         calculateCoordinates();
     }
 
@@ -32,6 +58,7 @@ public class Light {
         this.angle += angle;
         calculateCoordinates();
     }
+
     public void increasePosition(float x, float y, float z) {
         position.x += x;
         position.y += y;
@@ -57,19 +84,17 @@ public class Light {
         //angle = (calendar.get(Calendar.MILLISECOND) * incrementPerSecond/1000);
         calculateCoordinates();
     }
-    public void calculateAngle(){
-        angle +=0.004;
+
+    public void calculateAngle() {
+        angle += 0.004;
         calculateCoordinates();
     }
 
 
-    public Vector3F getColor() {
-        return color;
+    public Vector3F getSunlightColor() {
+        return sunlightColor;
     }
 
-    public void setColor(Vector3F color) {
-        this.color = color;
-    }
 
     public Vector3F getPosition() {
         return position;
@@ -77,5 +102,9 @@ public class Light {
 
     public void setPosition(Vector3F position) {
         this.position = position;
+    }
+
+    public Vector3F getSunNightShininessColor() {
+        return sunNightShininessColor;
     }
 }

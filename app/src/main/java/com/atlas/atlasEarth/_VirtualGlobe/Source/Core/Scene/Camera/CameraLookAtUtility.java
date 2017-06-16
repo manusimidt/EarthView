@@ -12,7 +12,7 @@ public class CameraLookAtUtility {
 
     public static void lookAtGeodeticCoordinate(Camera camera, Ellipsoid globeShape, Geodetic2D coordinate, int height){
 
-        Vector3F pointInWorldSpace = globeShape.ToVector3D(CSConverter.toRadians(coordinate)).toVector3F();
+        Vector3F pointInWorldSpace = globeShape.convertGeodeticToCartesian(CSConverter.toRadians(coordinate)).toVector3F();
         Vector3F cameraPos = pointInWorldSpace.normalize(height);
         lookFromTo(camera,cameraPos ,new Vector3F(0,0,0));
 

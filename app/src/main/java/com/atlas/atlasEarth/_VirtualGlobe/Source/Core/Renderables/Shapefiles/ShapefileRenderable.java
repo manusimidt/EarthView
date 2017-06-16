@@ -3,6 +3,7 @@ package com.atlas.atlasEarth._VirtualGlobe.Source.Core.Renderables.Shapefiles;
 import android.content.Context;
 import android.content.res.Resources;
 
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.ByteFlags;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector3F;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Geometry.geographicCS.Ellipsoid;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Renderables.Renderable;
@@ -38,7 +39,7 @@ public class ShapefileRenderable extends Renderable {
                 break;*/
             case ShapeType.Polygon:
                 shapefileGraphic = new PolygonShapefile(shapefile, globeShape, appearance);
-
+                super.mesh.setFrontFaceWindingOrder(ByteFlags.COUNTERCLOCKWISE);
                 break;
             default:
                 throw new InvalidObjectException("Rendering is not supported for " + shapefile.getShapeType().toString() + " shapefiles.");

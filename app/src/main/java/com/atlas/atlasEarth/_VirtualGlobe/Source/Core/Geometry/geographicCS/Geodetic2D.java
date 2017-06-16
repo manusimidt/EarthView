@@ -3,37 +3,42 @@ package com.atlas.atlasEarth._VirtualGlobe.Source.Core.Geometry.geographicCS;
 
 public class Geodetic2D {
 
-    private double longitude;
-    private double latitude;
+    private double λ;
+    private double φ;
 
 
-    public Geodetic2D(double longitude, double latitude) {
-        this.longitude = longitude;
-        this.latitude = latitude;
+    /**
+     * Class for representing a two dimensional geodetic point IN RADIANT'S!
+     * @param λ corresponds to longitude
+     * @param φ corresponds to latitude
+     */
+    public Geodetic2D(double φ, double λ) {
+        this.φ = φ;
+        this.λ = λ;
     }
     public Geodetic2D(Geodetic3D geodetic3D) {
-        longitude = geodetic3D.getLongitude();
-        latitude = geodetic3D.getLatitude();
+        λ = geodetic3D.getλ();
+        φ = geodetic3D.getφ();
     }
 
 
-    public boolean EqualsEpsilon(Geodetic2D other, double epsilon) {
-        return (Math.abs(longitude - other.longitude) <= epsilon) &&
-                (Math.abs(latitude - other.latitude) <= epsilon);
+    public boolean equalsEpsilon(Geodetic2D other, double epsilon) {
+        return (Math.abs(λ - other.λ) <= epsilon) &&
+                (Math.abs(φ - other.φ) <= epsilon);
     }
-    public boolean Equals(Geodetic2D other) {
-        return longitude == other.longitude && latitude == other.getLatitude();
+    public boolean equals(Geodetic2D other) {
+        return λ == other.λ && φ == other.getφ();
     }
 
 
     /**
      * Getter & Setter
      */
-    public double getLongitude() {
-        return longitude;
+    public double getλ() {
+        return λ;
     }
-    public double getLatitude() {
-        return latitude;
+    public double getφ() {
+        return φ;
     }
 }
 

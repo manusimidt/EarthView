@@ -12,7 +12,6 @@ import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Renderables.Shapefiles.Sha
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Renderables.SpaceBackground;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Testing.TestTriangle;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Testing.TestTriangleRenderer;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Light;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.ModelRenderer.BackgroundRenderer;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.ModelRenderer.EarthModelRenderer;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.ModelRenderer.PostRenderer;
@@ -20,6 +19,7 @@ import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.ModelRenderer.RayCaste
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.ModelRenderer.ShapefileRenderer;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Scene.SceneState;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.States.RenderStatesHolder;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Sun;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,9 +66,9 @@ public class RendererGL3x {
     }
 
 
-    public void render(Light light, SceneState sceneState) {
+    public void render(Sun sun, SceneState sceneState) {
         sceneState.getCamera().calculateCameraPosition();
-        light.calculateAngle();
+        sun.calculateAngle();
 
         int renderableCounter = renderables.size();
         boolean lastRenderable = false;
@@ -104,12 +104,12 @@ public class RendererGL3x {
 
             } else if (renderable instanceof EarthModel) {
                 earthRenderer.getShaderProgram().start();
-                earthRenderer.render(renderable, sceneState.getCamera(), light);
+                earthRenderer.render(renderable, sceneState, sun);
                 earthRenderer.getShaderProgram().stop();
 
             } else if (renderable instanceof RayCastedGlobe) {
                 rayCastedGlobeRenderer.getShaderProgram().start();
-                rayCastedGlobeRenderer.render(renderable, sceneState, light);
+                rayCastedGlobeRenderer.render(renderable, sceneState, sun);
                 rayCastedGlobeRenderer.getShaderProgram().stop();
 
             } else if (renderable instanceof ShapefileRenderable) {
@@ -131,7 +131,7 @@ public class RendererGL3x {
             }
             if (posts.size() > 0) {
                 postRenderer.getShaderProgram().start();
-                postRenderer.render(posts.asArrayList(), sceneState.getCamera(), light);
+                postRenderer.render(posts.asArrayList(), sceneState.getCamera(), sun);
                 postRenderer.getShaderProgram().stop();
             }
         }

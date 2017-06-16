@@ -8,7 +8,7 @@ import com.atlas.atlasEarth._VirtualGlobe.Source.Core.ByteFlags;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.TriangleIndices.TriangleIndicesShort;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector2F;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector3F;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Geometry.geographicCS.Geodetic2D;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Geometry.geographicCS.Geographic2D;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Matrices.MatricesUtility;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.NamesGL3x.VertexArrayNameGL3x;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.ShaderGL3x.ShaderProgramGL3x;
@@ -26,15 +26,15 @@ public class Post extends Renderable {
     private int id = -1;
     private EarthView earthView;
 
-    public Post(int postID, EarthView earthView, Geodetic2D coordinates, Bitmap image) {
-        super(earthView.getEllipsoid().ToVector3D(coordinates).toVector3F(), 0, 0, 0, 0.5f);
+    public Post(int postID, EarthView earthView, Geographic2D coordinates, Bitmap image) {
+        super(earthView.getEllipsoid().convertGeographicToCartesian(coordinates).toVector3F(), 0, 0, 0, 0.5f);
         super.setTexture(new Texture(image));
         this.id = postID;
         this.earthView = earthView;
     }
 
-    public Post(int postID, EarthView earthView, Geodetic2D coordinates) {
-        super(earthView.getEllipsoid().ToVector3D(coordinates).toVector3F(), 0, 0, 0, 0.5f);
+    public Post(int postID, EarthView earthView, Geographic2D coordinates) {
+        super(earthView.getEllipsoid().convertGeographicToCartesian(coordinates).toVector3F(), 0, 0, 0, 0.5f);
         String url = "http://www.bento.de/upload/images/imager/upload/images/714064/trumpmeme_eff89a5985a475378cd3170917df5aaf.jpg";
         super.setTexture(new Texture(url));
         this.id = postID;
@@ -43,8 +43,8 @@ public class Post extends Renderable {
 
     @Override
     public void onCreate() {
-        super.mesh = loadBasicPlane();
-        //super.mesh = loadBasicCube();
+        //super.mesh = loadBasicPlane();
+        super.mesh = loadBasicCube();
         //   super.mesh = ObjLoader.loadOBJ(R.raw.text_model_source, context);
     }
 
@@ -175,6 +175,7 @@ public class Post extends Renderable {
         normals.add(new Vector3F(0, 1, 0));
 
         Mesh mesh = new Mesh();
+        mesh.setFrontFaceWindingOrder(ByteFlags.COUNTERCLOCKWISE);
         mesh.addVertexAttributes(new VertexAttributeCollection(positions, normals, textureCoords, ByteFlags.GL_TRIANGLES));
         mesh.addTriangles(indices);
         return mesh;

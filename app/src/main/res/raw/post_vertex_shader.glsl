@@ -7,11 +7,11 @@ layout(location = 2) in vec2 texCoord;
 uniform mat4 modelMatrix;
 uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
-uniform vec3 lightPosition;
+uniform vec3 sunPosition;
 
 out vec3 surfaceNormal;
 out vec2 textureCoords;
-out vec3 toLightVector;
+out vec3 toSunVector;
 
 vec4 modelToWindowCoordinates(vec4 v, mat4 modelViewPerspectiveMatrix, mat4 viewportTransformationMatrix){
     v = modelViewPerspectiveMatrix * v;                  // clip coordinates
@@ -24,7 +24,7 @@ void main(){
     textureCoords = texCoord;
     surfaceNormal = normal;
     vec4 worldPosition = projectionMatrix * viewMatrix * modelMatrix * vec4(position,1.0);
-    toLightVector = lightPosition - worldPosition.xyz;
+    toSunVector = sunPosition - worldPosition.xyz;
     gl_Position = worldPosition;
     //gl_Position = modelToWindowCoordinates(vec4(position, 1.0),viewMatrix,transformationMatrix);
 }

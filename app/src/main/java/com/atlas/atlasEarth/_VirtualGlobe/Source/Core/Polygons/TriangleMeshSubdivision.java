@@ -83,7 +83,7 @@ public class TriangleMeshSubdivision {
                     Integer i = edges.get(edge);
                     if (i == null)
                     {
-                        positions.add((v0.add(v1)).multiplyComponents(0.5));
+                        positions.add((v0.add(v1)).multiply(0.5));
                         i = positions.size() - 1;
                         edges.put(edge, i);
                     }else{
@@ -99,7 +99,7 @@ public class TriangleMeshSubdivision {
                     Integer i = edges.get(edge);
                     if (i == null)
                     {
-                        positions.add((v1.add(v2)).multiplyComponents(0.5));
+                        positions.add((v1.add(v2)).multiply(0.5));
                         i = positions.size() - 1;
                         edges.put(edge, i);
                     }else{
@@ -115,7 +115,7 @@ public class TriangleMeshSubdivision {
                     Integer i = edges.get(edge);
                     if (i == null)
                     {
-                        positions.add((v2.add(v0)).multiplyComponents(0.5));
+                        positions.add((v2.add(v0)).multiply(0.5));
                         i = positions.size() - 1;
                         edges.put(edge, i);
                     }else{

@@ -35,9 +35,9 @@ public class ContainmentTests {
             Vector3D pyramidBase1,
             Vector3D pyramidBase2)
     {
-        Vector3D v0 = pyramidBase0.substract(pyramidApex);
-        Vector3D v1 = pyramidBase1.substract(pyramidApex);
-        Vector3D v2 = pyramidBase2.substract(pyramidApex);
+        Vector3D v0 = pyramidBase0.subtract(pyramidApex);
+        Vector3D v1 = pyramidBase1.subtract(pyramidApex);
+        Vector3D v2 = pyramidBase2.subtract(pyramidApex);
 
         //
         // FaceCulling normals
@@ -46,7 +46,7 @@ public class ContainmentTests {
         Vector3D n1 = v2.cross(v1);
         Vector3D n2 = v0.cross(v2);
 
-        Vector3D planeToPoint = point.substract(pyramidApex);
+        Vector3D planeToPoint = point.subtract(pyramidApex);
 
         return ((planeToPoint.dot(n0) < 0) && (planeToPoint.dot(n1) < 0) && (planeToPoint.dot(n2) < 0));
     }

@@ -7,7 +7,7 @@ import com.atlas.atlasEarth.R;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Matrices.MatricesUtility;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Scene.Camera.Camera;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.ShaderGL3x.ShaderProgramGL3x;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Light;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Sun;
 
 
 public class PostShaderProgram extends ShaderProgramGL3x {
@@ -18,8 +18,8 @@ public class PostShaderProgram extends ShaderProgramGL3x {
     private int location_viewMatrix;
 
     //Lightning
-    private int location_lightPosition;
-    private int location_lightColor;
+    private int location_sunPosition;
+    private int location_sunlightColor;
 
     private int location_texture0;
 
@@ -50,8 +50,8 @@ public class PostShaderProgram extends ShaderProgramGL3x {
         location_projectionMatrix = super.getUniformLocation("projectionMatrix");
         location_viewMatrix = super.getUniformLocation("viewMatrix");
 
-        location_lightPosition = super.getUniformLocation("lightPosition");
-        location_lightColor = super.getUniformLocation("lightColor");
+        location_sunPosition = super.getUniformLocation("sunPosition");
+        location_sunlightColor = super.getUniformLocation("sunlightColor");
 
         location_texture0 = super.getUniformLocation("texture0");
     }
@@ -68,8 +68,8 @@ public class PostShaderProgram extends ShaderProgramGL3x {
         super.loadMatrix(location_viewMatrix, MatricesUtility.createViewMatrix(camera));
     }
 
-    public void loadLight(Light light) {
-        super.loadLight(location_lightPosition, location_lightColor, light);
+    public void loadSun(Sun sun) {
+        super.loadSun(location_sunPosition, location_sunlightColor,-1, sun);
     }
 
     public void loadTextureIdentifier() {

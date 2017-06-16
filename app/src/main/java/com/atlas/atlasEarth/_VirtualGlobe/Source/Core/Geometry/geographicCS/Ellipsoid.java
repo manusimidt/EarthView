@@ -2,6 +2,8 @@ package com.atlas.atlasEarth._VirtualGlobe.Source.Core.Geometry.geographicCS;
 
 
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector3D;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Geometry.CSConverter;
+
 
 public class Ellipsoid {
 
@@ -30,53 +32,71 @@ public class Ellipsoid {
                 radiiSquared.y * radiiSquared.y,
                 radiiSquared.z * radiiSquared.z);
         oneOverRadiiSquared = new Vector3D(
-                1.0 / (radii.x * radii.x),
-                1.0 / (radii.y * radii.y),
-                1.0 / (radii.z * radii.z));
+                1.0 / (radiiSquared.x),
+                1.0 / (radiiSquared.y),
+                1.0 / (radiiSquared.z));
 
     }
 
-    public Vector3D ToVector3D(Geodetic2D geodeticInRadians) {
-        return ToVector3D(new Geodetic3D(geodeticInRadians.getLongitude(), geodeticInRadians.getLatitude(), 0.0));
+    public Vector3D convertGeographicToCartesian(Geographic2D geographic) {
+        return convertGeodeticToCartesian(CSConverter.toRadiants(geographic));
     }
-    public Vector3D ToVector3D(Geodetic3D geodeticInRadians) {
 
-        Vector3D surfaceNormal = GeodeticSurfaceNormal(geodeticInRadians);
+
+    /**
+     * @param geodeticInRadians geographic coordinates
+     * @return The associated cartesian coordinates, on the surface of the ellipsoid.
+     * Dependent on the geographical reference system
+     */
+    public Vector3D convertGeodeticToCartesian(Geodetic2D geodeticInRadians) {
+        return convertGeodeticToCartesian(new Geodetic3D(geodeticInRadians.getλ(), geodeticInRadians.getφ(), 0.0));
+    }
+
+
+    /**
+     * @param geodetic geographic coordinates + height over ellipsoid
+     * @return The associated cartesian coordinates. Dependent on the geographical reference system
+     */
+    public Vector3D convertGeodeticToCartesian(Geodetic3D geodetic) {
+
+        // TODO: 6/15/2017 Is there a better method ?
+        geodetic = new Geodetic3D(-geodetic.getφ(), geodetic.getλ(), geodetic.getHeight());
+
+        Vector3D surfaceNormal = getGeodeticSurfaceNormal(geodetic);
+        //Ellipsoid radii squared * surfaceNormal
         Vector3D k = radiiSquared.multiplyComponents(surfaceNormal);
-        double gamma = Math.sqrt(
+        //Compute gamma
+        double γ = Math.sqrt(
                 (k.x * surfaceNormal.x) +
                         (k.y * surfaceNormal.y) +
                         (k.z * surfaceNormal.z));
-        k.divideComponents(gamma);
 
-        //Wrong Vec
-        Vector3D rSurface = k.divideComponents(gamma);
+        //Point on the Surface of the Ellipsoid
+        Vector3D pointOnEllipsoid = k.divide(γ);
 
 
-        rSurface.add(surfaceNormal.multiplyComponents(geodeticInRadians.getHeight()));
-        return rSurface;
+        //go from pointOnEllipsoid the surfaceNormal up, until the height is reached
+        pointOnEllipsoid.add(surfaceNormal.multiply(geodetic.getHeight()));
+        return pointOnEllipsoid;
     }
 
-    public Vector3D GeodeticSurfaceNormal(Vector3D positionOnEllipsoid)
-    {
+    public Vector3D getGeodeticSurfaceNormal(Vector3D positionOnEllipsoid) {
         return (positionOnEllipsoid.multiplyComponents(oneOverRadiiSquared)).normalize();
     }
 
-    public Vector3D GeodeticSurfaceNormal(Geodetic3D geodetic) {
+    public Vector3D getGeodeticSurfaceNormal(Geodetic3D geodetic) {
 
         /**
          * See at @Link https://vvvv.org/blog/polar-spherical-and-geographic-coordinates
          */
 
-        double cosLatitude = Math.cos(geodetic.getLatitude());
+        double cosLatitude = Math.cos(geodetic.getφ());
 
         return new Vector3D(
-                cosLatitude * Math.cos(geodetic.getLongitude()),
-                cosLatitude * Math.sin(geodetic.getLongitude()),
-                Math.sin(geodetic.getLatitude()));
+                cosLatitude * Math.cos(geodetic.getλ()),
+                cosLatitude * Math.sin(geodetic.getλ()),
+                Math.sin(geodetic.getφ()));
     }
-
-
 
 
     public Vector3D scaleToGeodeticSurface(Vector3D position) {
@@ -101,8 +121,7 @@ public class Ellipsoid {
         double s = 0.0;
         double dSdA = 1.0;
 
-        do
-        {
+        do {
             alpha -= (s / dSdA);
 
             da = 1.0 + (alpha * oneOverRadiiSquared.x);
@@ -137,7 +156,8 @@ public class Ellipsoid {
     public Vector3D getRadii() {
         return radii;
     }
-    public Vector3D getOneOverRadiiSquared(){
+
+    public Vector3D getOneOverRadiiSquared() {
         return oneOverRadiiSquared;
     }
 }

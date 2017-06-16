@@ -10,22 +10,19 @@ import android.view.ScaleGestureDetector;
 
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.LinkedList;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector3F;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Geometry.CSConverter;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Geometry.geographicCS.Ellipsoid;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Geometry.geographicCS.Geodetic3D;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Geometry.geographicCS.Geographic2D;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Matrices.MatricesUtility;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Renderables.EarthModel.EarthModel;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Renderables.EarthModel.RayCastedGlobe;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Renderables.Post;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Renderables.Renderable;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Scene.Camera.Camera;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Scene.Camera.CameraLookAtUtility;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Testing.PointInWorldSpace;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.TouchHandeling.TouchHandler;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.RendererGL3x;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Light;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Scene.SceneState;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.States.RenderStatesHolder;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Sun;
 import com.atlas.atlasEarth.general.Utils;
 
 import java.util.ArrayList;
@@ -42,7 +39,7 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
     private static float width;
     private List<Renderable> doneQueue;
     private List<Renderable> renderables;
-    private Light light;
+    private Sun sun;
     private SceneState sceneState;
     private RendererGL3x renderer;
     private TouchHandler touchHandler;
@@ -50,7 +47,7 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
     private Ellipsoid globeShape;
     private LinkedList<Renderable> posts;
 
-    PointInWorldSpace pointInWorldspace;
+    PointInWorldSpace pointInWorldSpace;
 
 
     public EarthView(Context context) {
@@ -73,26 +70,18 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
         doneQueue = new ArrayList<>();
         posts = new LinkedList<>();
 
-
     }
 
-    @SuppressWarnings("Unchecked")
+
     @Override
     public void onSurfaceCreated(GL10 gl10, EGLConfig eglConfig) {
-
-        Ellipsoid ellipsoid = Ellipsoid.UnitSphere;
-        RayCastedGlobe rayCastedGlobe = new RayCastedGlobe(getContext(), ellipsoid);
-        rayCastedGlobe.onCreate();
-        rayCastedGlobe.activateVAO();
-        renderables.add(rayCastedGlobe);
 
         EarthModel earthModel = new EarthModel(getContext());
         earthModel.onCreate();
         earthModel.activateVAO();
         renderables.add(earthModel);
 
-
-        light = new Light(new Vector3F(0.82f, 0.72f, 0.95f));
+        sun = new Sun();
         Camera camera = new Camera(earthModel);
         sceneState = new SceneState(camera, getContext());
         RenderStatesHolder renderStates = new RenderStatesHolder();
@@ -100,22 +89,54 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
 
         renderer = new RendererGL3x(getContext(), renderStates, sceneState);
 
-        // CameraLookAtUtility.lookAtGeodeticCoordinate(camera, ellipsoid, new Geodetic2D(0, 10), 5);
-        CameraLookAtUtility.lookFromTargetVectorToOrigin(camera, new Vector3F(2, 3, 1), 3);
-
 
         touchHandler = new TouchHandler(MatricesUtility.createProjectionMatrix(getContext()), camera, getContext());
         touchHandler = new TouchHandler(renderer.getProjectionMatrix(), camera, getContext());
 
-        pointInWorldspace = new PointInWorldSpace(camera, getContext(),
-                globeShape.ToVector3D(CSConverter.toRadians(new Geodetic3D(0, 0, 0.1))).toVector3F()
-        );
+        Vector3F middle = globeShape.convertGeographicToCartesian(new Geographic2D(0, 0)).toVector3F();
+        Vector3F first = globeShape.convertGeographicToCartesian(new Geographic2D(0, 10)).toVector3F();
+        Vector3F second = globeShape.convertGeographicToCartesian(new Geographic2D(0, 20)).toVector3F();
+        Vector3F third = globeShape.convertGeographicToCartesian(new Geographic2D(0, 30)).toVector3F();
+        Vector3F fourth = globeShape.convertGeographicToCartesian(new Geographic2D(0, 40)).toVector3F();
+        Vector3F fifth = globeShape.convertGeographicToCartesian(new Geographic2D(0, 50)).toVector3F();
+        Vector3F sixth = globeShape.convertGeographicToCartesian(new Geographic2D(0, 60)).toVector3F();
+        Vector3F seventh = globeShape.convertGeographicToCartesian(new Geographic2D(0, 70)).toVector3F();
+        Vector3F eighth = globeShape.convertGeographicToCartesian(new Geographic2D(0, 80)).toVector3F();
+        Vector3F ninth = globeShape.convertGeographicToCartesian(new Geographic2D(0, 90)).toVector3F();
+        Vector3F tenth = globeShape.convertGeographicToCartesian(new Geographic2D(0, 100)).toVector3F();
+        Vector3F eleventh = globeShape.convertGeographicToCartesian(new Geographic2D(0, 110)).toVector3F();
+        Vector3F twelve = globeShape.convertGeographicToCartesian(new Geographic2D(0, 120)).toVector3F();
+        Vector3F thirteen = globeShape.convertGeographicToCartesian(new Geographic2D(0, 130)).toVector3F();
+        Vector3F fourteen = globeShape.convertGeographicToCartesian(new Geographic2D(0, 140)).toVector3F();
+        Vector3F fifteen = globeShape.convertGeographicToCartesian(new Geographic2D(0, 150)).toVector3F();
+        Vector3F sixteen = globeShape.convertGeographicToCartesian(new Geographic2D(0, 160)).toVector3F();
+        Vector3F seventeen = globeShape.convertGeographicToCartesian(new Geographic2D(0, 170)).toVector3F();
+        Vector3F eighteen = globeShape.convertGeographicToCartesian(new Geographic2D(0, 180)).toVector3F();
 
+        Vector3F eins = globeShape.convertGeographicToCartesian(new Geographic2D(0, 0)).toVector3F();
+        Vector3F zwei = globeShape.convertGeographicToCartesian(new Geographic2D(0, 90)).toVector3F();
+        Vector3F drei = globeShape.convertGeographicToCartesian(new Geographic2D(0, -90)).toVector3F();
+        Vector3F vier = globeShape.convertGeographicToCartesian(new Geographic2D(0, 180)).toVector3F();
+        Vector3F fünf = globeShape.convertGeographicToCartesian(new Geographic2D(90, 0)).toVector3F();
+        Vector3F sechs = globeShape.convertGeographicToCartesian(new Geographic2D(-90, 0)).toVector3F();
+
+
+        Vector3F home = globeShape.convertGeographicToCartesian(new Geographic2D(49.1372548, 12.1245394)).toVector3F();
+
+        // pointInWorldSpace = new PointInWorldSpace(camera, getContext(), middle, north, south, west, east);
+        //pointInWorldSpace = new PointInWorldSpace(camera, getContext(),
+        //        middle, first, second, third,
+        //        fourth, fifth, sixth, seventh,
+        //        eighth, ninth, tenth, eleventh,
+        //        twelve, thirteen, fourteen, fifteen,
+        //        sixteen, thirteen, seventeen, eighteen, home);
+        //pointInWorldSpace = new PointInWorldSpace(getContext(), camera, eins, zwei, drei, vier, fünf, sechs);
+        pointInWorldSpace = new PointInWorldSpace(getContext(), camera, middle, vier, globeShape.convertGeographicToCartesian(new Geographic2D(54.19,30.35)).toVector3F());
 
     }
 
     public PointInWorldSpace getPointInWorldSpace() {
-        return pointInWorldspace;
+        return pointInWorldSpace;
     }
 
 
@@ -128,7 +149,6 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
 
     @Override
     public void onDrawFrame(GL10 gl10) {
-
 
         if (doneQueue.size() != 0) {
             for (Renderable renderable : doneQueue) {
@@ -147,10 +167,10 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
 
         renderer.postRendables(renderables);
         renderer.postPosts(posts);
-        renderer.render(light, sceneState);
+        renderer.render(sun, sceneState);
 
 
-        pointInWorldspace.render();
+        pointInWorldSpace.render();
     }
 
 
@@ -167,9 +187,8 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
         super.onResume();
     }
 
-
-    public Light getLight() {
-        return light;
+    public Sun getSun() {
+        return sun;
     }
 
     public List<Post> getPost() {
@@ -181,7 +200,6 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
         }
         return cache;
     }
-
 
     public Renderable getEarth() {
         return renderables.get(0);

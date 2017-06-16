@@ -4,10 +4,11 @@ import android.content.Context;
 import android.renderscript.Matrix4f;
 
 import com.atlas.atlasEarth.R;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector4F;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Matrices.MatricesUtility;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Scene.Camera.Camera;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.ShaderGL3x.ShaderProgramGL3x;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Light;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Sun;
 
 
 public class EarthShaderProgram extends ShaderProgramGL3x {
@@ -18,14 +19,13 @@ public class EarthShaderProgram extends ShaderProgramGL3x {
     private int location_projectionMatrix;
 
     //Lightning
-    private int location_lightPosition;
-    private int location_lightColor;
+    private int location_sunPosition;
+    private int location_sunlightColor;
+    private int location_nightShiningColor;
     private int location_fullLightOption;
-    private int location_shineDamper;
-    private int location_reflectivity;
+    private int location_diffuseSpecularAmbientShininess;
 
     private int location_eyePosition;
-    private int location_gridResolution;
     private int location_texture0;
     private int location_texture1;
 
@@ -56,14 +56,13 @@ public class EarthShaderProgram extends ShaderProgramGL3x {
         location_viewMatrix = super.getUniformLocation("viewMatrix");
         location_projectionMatrix = super.getUniformLocation("projectionMatrix");
 
-        location_lightPosition = super.getUniformLocation("lightPosition");
-        location_lightColor = super.getUniformLocation("lightColor");
+        location_sunPosition = super.getUniformLocation("sunPosition");
+        location_sunlightColor = super.getUniformLocation("sunlightColor");
+        location_nightShiningColor = super.getUniformLocation("sunNightShininessColor");
         location_fullLightOption = super.getUniformLocation("enableFullLightning");
-        location_reflectivity = super.getUniformLocation("reflectivity");
-        location_shineDamper = super.getUniformLocation("shineDamper");
+        location_diffuseSpecularAmbientShininess = super.getUniformLocation("diffuseSpecularAmbientShininess");
 
         location_eyePosition = super.getUniformLocation("eyePosition");
-        location_gridResolution = super.getUniformLocation("gridResolution");
         location_texture0 = super.getUniformLocation("texture0");
         location_texture1 = super.getUniformLocation("texture1");
 
@@ -85,22 +84,19 @@ public class EarthShaderProgram extends ShaderProgramGL3x {
     }
 
 
-    public void loadLight(Light light) {
-        super.loadLight(location_lightPosition, location_lightColor, light);
+    public void loadSun(Sun sun) {
+        super.loadSun(location_sunPosition, location_sunlightColor,location_nightShiningColor, sun);
     }
+
+
 
     public void loadFullLightningOption(boolean enabled) {
         super.loadBoolean(location_fullLightOption, enabled);
     }
 
-    @Deprecated
-    public void loadShineVariables(float damper, float reflectivity) {
-        super.loadFloat(location_shineDamper, damper);
-        super.loadFloat(location_reflectivity, reflectivity);
-    }
 
-    public void loadGridResolution(float resolution) {
-        super.loadFloat(location_gridResolution, resolution);
+    public void loadShineVariables(float diffuse, float specular, float ambient, float shininess) {
+        super.loadVector4F(location_diffuseSpecularAmbientShininess, new Vector4F(diffuse,specular,ambient,shininess));
     }
 
     public void loadTextureIdentifier() {

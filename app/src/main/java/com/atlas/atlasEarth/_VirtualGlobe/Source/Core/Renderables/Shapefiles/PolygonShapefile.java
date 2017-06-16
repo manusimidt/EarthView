@@ -72,14 +72,14 @@ public class PolygonShapefile {
 
                     //Completely Accurate
                     Geodetic3D pointInRadiant = CSConverter.toRadians(new Geodetic3D(point.x, point.y));
-                    Vector3D pointInWGS84 = globeShape.ToVector3D(pointInRadiant);
+                    Vector3D pointInWGS84 = globeShape.convertGeodeticToCartesian(pointInRadiant);
 
                     positions.add(pointInWGS84);
 
                     //
                     // For polyline
                     //
-                    //positions.add(globeShape.ToVector3D(CSConverter.toRadians(new Geodetic3D(point.x, point.y))));
+                    //positions.add(globeShape.convertGeodeticToCartesian(CSConverter.toRadians(new Geodetic3D(point.x, point.y))));
                     colors.add(color);
 
                     if (i != 0) {
@@ -112,7 +112,7 @@ public class PolygonShapefile {
     public void render(ShaderProgramGL3x shaderProgram, Vector3F position, float rotX, float rotY, float rotZ, float scale) {
         ShapefileShaderProgram shapefileShaderProgram = (ShapefileShaderProgram) shaderProgram;
         for (Polygon polygon : polygons) {
-
+            polygon.getMesh().activateVAO();
             shapefileShaderProgram.loadColor(polygon.getColor());
 
             shapefileShaderProgram.loadModelMatrix(MatricesUtility.createModelMatrix(

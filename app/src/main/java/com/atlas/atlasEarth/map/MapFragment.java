@@ -2,7 +2,6 @@ package com.atlas.atlasEarth.map;
 
 
 import android.os.Bundle;
-import android.renderscript.Matrix4f;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,11 +9,7 @@ import android.view.ViewGroup;
 
 import com.atlas.atlasEarth._VirtualGlobe.EarthView;
 import com.atlas.atlasEarth._VirtualGlobe.EarthViewOptions;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector3F;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Geometry.geographicCS.Geodetic2D;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Matrices.MatricesUtility;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Renderables.Post;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Scene.Camera.Camera;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Testing.ControlInterfaces;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Network.AddressToGeographicConverter;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Network.GeoData.Address;
@@ -304,48 +299,41 @@ public class MapFragment extends Fragment {
 
             @Override
             public void iXLight() {
-                earthView.getLight().increasePosition(5, 0, 0);
+                earthView.getSun().increasePosition(5, 0, 0);
             }
 
             @Override
             public void dXLight() {
-                earthView.getLight().increasePosition(-5, 0, 0);
+                earthView.getSun().increasePosition(-5, 0, 0);
             }
 
             @Override
             public void iYLight() {
-                earthView.getLight().increasePosition(0, 5, 0);
+                earthView.getSun().increasePosition(0, 5, 0);
             }
 
             @Override
             public void dYLight() {
-                earthView.getLight().increasePosition(0, -5, 0);
+                earthView.getSun().increasePosition(0, -5, 0);
             }
 
             @Override
             public void iZLight() {
-                earthView.getLight().increasePosition(0, 0, 5);
+                earthView.getSun().increasePosition(0, 0, 5);
             }
 
             @Override
             public void dZLight() {
-                earthView.getLight().increasePosition(0, 0, -5);
+                earthView.getSun().increasePosition(0, 0, -5);
             }
         });
 
-        Camera camera = new Camera(new Vector3F(0, 0, 0));
-        camera.setPosition(0, 0, 5);
-        camera.calculateCameraPosition();
-        Matrix4f expected = MatricesUtility.createViewMatrix(camera);
-        Matrix4f should = MatricesUtility.lookAt(
-                new Vector3F(0, 0, 5),
-                new Vector3F(0, 0, 0),
-                new Vector3F(0, 1, 0));
+
         AddressToGeographicConverter addressToGeographicConverter = new AddressToGeographicConverter(new AddressToGeographicConverter.AddressToGeographicConverterCallback() {
             @Override
             public void onSuccess(Address[] addresses) {
                 for (Address address : addresses) {
-                    earthView.addPosts(new Post(1, earthView, new Geodetic2D(address.getLocation()[0], address.getLocation()[1])));
+                //    earthView.addPosts(new Post(1, earthView, new Geographic2D(address.getLocation()[0], address.getLocation()[1])));
                 }
             }
 

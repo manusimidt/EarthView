@@ -1,47 +1,48 @@
 package com.atlas.atlasEarth._VirtualGlobe.Source.Core.Geometry.geographicCS;
 
 
-
 public class Geodetic3D {
 
-    private double longitude;
-    private double latitude;
-    private double height;
+    private double λ;
+    private double φ;
+    private double h;
 
 
-    public Geodetic3D(double longitude, double latitude, double height) {
-        this.longitude = longitude;
-        this.latitude = latitude;
-        this.height = height;
+    /**
+     * Class for representing a three dimensional geodetic point IN RADIANT'S!
+     *
+     * @param λ      corresponds to longitude
+     * @param φ      corresponds to latitude
+     * @param height height of the Geodetic
+     */
+    public Geodetic3D(double φ, double λ, double height) {
+        this.φ = φ;
+        this.λ = λ;
+        this.h = height;
     }
-    public Geodetic3D(double longitude, double latitude) {
-        this.longitude = longitude;
-        this.latitude = latitude;
-        height = 0;
+
+    public Geodetic3D(double φ, double λ) {
+        this.φ = φ;
+        this.λ = λ;
+        h = 0;
     }
-    public Geodetic3D(Geodetic2D geodetic2D) {
-        longitude = geodetic2D.getLongitude();
-        latitude = geodetic2D.getLatitude();
-        height = 0;
-    }
+
     public Geodetic3D(Geodetic2D geodetic2D, double height) {
-        longitude = geodetic2D.getLongitude();
-        latitude = geodetic2D.getLatitude();
-        this.height = height;
+        φ = geodetic2D.getφ();
+        λ = geodetic2D.getλ();
+        this.h = height;
     }
 
 
-    public boolean Equals(Geodetic3D other) {
-        return longitude == other.longitude && latitude == other.latitude && height == other.height;
+    public double getλ() {
+        return λ;
     }
 
-    public double getLatitude() {
-        return latitude;
+    public double getφ() {
+        return φ;
     }
-    public double getLongitude() {
-        return longitude;
-    }
+
     public double getHeight() {
-        return height;
+        return h;
     }
 }

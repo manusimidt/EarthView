@@ -10,7 +10,7 @@ import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Ve
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Matrices.MatricesUtility;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Scene.Camera.Camera;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.ShaderGL3x.ShaderProgramGL3x;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Light;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Sun;
 
 
 public class RayCastedEarthShaderProgram extends ShaderProgramGL3x {
@@ -20,8 +20,8 @@ public class RayCastedEarthShaderProgram extends ShaderProgramGL3x {
     private int location_projectionMatrix;
 
     //Lightning
-    private int location_lightPosition;
-    private int location_lightColor;
+    private int location_sunPosition;
+    private int location_sunlightColor;
     private int location_fullLightOption;
 
     private int location_eyePosition;
@@ -59,8 +59,8 @@ public class RayCastedEarthShaderProgram extends ShaderProgramGL3x {
         location_viewMatrix = super.getUniformLocation("viewMatrix");
         location_projectionMatrix = super.getUniformLocation("projectionMatrix");
 
-        location_lightPosition = super.getUniformLocation("lightPosition");
-        location_lightColor = super.getUniformLocation("lightColor");
+        location_sunPosition = super.getUniformLocation("sunPosition");
+        location_sunlightColor = super.getUniformLocation("sunlightColor");
         location_fullLightOption = super.getUniformLocation("enableFullLightning");
 
         location_eyePosition = super.getUniformLocation("eyePosition");
@@ -84,8 +84,8 @@ public class RayCastedEarthShaderProgram extends ShaderProgramGL3x {
         super.loadMatrix(location_projectionMatrix, projection);
     }
 
-    public void loadLight(Light light) {
-        super.loadLight(location_lightPosition, location_lightColor, light);
+    public void loadLight(Sun sun) {
+        super.loadSun(location_sunPosition, location_sunlightColor,-1, sun);
     }
 
     public void loadDiffuseSpecularAmbientLighting(Vector4F value) {

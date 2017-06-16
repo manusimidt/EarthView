@@ -89,21 +89,21 @@ public class Camera {
      
     }
 
-    float x = -5;
+
     public void calculateCameraPosition() {
         float horizontalDistance = calculateHorizontalDistance();
         float verticalDistance = calculateVerticalDistance();
         position.y = earthRenderable.getPosition().y + verticalDistance;
 
-        float fullrotationAngle = earthRenderable.getRotZ() + angleAroundEarth;
-        float offsetX = (float) (horizontalDistance * Math.sin(Math.toRadians(fullrotationAngle)));
-        float offsetZ = (float) (horizontalDistance * Math.cos(Math.toRadians(fullrotationAngle)));
+        float fullRotationAngle = earthRenderable.getRotZ() + angleAroundEarth;
+        float offsetX = (float) (horizontalDistance * Math.sin(Math.toRadians(fullRotationAngle)));
+        float offsetZ = (float) (horizontalDistance * Math.cos(Math.toRadians(fullRotationAngle)));
         position.x = earthRenderable.getPosition().x - offsetX;
         position.z = earthRenderable.getPosition().z - offsetZ;
 
 
-        yaw = 180 - (earthRenderable.getRotZ() + angleAroundEarth);
-
+        yaw = 180 - (angleAroundEarth);
+        Log.i("WorldSpaceInfo", "Camera:\t Position: " +position.toString());
     }
     private float calculateHorizontalDistance() {
         return (float) (distanceFromEarth * Math.cos(Math.toRadians(pitch)));

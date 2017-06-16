@@ -71,6 +71,6 @@ public class AxisAlignedBoundingBox {
         return maximum;
     }
     public Vector3D getCenter(){
-        return (minimum.add(maximum)).multiplyComponents(0.5);
+        return (minimum.add(maximum)).multiply(0.5);
     }
 }

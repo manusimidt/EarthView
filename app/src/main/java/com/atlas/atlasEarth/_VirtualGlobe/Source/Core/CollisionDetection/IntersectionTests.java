@@ -25,7 +25,7 @@ public class IntersectionTests {
             return new Vector3D(Float.NaN, Float.NaN, Float.NaN);
         }
 
-        intersectionPoint = rayOrigin.add(rayDirection.multiplyComponents(t));
+        intersectionPoint = rayOrigin.add(rayDirection.multiply(t));
         return intersectionPoint;
     }
 }

@@ -48,7 +48,7 @@ public class PointInWorldSpace {
     private float rotZ;
     private RenderStatesHolder renderStatesHolder;
 
-    public PointInWorldSpace(Camera camera, Context context, Vector3F... positions) {
+    public PointInWorldSpace(Context context, Camera camera, Vector3F... positions) {
         useProjectionMatrix = true;
         useTransformationMatrix = true;
         renderStatesHolder = new RenderStatesHolder();
@@ -63,11 +63,11 @@ public class PointInWorldSpace {
         this.positions = positions;
         this.camera = camera;
 
-        if (positions.length % 3 == 0) {
-            mode = GLES31.GL_TRIANGLES;
-        } else {
+      //  if (positions.length % 3 == 0) {
+      //      mode = GLES31.GL_TRIANGLES;
+      //  } else {
             mode = GLES31.GL_POINTS;
-        }
+      //  }
 
         projectionMatrix = MatricesUtility.createProjectionMatrix(context);
         prepare();
@@ -220,7 +220,7 @@ public class PointInWorldSpace {
             "\n" +
             "     void main(){\n" +
             "\n" +
-            "        gl_PointSize = 30.0;\n" +
+            "        gl_PointSize = 5.0;\n" +
             "\n" +
             "        if(useProjectionMatrix && useViewMatrix && useTransformationMatrix){\n" +
             "            gl_Position = projectionMatrix * viewMatrix * transformationMatrix * position;\n" +

@@ -10,8 +10,8 @@ uniform mat4x2 modelZToClipCoordinates;
 uniform sampler2D texture0; //Day Texture
 uniform sampler2D texture1; //NightTexture
 
-uniform vec3 lightPosition;
-uniform vec3 lightColor;
+uniform vec3 sunPosition;
+
 uniform vec3 eyePosition;
 uniform vec3 eyePositionSquared;
 uniform vec3 globeOneOverRadiiSquared;
@@ -93,7 +93,7 @@ vec4 dayColor(vec3 normal, vec3 toLight, vec3 toEye, vec4 diffuseSpecularAmbient
 
 
 void main(){
-     vec3 rayDirection = normalize(worldPosition - lightPosition);
+     vec3 rayDirection = normalize(worldPosition - sunPosition);
      Intersection i = rayIntersectEllipsoid(eyePosition, eyePositionSquared, rayDirection, globeOneOverRadiiSquared);
 
      if (i.Intersects){

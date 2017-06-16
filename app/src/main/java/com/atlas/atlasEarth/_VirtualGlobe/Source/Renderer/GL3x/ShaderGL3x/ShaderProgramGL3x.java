@@ -9,7 +9,7 @@ import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Matrices.M
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector3F;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector4F;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.NamesGL3x.ShaderProgramNameGL3x;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Light;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Sun;
 
 
 /**
@@ -116,9 +116,12 @@ public abstract class ShaderProgramGL3x extends ShaderProgramNameGL3x {
         GLES31.glUniformMatrix4x2fv(location, 1, false, matrix.getArray(), 0);
     }
 
-    protected void loadLight(int positionLocation, int colorLocation, Light light) {
-        GLES31.glUniform3f(positionLocation, light.getPosition().x, light.getPosition().y, light.getPosition().z);
-        GLES31.glUniform3f(colorLocation, light.getColor().x, light.getColor().y, light.getColor().z);
+    protected void loadSun(int positionLocation, int sunlightColorLocation, int nightShininessColorLocation, Sun sun) {
+        loadVector3F(positionLocation, sun.getPosition());
+        loadVector3F(sunlightColorLocation, sun.getSunlightColor());
+        if (nightShininessColorLocation != -1) {
+            loadVector3F(nightShininessColorLocation, sun.getSunNightShininessColor());
+        }
     }
 
 }

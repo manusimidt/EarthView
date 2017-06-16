@@ -10,7 +10,7 @@ public class EarthViewOptions {
     /**
      * Full Lightning Option for Earth Model
      */
-    private static boolean fullLightning = false;
+    private static boolean fullLightning = true;
     /**
      * FOV (Field of View) variable of for calculating the frustum.
      * Representing a Camera Lens, usually varies between 30°(quite zoomed in) to 90°(extra wide)

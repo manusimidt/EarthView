@@ -5,9 +5,8 @@ uniform mat4 modelMatrix;
 uniform mat4 viewMatrix;
 uniform mat4 projectionMatrix;
 
-uniform vec3 lightPosition;
+uniform vec3 sunPosition;
 uniform vec3 eyePosition;
-
 
 out vec3 unitNormal;
 out vec3 unitToLight;
@@ -34,7 +33,7 @@ void main(){
     vec4 worldPosition = modelMatrix * vec4(position,1.0);
     gl_Position = projectionMatrix * viewMatrix * worldPosition;
     unitNormal = normalize(position);
-    unitToLight = normalize(lightPosition - worldPosition.xyz);
+    unitToLight = normalize(sunPosition - worldPosition.xyz);
     unitToCamera = normalize(eyePosition - worldPosition.xyz);
 
 }

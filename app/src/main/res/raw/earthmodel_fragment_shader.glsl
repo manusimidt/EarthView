@@ -3,17 +3,18 @@ in vec3 unitNormal;
 in vec3 unitToLight;
 in vec3 unitToCamera;
 
-uniform vec3 lightColor;
+
+uniform vec3 sunlightColor;
+uniform vec3 sunNightShininessColor;
 uniform sampler2D texture0; //Day Texture
 uniform sampler2D texture1; //NightTexture
 uniform bool enableFullLightning;
-
-
+uniform vec4 diffuseSpecularAmbientShininess;
 
 const float blendDuration = 0.1;
 const float blendDurationScale = 5.0; // blendDurationScale = 1/(2*blendDuration);
 
-const vec4 og_diffuseSpecularAmbientShininess = vec4(0.2,0.2,0.2,1);
+
 
     out vec4 fragmentColor;
 
@@ -37,13 +38,13 @@ const vec4 og_diffuseSpecularAmbientShininess = vec4(0.2,0.2,0.2,1);
 
     vec4 nightColor(vec3 normal)
     {
-        return texture(texture1, computeTextureCoordinates(normal));
+        return vec4(sunNightShininessColor,1.0) * vec4(0.5,0.4,0.1,1.0)*texture(texture1, computeTextureCoordinates(normal));
     }
 
     vec4 dayColor(vec3 normal, vec3 toLight, vec3 toEye, float diffuseDot, vec4 diffuseSpecularAmbientShininess)
     {
         float intensity = lightIntensity(normal, toLight, toEye, diffuseDot, diffuseSpecularAmbientShininess);
-        return intensity * texture(texture0, computeTextureCoordinates(normal));
+        return vec4(sunlightColor,1.0) * intensity * texture(texture0, computeTextureCoordinates(normal));
     }
 
     void main()
@@ -57,7 +58,7 @@ const vec4 og_diffuseSpecularAmbientShininess = vec4(0.2,0.2,0.2,1);
         }else{
             if (diffuse > blendDuration)
             {
-                fragmentColor = dayColor(unitNormal, unitToLight, unitToCamera, diffuse, og_diffuseSpecularAmbientShininess);
+                fragmentColor = dayColor(unitNormal, unitToLight, unitToCamera, diffuse, diffuseSpecularAmbientShininess);
             }
             else if (diffuse < -blendDuration)
             {
@@ -66,7 +67,7 @@ const vec4 og_diffuseSpecularAmbientShininess = vec4(0.2,0.2,0.2,1);
             else
             {
                 vec4 night = nightColor(unitNormal);
-                vec4 day = dayColor(unitNormal, unitToLight, unitToCamera, diffuse, og_diffuseSpecularAmbientShininess);
+                vec4 day = dayColor(unitNormal, unitToLight, unitToCamera, diffuse, diffuseSpecularAmbientShininess);
                 fragmentColor = mix(night, day, (diffuse + blendDuration) * blendDurationScale);
             }
         }

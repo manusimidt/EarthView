@@ -34,7 +34,7 @@ public class EllipsoidTangentPlane  {
         AxisAlignedBoundingBox box = new AxisAlignedBoundingBox(positions);
 
         origin = ellipsoid.scaleToGeodeticSurface(box.getCenter());
-        normal = ellipsoid.GeodeticSurfaceNormal(origin);
+        normal = ellipsoid.getGeodeticSurfaceNormal(origin);
         d = -origin.dot(origin);
         yAxis = origin.cross(origin.mostOrthogonalAxis()).normalize();
         xAxis = yAxis.cross(origin).normalize();
@@ -55,7 +55,7 @@ public class EllipsoidTangentPlane  {
 
             if (intersectionPoint.x != Float.NaN)
             {
-                Vector3D v = intersectionPoint.substract(origin);
+                Vector3D v = intersectionPoint.subtract(origin);
                 positionsOnPlane.add(new Vector2D(xAxis.dot(v), yAxis.dot(v)));
             }
             else

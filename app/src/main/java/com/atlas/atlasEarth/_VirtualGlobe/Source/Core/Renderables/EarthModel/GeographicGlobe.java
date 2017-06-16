@@ -36,7 +36,6 @@ class GeographicGlobe extends Renderable {
 
         EarthShaderProgram earthShaderProgram = (EarthShaderProgram) shaderProgram;
 
-        earthShaderProgram.loadShineVariables(getTexture0().getShineDamper(), getTexture0().getReflectivity());
         earthShaderProgram.loadTextureIdentifier();
         earthShaderProgram.loadFullLightningOption(EarthViewOptions.isFullLightning());
 

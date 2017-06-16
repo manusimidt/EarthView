@@ -3,10 +3,10 @@ package com.atlas.atlasEarth._VirtualGlobe.Source.Core.Polygons;
 
 import android.util.Log;
 
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.LinkedList;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector3D;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.BoundingVolumes.ContainmentTests;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.LinkedList;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.TriangleIndices.TriangleIndicesInt;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector3D;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -90,8 +90,8 @@ public class EarClippingOnEllipsoid {
     }
 
     private static boolean IsTipConvex(Vector3D p0, Vector3D p1, Vector3D p2) {
-        Vector3D u = p1.substract(p0);
-        Vector3D v = p2.substract(p1);
+        Vector3D u = p1.subtract(p0);
+        Vector3D v = p2.subtract(p1);
 
         return u.cross(v).dot(p1) >= 0.0;
     }

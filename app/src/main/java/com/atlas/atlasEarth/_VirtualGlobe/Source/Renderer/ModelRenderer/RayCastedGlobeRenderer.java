@@ -5,9 +5,9 @@ import android.renderscript.Matrix4f;
 
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector4F;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Renderables.Renderable;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Light;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Scene.SceneState;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Shader.RayCastedEarthShaderProgram;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Sun;
 
 
 /**
@@ -26,8 +26,8 @@ public class RayCastedGlobeRenderer {
         shaderProgram.stop();
     }
 
-    public void render(Renderable renderable, SceneState sceneState, Light light) {
-        shaderProgram.loadLight(light);
+    public void render(Renderable renderable, SceneState sceneState, Sun sun) {
+        shaderProgram.loadLight(sun);
         shaderProgram.loadViewMatrix(sceneState.getCamera());
         shaderProgram.loadModelZtoClipCoordinates(sceneState.getModelZToClipCoordinates());
         shaderProgram.loadDiffuseSpecularAmbientLighting(new Vector4F(sceneState.getDiffuseIntensity(), sceneState.getSpecularIntensity(), sceneState.getAmbientIntensity(), sceneState.getShininess()));

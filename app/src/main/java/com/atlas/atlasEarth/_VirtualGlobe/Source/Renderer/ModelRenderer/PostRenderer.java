@@ -5,8 +5,8 @@ import android.renderscript.Matrix4f;
 
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Renderables.Renderable;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Scene.Camera.Camera;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Light;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Shader.PostShaderProgram;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Sun;
 
 import java.util.List;
 
@@ -21,9 +21,9 @@ public class PostRenderer {
         shaderProgram.loadProjectionMatrix(projectionMatrix);
     }
 
-    public void render(List<Renderable> renderables, Camera camera, Light light) {
+    public void render(List<Renderable> renderables, Camera camera, Sun sun) {
         shaderProgram.loadViewMatrix(camera);
-        shaderProgram.loadLight(light);
+        shaderProgram.loadSun(sun);
         for (Renderable renderable : renderables) {
             renderable.render(shaderProgram);
         }
