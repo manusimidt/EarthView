@@ -55,6 +55,10 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
         init();
     }
 
+    public static float lat = 0;
+    public static float lng = 0;
+
+
     public void init() {
 
         super.setEGLContextClientVersion(3);
@@ -82,7 +86,7 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
         renderables.add(earthModel);
 
         sun = new Sun();
-        Camera camera = new Camera(earthModel);
+        Camera camera = new Camera();
         sceneState = new SceneState(camera, getContext());
         RenderStatesHolder renderStates = new RenderStatesHolder();
         renderStates.loadGlobalDefaults();
@@ -94,6 +98,12 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
         touchHandler = new TouchHandler(renderer.getProjectionMatrix(), camera, getContext());
 
         Vector3F middle = globeShape.convertGeographicToCartesian(new Geographic2D(0, 0)).toVector3F();
+        Vector3F north = globeShape.convertGeographicToCartesian(new Geographic2D(10, 0)).toVector3F();
+        Vector3F south = globeShape.convertGeographicToCartesian(new Geographic2D(-10, 0)).toVector3F();
+        Vector3F west = globeShape.convertGeographicToCartesian(new Geographic2D(0, -10)).toVector3F();
+        Vector3F east = globeShape.convertGeographicToCartesian(new Geographic2D(0, 10)).toVector3F();
+
+
         Vector3F first = globeShape.convertGeographicToCartesian(new Geographic2D(0, 10)).toVector3F();
         Vector3F second = globeShape.convertGeographicToCartesian(new Geographic2D(0, 20)).toVector3F();
         Vector3F third = globeShape.convertGeographicToCartesian(new Geographic2D(0, 30)).toVector3F();
@@ -122,8 +132,11 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
 
 
         Vector3F home = globeShape.convertGeographicToCartesian(new Geographic2D(49.1372548, 12.1245394)).toVector3F();
-
-        // pointInWorldSpace = new PointInWorldSpace(camera, getContext(), middle, north, south, west, east);
+        Vector3F ellipsoidIntersectsZ = globeShape.convertGeographicToCartesian(new Geographic2D(0, 90)).toVector3F();
+        Vector3F ellipsoidIntersectsX = globeShape.convertGeographicToCartesian(new Geographic2D(0, 0)).toVector3F();
+        Vector3F ellipsoidIntersectsY = globeShape.convertGeographicToCartesian(new Geographic2D(90, 0)).toVector3F();
+        Vector3F ellipsoidIntersectsNegativeY = globeShape.convertGeographicToCartesian(new Geographic2D(-90, 0)).toVector3F();
+        pointInWorldSpace = new PointInWorldSpace(getContext(), camera, middle, ellipsoidIntersectsNegativeY);
         //pointInWorldSpace = new PointInWorldSpace(camera, getContext(),
         //        middle, first, second, third,
         //        fourth, fifth, sixth, seventh,
@@ -131,7 +144,7 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
         //        twelve, thirteen, fourteen, fifteen,
         //        sixteen, thirteen, seventeen, eighteen, home);
         //pointInWorldSpace = new PointInWorldSpace(getContext(), camera, eins, zwei, drei, vier, fünf, sechs);
-        pointInWorldSpace = new PointInWorldSpace(getContext(), camera, middle, vier, globeShape.convertGeographicToCartesian(new Geographic2D(54.19,30.35)).toVector3F());
+        //pointInWorldSpace = new PointInWorldSpace(getContext(), camera, middle, vier, globeShape.convertGeographicToCartesian(new Geographic2D(54.19,30.35)).toVector3F());
 
     }
 
@@ -149,6 +162,8 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
 
     @Override
     public void onDrawFrame(GL10 gl10) {
+
+        sceneState.getCamera().lookAt(new Geographic2D(lat, lng));
 
         if (doneQueue.size() != 0) {
             for (Renderable renderable : doneQueue) {

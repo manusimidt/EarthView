@@ -3,37 +3,25 @@ package com.atlas.atlasEarth._VirtualGlobe.Source.Core.Scene.Camera;
 import android.util.Log;
 
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector3F;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Renderables.Renderable;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.ShaderGL3x.ShaderProgramGL3x;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Geometry.geographicCS.Geographic2D;
 
 
 public class Camera {
 
-    private Vector3F position = new Vector3F(0, 0, 5);
+    private Vector3F position;
     private float pitch = 0;
     private float yaw = 0;
     private float distanceFromEarth = 5;
     private float angleAroundEarth = 0;
-    private Renderable earthRenderable;
 
 
-    public Camera(Renderable earthRenderable) {
-        this.earthRenderable = earthRenderable;
+
+    public Camera() {
+       //Set the default position of the Camera, (on the geocentric vector of the Geographic2D(0,0))
+        position = new Vector3F(5,0,0);
     }
-    public Camera(Vector3F position) {
-        Renderable renderable = new Renderable(position,0,0,0,1) {
-            @Override
-            public void onCreate() {
 
-            }
 
-            @Override
-            public void render(ShaderProgramGL3x shaderProgram) {
-
-            }
-        };
-        this.earthRenderable =renderable;
-    }
     /**
      * Zooming
      */
@@ -52,7 +40,6 @@ public class Camera {
     public void increaseDistanceToEarth(float x){
         distanceFromEarth += x;
     }
-
     private float calculateZoomFactor(float x) {
         Log.d("debug", "Current Camera Position: " + position.x);
         Log.d("debug", "CurrentFactor: " + ((float) (Math.pow(x - 1, Math.E) / 2)));
@@ -86,31 +73,41 @@ public class Camera {
             pitch += value;
  //       }
         Log.i("WorldSpaceInfo", "Camera:\t Pitch: " + pitch);
-     
+        Log.i("WorldSpaceInfo", "Camera:\t Position: " + position.toString());
+    }
+
+    public void lookAt(Geographic2D geographic){
+        pitch = (float) geographic.getLatitude();
+        angleAroundEarth = (float) geographic.getLongitude();
     }
 
 
     public void calculateCameraPosition() {
-        float horizontalDistance = calculateHorizontalDistance();
-        float verticalDistance = calculateVerticalDistance();
-        position.y = earthRenderable.getPosition().y + verticalDistance;
+        Log.d("debug","Position: " + position.toString()+ ", Pitch: " + pitch + ", Yaw: " + yaw + ", AngleAroundEarth: " +angleAroundEarth);
+        //Calculate horizontal distance between eye and target in the front view
+        float horizontalDistance = (float) (distanceFromEarth * Math.cos(Math.toRadians(pitch)));
 
-        float fullRotationAngle = earthRenderable.getRotZ() + angleAroundEarth;
-        float offsetX = (float) (horizontalDistance * Math.sin(Math.toRadians(fullRotationAngle)));
-        float offsetZ = (float) (horizontalDistance * Math.cos(Math.toRadians(fullRotationAngle)));
-        position.x = earthRenderable.getPosition().x - offsetX;
-        position.z = earthRenderable.getPosition().z - offsetZ;
+        //Calculate vertical distance between eye and target in the front view
+        float verticalDistance = (float)(distanceFromEarth * Math.sin(Math.toRadians(pitch)));
+
+        //Y Coordinate is independent from the angleAroundEarth
+        position.y = verticalDistance;
+
+        /*
+         * Calculate the final x coordinate in the view from above
+         * Add ninety to synchronize the angleAroundEarth with the geographic Coordinate System,
+         * so that angleAroundEarth = 0, pitch = 0 is corresponding to the Geographic(0,0)
+         */
+        position.x = (float) (horizontalDistance * Math.sin(Math.toRadians(angleAroundEarth+90)));
+        //Calculate the final y coordinate in the view from above
+        position.z = (float) (horizontalDistance * Math.cos(Math.toRadians(angleAroundEarth+90)));
 
 
-        yaw = 180 - (angleAroundEarth);
-        Log.i("WorldSpaceInfo", "Camera:\t Position: " +position.toString());
+
+        yaw = 360 - (angleAroundEarth+90);
     }
-    private float calculateHorizontalDistance() {
-        return (float) (distanceFromEarth * Math.cos(Math.toRadians(pitch)));
-    }
-    private float calculateVerticalDistance() {
-        return (float) (distanceFromEarth * Math.sin(Math.toRadians(pitch)));
-    }
+
+
 
 
     /**

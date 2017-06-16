@@ -39,7 +39,7 @@ public class Ellipsoid {
     }
 
     public Vector3D convertGeographicToCartesian(Geographic2D geographic) {
-        return convertGeodeticToCartesian(CSConverter.toRadiants(geographic));
+        return convertGeodeticToCartesian(CSConverter.toRadians(geographic));
     }
 
 

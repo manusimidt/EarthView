@@ -13,69 +13,7 @@ import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Scene.Camera.Camera;
 public class MatricesUtility {
 
 
-    public static Matrix4f lookAtEarth(Vector3F eye, Vector3F up) {
-        return lookAt(eye, new Vector3F(0, 0, 0), up);
-    }
 
-    public static Matrix4f lookAt(Vector3F eye, Vector3F target, Vector3F up) {
-
-        Vector3F f = (target.substract(eye)).normalize();
-        Vector3F s = (f.cross(up)).normalize();
-        Vector3F u = s.cross(f).normalize();
-
-        Matrix4f rotation = new Matrix4f(new float[]{
-                s.x, s.y, s.z, 0.0f,
-                u.x, u.y, u.z, 0.0f,
-                -f.x, -f.y, -f.z, 0.0f,
-                0.0f, 0.0f, 0.0f, 1.0f});
-
-        Matrix4f translation = new Matrix4f(new float[]{
-                1.0f, 0.0f, 0.0f, -eye.x,
-                0.0f, 1.0f, 0.0f, -eye.y,
-                0.0f, 0.0f, 1.0f, -eye.z,
-                0.0f, 0.0f, 0.0f, 1.0f});
-        rotation.multiply(translation);
-
-        return rotation;
-    }
-    @Deprecated
-    public static Matrix4f lookAt(Vector3F eye, Vector3F target, Vector3F up, boolean a){
-        float[] asdf = new float[]{1,2,3};
-        Vector3F zaxis = (eye.substract(target)).normalize();    // The "forward" vector.
-        Vector3F xaxis = (up.cross(zaxis)).normalize();// The "right" vector.
-        Vector3F yaxis = zaxis.cross(xaxis);     // The "up" vector.
-
-        // Create a 4x4 orientation matrix from the right, up, and forward vectors
-        // This is transposed which is equivalent to performing an inverse
-        // if the matrix is orthonormalized (in this case, it is).
-        Matrix4f orientation = new Matrix4f(
-                new float[]{
-                        xaxis.x, yaxis.x, zaxis.x, 0,
-                        xaxis.y, yaxis.y, zaxis.y, 0 ,
-                        xaxis.z, yaxis.z, zaxis.z, 0 ,
-                        0,       0,       0,     1
-                }
-        );
-
-        // Create a 4x4 translation matrix.
-        // The eye position is negated which is equivalent
-        // to the inverse of the translation matrix.
-        // T(v)^-1 == T(-v)
-        Matrix4f translation = new Matrix4f(
-                new float[]{
-                        1, 0, 0, 0,
-                        0, 1, 0, 0,
-                        0, 0, 1, 0,
-                        -eye.x, -eye.y, -eye.z, 1
-                }
-        );
-
-        // Combine the orientation and translation to compute
-        // the final view matrix
-         Matrix4f result = orientation;
-        orientation.multiply(translation);
-        return result;
-    }
 
     public static Matrix4f createModelMatrix(Vector3F transformation, float rx, float ry, float rz, float scale) {
         //TranslationMatrix * RotationMatrix * ScaleMatrix
