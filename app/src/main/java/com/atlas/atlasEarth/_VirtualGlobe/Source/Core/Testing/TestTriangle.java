@@ -4,7 +4,6 @@ import android.opengl.GLES31;
 
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.ByteFlags;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector3F;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Matrices.MatricesUtility;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Renderables.Renderable;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.NamesGL3x.VertexArrayNameGL3x;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.ShaderGL3x.ShaderProgramGL3x;
@@ -45,12 +44,7 @@ public class TestTriangle extends Renderable {
 
         TestTriangleShaderProgram testTriangleShaderProgram = (TestTriangleShaderProgram) shaderProgram;
 
-        testTriangleShaderProgram.loadTransformationMatrix(MatricesUtility.createModelMatrix(
-                getPosition(),
-                getRotX(),
-                getRotY(),
-                getRotZ(),
-                getScale()));
+        testTriangleShaderProgram.loadTransformationMatrix(getModelMatrix());
 
         mesh.getVertexArray().bindAndEnableVAO();
         mesh.getIndicesBuffer().bind();

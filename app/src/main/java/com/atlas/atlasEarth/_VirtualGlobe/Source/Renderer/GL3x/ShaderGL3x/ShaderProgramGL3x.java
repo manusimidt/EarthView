@@ -8,6 +8,7 @@ import android.util.Log;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Matrices.Matrix4x2f;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector3F;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector4F;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Matrices.MatricesUtility;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.NamesGL3x.ShaderProgramNameGL3x;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Sun;
 
@@ -107,9 +108,12 @@ public abstract class ShaderProgramGL3x extends ShaderProgramNameGL3x {
     protected void loadBoolean(int location, boolean value) {
         GLES31.glUniform1i(location, value ? 1 : 0);
     }
-
+    int matrixCount = 0;
     protected void loadMatrix(int location, Matrix4f matrix) {
         GLES31.glUniformMatrix4fv(location, 1, false, matrix.getArray(), 0);
+        matrixCount++;
+        Log.d("tagForStrangeAnomalies", "Matrix Index: " + matrixCount+ ", Values: ");
+        MatricesUtility.printMatrixInLog("tagForStrangeAnomalies", matrix);
     }
 
     protected void loadMatrix4x2(int location, Matrix4x2f matrix) {

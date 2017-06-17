@@ -1,31 +1,29 @@
 package com.atlas.atlasEarth._VirtualGlobe.Source.Core.Renderables;
 
 
-import android.content.Context;
 import android.opengl.GLES31;
 
+import com.atlas.atlasEarth.R;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.ByteFlags;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.TriangleIndices.TriangleIndicesShort;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector2F;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector3F;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Matrices.MatricesUtility;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.ShaderGL3x.ShaderProgramGL3x;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.VertexArrayGL3x;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Mesh.VertexAttributeCollection;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Shader.BackgroundShaderProgram;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Texture;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-
-
 public class SpaceBackground extends Renderable {
 
 
-    public SpaceBackground(Context context) {
-        super(new Vector3F(3, 1, -15), 0, 0, 0, 1);
-       // super.setTexture(new Texture(R.drawable.space2));
+    public SpaceBackground() {
+        super(new Vector3F(0, 0, 4), 0, 0, 0, 1);
+        super.setTexture(new Texture(R.drawable.space2));
     }
 
 
@@ -47,7 +45,7 @@ public class SpaceBackground extends Renderable {
         textureCoords.add(new Vector2F(1, 0));
 
         mesh.addVertexAttributes(new VertexAttributeCollection(positions, null, textureCoords, ByteFlags.GL_TRIANGLES));
-
+        mesh.setFrontFaceWindingOrder(ByteFlags.CLOCKWISE);
         List<TriangleIndicesShort> triangles = new ArrayList<>(2);
         triangles.add(new TriangleIndicesShort((short) 0, (short) 1, (short) 2));
         triangles.add(new TriangleIndicesShort((short) 0, (short) 2, (short) 3));
@@ -59,12 +57,7 @@ public class SpaceBackground extends Renderable {
         BackgroundShaderProgram backgroundShaderProgram = (BackgroundShaderProgram) shaderProgram;
         backgroundShaderProgram.loadTextureIdentifier();
 
-        backgroundShaderProgram.loadModelMatrix(MatricesUtility.createModelMatrix(
-                getPosition(),
-                getRotX(),
-                getRotY(),
-                getRotZ(),
-                getScale()));
+        backgroundShaderProgram.loadModelMatrix(getModelMatrix());
 
         GLES31.glActiveTexture(GLES31.GL_TEXTURE0);
         GLES31.glBindTexture(GLES31.GL_TEXTURE_2D, getTexture0().getTextureID());

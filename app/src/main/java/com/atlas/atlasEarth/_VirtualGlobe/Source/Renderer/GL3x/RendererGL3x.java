@@ -57,7 +57,7 @@ public class RendererGL3x {
     }
 
 
-    public void postRendables(List<Renderable> renderables) {
+    public void postRenderables(List<Renderable> renderables) {
         this.renderables = renderables;
     }
 

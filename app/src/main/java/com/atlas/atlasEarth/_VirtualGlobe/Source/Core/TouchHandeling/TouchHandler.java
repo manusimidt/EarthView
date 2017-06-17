@@ -5,7 +5,6 @@ import android.content.Context;
 import android.renderscript.Matrix4f;
 
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector3F;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Matrices.MatricesUtility;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Scene.Camera.Camera;
 
 public class TouchHandler {
@@ -23,7 +22,7 @@ public class TouchHandler {
     public TouchHandler(Matrix4f projectionMatrix, Camera camera, Context context) {
         this.inverseProjectionMatrix = projectionMatrix;
         this.inverseProjectionMatrix.inverse();
-        inverseViewMatrix = MatricesUtility.createViewMatrix(camera);
+        inverseViewMatrix = camera.getViewMatrix();
         inverseViewMatrix.inverse();
         this.camera = camera;
         this.context = context;
@@ -31,14 +30,14 @@ public class TouchHandler {
     }
 
     public void setUp(float touchX, float touchY, Camera camera){
-        inverseViewMatrix = MatricesUtility.createViewMatrix(camera);
+        inverseViewMatrix = camera.getViewMatrix();
         inverseViewMatrix.inverse();
         staticTouchPoint.updateTouchEvent(inverseViewMatrix, touchX, touchY);
         dynamicTouchPoint = GLTouchEvent.copyEvent(context, staticTouchPoint);
     }
 
     public void update(float touchX, float touchY, Camera camera) {
-        inverseViewMatrix = MatricesUtility.createViewMatrix(camera);
+        inverseViewMatrix = camera.getViewMatrix();
         inverseViewMatrix.inverse();
         dynamicTouchPoint.updateTouchEvent(inverseViewMatrix, touchX, touchY);
         calculateCameraRotation();

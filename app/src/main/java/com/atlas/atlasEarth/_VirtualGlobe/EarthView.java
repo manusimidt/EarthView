@@ -16,6 +16,7 @@ import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Matrices.MatricesUtility;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Renderables.EarthModel.EarthModel;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Renderables.Post;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Renderables.Renderable;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Renderables.SpaceBackground;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Scene.Camera.Camera;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Testing.PointInWorldSpace;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.TouchHandeling.TouchHandler;
@@ -55,8 +56,6 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
         init();
     }
 
-    public static float lat = 0;
-    public static float lng = 0;
 
 
     public void init() {
@@ -85,6 +84,11 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
         earthModel.activateVAO();
         renderables.add(earthModel);
 
+        SpaceBackground background = new SpaceBackground();
+        background.onCreate();
+        background.activateVAO();
+        renderables.add(background);
+
         sun = new Sun();
         Camera camera = new Camera();
         sceneState = new SceneState(camera, getContext());
@@ -98,53 +102,10 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
         touchHandler = new TouchHandler(renderer.getProjectionMatrix(), camera, getContext());
 
         Vector3F middle = globeShape.convertGeographicToCartesian(new Geographic2D(0, 0)).toVector3F();
-        Vector3F north = globeShape.convertGeographicToCartesian(new Geographic2D(10, 0)).toVector3F();
-        Vector3F south = globeShape.convertGeographicToCartesian(new Geographic2D(-10, 0)).toVector3F();
-        Vector3F west = globeShape.convertGeographicToCartesian(new Geographic2D(0, -10)).toVector3F();
-        Vector3F east = globeShape.convertGeographicToCartesian(new Geographic2D(0, 10)).toVector3F();
+        Vector3F home = globeShape.convertGeographicToCartesian(new Geographic2D(48.7904472,11.4978895)).toVector3F();
 
+        pointInWorldSpace = new PointInWorldSpace(getContext(), camera, middle, home);
 
-        Vector3F first = globeShape.convertGeographicToCartesian(new Geographic2D(0, 10)).toVector3F();
-        Vector3F second = globeShape.convertGeographicToCartesian(new Geographic2D(0, 20)).toVector3F();
-        Vector3F third = globeShape.convertGeographicToCartesian(new Geographic2D(0, 30)).toVector3F();
-        Vector3F fourth = globeShape.convertGeographicToCartesian(new Geographic2D(0, 40)).toVector3F();
-        Vector3F fifth = globeShape.convertGeographicToCartesian(new Geographic2D(0, 50)).toVector3F();
-        Vector3F sixth = globeShape.convertGeographicToCartesian(new Geographic2D(0, 60)).toVector3F();
-        Vector3F seventh = globeShape.convertGeographicToCartesian(new Geographic2D(0, 70)).toVector3F();
-        Vector3F eighth = globeShape.convertGeographicToCartesian(new Geographic2D(0, 80)).toVector3F();
-        Vector3F ninth = globeShape.convertGeographicToCartesian(new Geographic2D(0, 90)).toVector3F();
-        Vector3F tenth = globeShape.convertGeographicToCartesian(new Geographic2D(0, 100)).toVector3F();
-        Vector3F eleventh = globeShape.convertGeographicToCartesian(new Geographic2D(0, 110)).toVector3F();
-        Vector3F twelve = globeShape.convertGeographicToCartesian(new Geographic2D(0, 120)).toVector3F();
-        Vector3F thirteen = globeShape.convertGeographicToCartesian(new Geographic2D(0, 130)).toVector3F();
-        Vector3F fourteen = globeShape.convertGeographicToCartesian(new Geographic2D(0, 140)).toVector3F();
-        Vector3F fifteen = globeShape.convertGeographicToCartesian(new Geographic2D(0, 150)).toVector3F();
-        Vector3F sixteen = globeShape.convertGeographicToCartesian(new Geographic2D(0, 160)).toVector3F();
-        Vector3F seventeen = globeShape.convertGeographicToCartesian(new Geographic2D(0, 170)).toVector3F();
-        Vector3F eighteen = globeShape.convertGeographicToCartesian(new Geographic2D(0, 180)).toVector3F();
-
-        Vector3F eins = globeShape.convertGeographicToCartesian(new Geographic2D(0, 0)).toVector3F();
-        Vector3F zwei = globeShape.convertGeographicToCartesian(new Geographic2D(0, 90)).toVector3F();
-        Vector3F drei = globeShape.convertGeographicToCartesian(new Geographic2D(0, -90)).toVector3F();
-        Vector3F vier = globeShape.convertGeographicToCartesian(new Geographic2D(0, 180)).toVector3F();
-        Vector3F fünf = globeShape.convertGeographicToCartesian(new Geographic2D(90, 0)).toVector3F();
-        Vector3F sechs = globeShape.convertGeographicToCartesian(new Geographic2D(-90, 0)).toVector3F();
-
-
-        Vector3F home = globeShape.convertGeographicToCartesian(new Geographic2D(49.1372548, 12.1245394)).toVector3F();
-        Vector3F ellipsoidIntersectsZ = globeShape.convertGeographicToCartesian(new Geographic2D(0, 90)).toVector3F();
-        Vector3F ellipsoidIntersectsX = globeShape.convertGeographicToCartesian(new Geographic2D(0, 0)).toVector3F();
-        Vector3F ellipsoidIntersectsY = globeShape.convertGeographicToCartesian(new Geographic2D(90, 0)).toVector3F();
-        Vector3F ellipsoidIntersectsNegativeY = globeShape.convertGeographicToCartesian(new Geographic2D(-90, 0)).toVector3F();
-        pointInWorldSpace = new PointInWorldSpace(getContext(), camera, middle, ellipsoidIntersectsNegativeY);
-        //pointInWorldSpace = new PointInWorldSpace(camera, getContext(),
-        //        middle, first, second, third,
-        //        fourth, fifth, sixth, seventh,
-        //        eighth, ninth, tenth, eleventh,
-        //        twelve, thirteen, fourteen, fifteen,
-        //        sixteen, thirteen, seventeen, eighteen, home);
-        //pointInWorldSpace = new PointInWorldSpace(getContext(), camera, eins, zwei, drei, vier, fünf, sechs);
-        //pointInWorldSpace = new PointInWorldSpace(getContext(), camera, middle, vier, globeShape.convertGeographicToCartesian(new Geographic2D(54.19,30.35)).toVector3F());
 
     }
 
@@ -163,7 +124,6 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
     @Override
     public void onDrawFrame(GL10 gl10) {
 
-        sceneState.getCamera().lookAt(new Geographic2D(lat, lng));
 
         if (doneQueue.size() != 0) {
             for (Renderable renderable : doneQueue) {
@@ -180,7 +140,7 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
             doneQueue.clear();
         }
 
-        renderer.postRendables(renderables);
+        renderer.postRenderables(renderables);
         renderer.postPosts(posts);
         renderer.render(sun, sceneState);
 

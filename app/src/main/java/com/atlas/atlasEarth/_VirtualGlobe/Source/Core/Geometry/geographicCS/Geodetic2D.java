@@ -9,8 +9,8 @@ public class Geodetic2D {
 
     /**
      * Class for representing a two dimensional geodetic point IN RADIANT'S!
-     * @param λ corresponds to longitude
      * @param φ corresponds to latitude
+     * @param λ corresponds to longitude
      */
     public Geodetic2D(double φ, double λ) {
         this.φ = φ;

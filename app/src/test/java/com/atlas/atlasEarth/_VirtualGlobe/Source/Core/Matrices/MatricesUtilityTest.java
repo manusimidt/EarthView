@@ -1,5 +1,6 @@
 package com.atlas.atlasEarth._VirtualGlobe.Source.Core.Matrices;
 
+import android.opengl.Matrix;
 import android.renderscript.Matrix4f;
 
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector3F;
@@ -21,11 +22,13 @@ public class MatricesUtilityTest {
         Vector3F up = new Vector3F(0,1,0);
 
         //Create the expected Matrix
-        Camera camera = new Camera(new Vector3F(0,1,0));
-        camera.setPosition(new Vector3F(0,0,1));
+        Camera camera = new Camera(/*new Vector3F(0,1,0)*/);
+        //camera.setPosition(new Vector3F(0,0,1));
         Matrix4f expected = MatricesUtility.createViewMatrix(camera);
-
-        Matrix4f output = MatricesUtility.lookAt(eye, target, up);
+//
+        float[] outputArray = new float[16];
+         Matrix.setLookAtM(outputArray,0,eye.x,eye.y,eye.z, target.x,target.y,target.z, up.x,up.y,up.z);
+        Matrix4f output = new Matrix4f(outputArray);
 
 float delta = 0.1f;
 

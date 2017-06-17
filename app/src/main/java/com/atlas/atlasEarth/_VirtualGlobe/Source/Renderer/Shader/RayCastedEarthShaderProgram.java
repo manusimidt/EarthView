@@ -7,7 +7,6 @@ import com.atlas.atlasEarth.R;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Matrices.Matrix4x2f;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector3F;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector4F;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Matrices.MatricesUtility;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Scene.Camera.Camera;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.ShaderGL3x.ShaderProgramGL3x;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Sun;
@@ -75,7 +74,7 @@ public class RayCastedEarthShaderProgram extends ShaderProgramGL3x {
 
 
     public void loadViewMatrix(Camera camera) {
-        super.loadMatrix(location_viewMatrix, MatricesUtility.createViewMatrix(camera));
+        super.loadMatrix(location_viewMatrix, camera.getViewMatrix());
         super.loadVector3F(location_eyePosition, camera.getPosition());
         super.loadVector3F(location_eyePositionSquared, camera.getPosition().multiplyComponents(camera.getPosition()));
     }

@@ -1,8 +1,10 @@
 package com.atlas.atlasEarth._VirtualGlobe.Source.Core.Renderables;
 
 import android.content.Context;
+import android.renderscript.Matrix4f;
 
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector3F;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Matrices.MatricesUtility;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.ShaderGL3x.ShaderProgramGL3x;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.TextureLoaderGL3x;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Mesh.Mesh;
@@ -12,14 +14,19 @@ import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Texture;
 
 public abstract class Renderable {
 
+    private boolean dirty = true;
     private Vector3F position;
     private float rotX, rotY, rotZ;
     private float scale;
+    private Matrix4f modelMatrix = new Matrix4f();
+
+
     protected Mesh mesh;
     private Texture texture0, texture1, texture2;
     private boolean ready = false;
     private boolean hasTexture = false;
     private RenderStatesHolder renderStateHolder;
+
 
     public Renderable(Vector3F position, float rotX, float rotY, float rotZ, float scale) {
         this.position = position;
@@ -40,16 +47,20 @@ public abstract class Renderable {
         mesh = new Mesh();
         this.renderStateHolder = renderStateHolder;
     }
+
     public abstract void onCreate();
     public abstract void render(ShaderProgramGL3x shaderProgram);
 
 
     public void increaseRotation(float dx, float dy, float dz) {
+        dirty = true;
         rotX += dx;
         rotY += dy;
         rotZ += dz;
     }
+
     public void increasePosition(float x, float y, float z) {
+        dirty = true;
         position.x += x;
         position.y += y;
         position.z += z;
@@ -88,18 +99,19 @@ public abstract class Renderable {
         return rotZ;
     }
 
-    protected float getScale() {
+    public float getScale() {
         return scale;
     }
-    public boolean hasRenderstate(){
-        if(renderStateHolder == null){
+
+    public boolean hasRenderstate() {
+        if (renderStateHolder == null) {
             return false;
-        }else{
+        } else {
             return true;
         }
     }
 
-    public RenderStatesHolder getRenderStateHolder(){
+    public RenderStatesHolder getRenderStateHolder() {
         return renderStateHolder;
     }
 
@@ -114,19 +126,23 @@ public abstract class Renderable {
         }
     }
 
-    public byte getWindingOrder(){
+    public byte getWindingOrder() {
         return mesh.getFrontFaceWindingOrder();
     }
+
     public void setRotZ(float rotZ) {
+        dirty = true;
         this.rotZ = rotZ;
     }
 
 
     public void setRotY(float rotY) {
+        dirty = true;
         this.rotY = rotY;
     }
 
     public void setRotX(float rotX) {
+        dirty = true;
         this.rotX = rotX;
     }
 
@@ -158,4 +174,14 @@ public abstract class Renderable {
     public void setReady() {
         this.ready = true;
     }
+
+    public Matrix4f getModelMatrix() {
+        if (dirty) {
+            modelMatrix = MatricesUtility.createModelMatrix(position, rotX, rotY, rotZ, scale);
+            dirty = false;
+        }
+
+        return modelMatrix;
+    }
+
 }

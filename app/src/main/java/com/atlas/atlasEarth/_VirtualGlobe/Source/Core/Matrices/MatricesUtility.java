@@ -2,6 +2,7 @@ package com.atlas.atlasEarth._VirtualGlobe.Source.Core.Matrices;
 
 import android.content.Context;
 import android.renderscript.Matrix4f;
+import android.util.Log;
 
 import com.atlas.atlasEarth._VirtualGlobe.EarthView;
 import com.atlas.atlasEarth._VirtualGlobe.EarthViewOptions;
@@ -55,7 +56,6 @@ public class MatricesUtility {
         viewMatrix.loadIdentity();
         viewMatrix.rotate(camera.getPitch(), 1, 0, 0);
         viewMatrix.rotate(camera.getYaw(), 0, 1, 0);
-        //viewMatrix.rotate((float)Math.toRadians(camera.getRoll()), 0, 0, 1);
         Vector3F negativeCameraPos = new Vector3F(-camera.getPosition().x, -camera.getPosition().y, -camera.getPosition().z);
 
         viewMatrix.translate(negativeCameraPos.x, negativeCameraPos.y, negativeCameraPos.z);
@@ -69,5 +69,15 @@ public class MatricesUtility {
         float w = transformMatrix.get(3, 0) * vector.x + transformMatrix.get(3, 1) * vector.y + transformMatrix.get(3, 2) * vector.z + transformMatrix.get(3, 3) * vector.w;
         return new Vector4F(x, y, z, w);
     }
+
+    public static void printMatrixInLog(final String TAG, Matrix4f matrix){
+        Log.d(TAG, "m00: "+ matrix.get(0,0) + "\t, m01: " + matrix.get(0,1) + "\t, m02: " + matrix.get(0,2)+ "\t, m03: " + matrix.get(0,3));
+        Log.d(TAG, "m10: "+ matrix.get(1,0) + "\t, m11: " + matrix.get(1,1) + "\t, m12: " + matrix.get(1,2)+ "\t, m13: " + matrix.get(1,3));
+        Log.d(TAG, "m20: "+ matrix.get(2,0) + "\t, m21: " + matrix.get(2,1) + "\t, m22: " + matrix.get(2,2)+ "\t, m23: " + matrix.get(2,3));
+        Log.d(TAG, "m30: "+ matrix.get(3,0) + "\t, m31: " + matrix.get(3,1) + "\t, m32: " + matrix.get(3,2)+ "\t, m33: " + matrix.get(3,3));
+
+    }
+
+
 
 }

@@ -9,6 +9,6 @@ uniform mat4 modelMatrix;
 out vec2 textureCoords;
 
 void main(){
-    gl_Position =  projectionMatrix * modelMatrix * position;
+    gl_Position = projectionMatrix * viewMatrix * modelMatrix * position;
     textureCoords = texCoord;
 }

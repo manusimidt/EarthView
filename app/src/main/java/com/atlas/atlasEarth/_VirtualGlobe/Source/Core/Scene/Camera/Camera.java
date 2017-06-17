@@ -1,24 +1,29 @@
 package com.atlas.atlasEarth._VirtualGlobe.Source.Core.Scene.Camera;
 
+import android.renderscript.Matrix4f;
 import android.util.Log;
 
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector3F;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Geometry.geographicCS.Geographic2D;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Matrices.MatricesUtility;
 
 
 public class Camera {
 
-    private Vector3F position;
+    private static final String TAG = "Camera";
+
+    private Vector3F position = new Vector3F(5, 0, 0);
     private float pitch = 0;
     private float yaw = 0;
     private float distanceFromEarth = 5;
-    private float angleAroundEarth = 0;
-
+    private float viewAngle = 0;
+    private boolean dirty = true;
+    private Matrix4f viewMatrix;
 
 
     public Camera() {
-       //Set the default position of the Camera, (on the geocentric vector of the Geographic2D(0,0))
-        position = new Vector3F(5,0,0);
+        //Set the default position of the Camera, (on the geocentric vector of the Geographic2D(0,0))
+        viewMatrix = new Matrix4f();
     }
 
 
@@ -26,88 +31,104 @@ public class Camera {
      * Zooming
      */
     public void increaseZoom(float time) {
-        Log.d("debug", "Time delta: " + time);
         distanceFromEarth += calculateZoomFactor(distanceFromEarth) * time / 1000;
         checkZoomLevelForValidity();
-        Log.i("WorldSpaceInfo", "Camera:\t Zoom: " + distanceFromEarth);
     }
+
     public void decreaseZoom(float time) {
-        Log.d("debug", "Time delta: " + time);
         distanceFromEarth -= calculateZoomFactor(distanceFromEarth) * time / 1000;
         checkZoomLevelForValidity();
-        Log.i("WorldSpaceInfo", "Camera:\t Zoom: " + distanceFromEarth);
     }
-    public void increaseDistanceToEarth(float x){
+
+    public void increaseDistanceToEarth(float x) {
+        dirty = true;
         distanceFromEarth += x;
     }
+
     private float calculateZoomFactor(float x) {
-        Log.d("debug", "Current Camera Position: " + position.x);
-        Log.d("debug", "CurrentFactor: " + ((float) (Math.pow(x - 1, Math.E) / 2)));
-        return (float) (Math.pow(x - 1, Math.E) / 2);
+        return (float) (Math.pow(x - 1, 1.5) / 2);
     }
+
     private void checkZoomLevelForValidity() {
+        dirty = true;
         if (distanceFromEarth > 7) {
             distanceFromEarth = 7;
-        } else if (distanceFromEarth < 1.0) {
-            distanceFromEarth = 1.2f;
+        } else if (distanceFromEarth < 9.695723E-4) {
+            distanceFromEarth = 0.01f;
         }
     }
 
 
-
-
     /**
      * Camera position Calculation (Satellite view)
+     * ViewAngle increment.
+     *
+     * @param value View Angle is corresponding to Longitude
      */
     public void increaseViewAngle(float value) {
-        angleAroundEarth += value;
-        Log.i("WorldSpaceInfo", "Camera:\t ViewAngle: " + angleAroundEarth);
-    }
-    public void increasePitch(float value) {
-        value /= 2;
-//        if ((pitch += value) > 0) {
- //           pitch = 0;
- //       } else if ((pitch += value) < -180) {
- //           pitch = -180;
-//        } else {
-            pitch += value;
- //       }
-        Log.i("WorldSpaceInfo", "Camera:\t Pitch: " + pitch);
-        Log.i("WorldSpaceInfo", "Camera:\t Position: " + position.toString());
+        dirty = true;
+        viewAngle += value;
     }
 
-    public void lookAt(Geographic2D geographic){
+    /**
+     * Pitch increment
+     *
+     * @param value Pitch is corresponding to Longitude
+     */
+    public void increasePitch(float value) {
+        dirty = true;
+        value /= 2;
+        pitch += value;
+    }
+
+    public void lookAt(Geographic2D geographic) {
+        dirty = true;
         pitch = (float) geographic.getLatitude();
-        angleAroundEarth = (float) geographic.getLongitude();
+        viewAngle = (float) geographic.getLongitude();
     }
 
 
     public void calculateCameraPosition() {
-        Log.d("debug","Position: " + position.toString()+ ", Pitch: " + pitch + ", Yaw: " + yaw + ", AngleAroundEarth: " +angleAroundEarth);
-        //Calculate horizontal distance between eye and target in the front view
-        float horizontalDistance = (float) (distanceFromEarth * Math.cos(Math.toRadians(pitch)));
 
-        //Calculate vertical distance between eye and target in the front view
-        float verticalDistance = (float)(distanceFromEarth * Math.sin(Math.toRadians(pitch)));
+        if (dirty) {
+            //Calculate horizontal distance between eye and target in the front view
+            float horizontalDistance = (float) (distanceFromEarth * Math.cos(Math.toRadians(pitch)));
 
-        //Y Coordinate is independent from the angleAroundEarth
-        position.y = verticalDistance;
+            //Calculate vertical distance between eye and target in the front view
+            float verticalDistance = (float) (distanceFromEarth * Math.sin(Math.toRadians(pitch)));
+
+            //Y Coordinate is independent from the viewAngle
+            position.y = verticalDistance;
 
         /*
          * Calculate the final x coordinate in the view from above
-         * Add ninety to synchronize the angleAroundEarth with the geographic Coordinate System,
-         * so that angleAroundEarth = 0, pitch = 0 is corresponding to the Geographic(0,0)
+         * Add ninety to synchronize the viewAngle with the geographic Coordinate System,
+         * so that viewAngle = 0, pitch = 0 is corresponding to the Geographic(0,0)
          */
-        position.x = (float) (horizontalDistance * Math.sin(Math.toRadians(angleAroundEarth+90)));
-        //Calculate the final y coordinate in the view from above
-        position.z = (float) (horizontalDistance * Math.cos(Math.toRadians(angleAroundEarth+90)));
+            position.x = (float) (horizontalDistance * Math.sin(Math.toRadians(viewAngle + 90)));
+            //Calculate the final y coordinate in the view from above
+            position.z = (float) (horizontalDistance * Math.cos(Math.toRadians(viewAngle + 90)));
 
+            //Calculate yaw (CCW Angle to X-Axis)
+            yaw = 360 - (viewAngle + 90);
 
+            //Calculate the Matrix
+            viewMatrix = MatricesUtility.createViewMatrix(this);
 
-        yaw = 360 - (angleAroundEarth+90);
+            dirty = false;
+
+            //For debugging print logTags!
+            Log.i(TAG, "---------------- Updated camera position. Current variables: ----------------");
+            Log.i(TAG, "Camera position: \t\t" + position.toString());
+            Log.i(TAG, "Input Variables");
+            Log.i(TAG, "Camera Pitch (φ): \t" + pitch);
+            Log.i(TAG, "ViewAngle (λ): \t\t" + viewAngle);
+            Log.i(TAG, "Distance from Earth: \t" + distanceFromEarth);
+            Log.i(TAG, "Computed Variables");
+            Log.i(TAG, "Camera Yaw :\t\t\t"+yaw);
+
+        }
     }
-
-
 
 
     /**
@@ -116,30 +137,27 @@ public class Camera {
     public Vector3F getPosition() {
         return position;
     }
-    public void setPosition(Vector3F position) {
-        this.position = position;
-    }
-    public void setPosition(float x, float y, float z){
-        this.position.x = x;
-        this.position.y = y;
-        this.position.z = z;
-    }
+
+
     public float getPitch() {
         return pitch;
     }
-    public void setPitch(float pitch) {
-        this.pitch = pitch;
+
+    public float getViewAngle() {
+        return viewAngle;
     }
+
     public float getYaw() {
         return yaw;
     }
-    public void setYaw(float yaw) {
-        this.yaw = yaw;
-    }
-    public float getDistanceFromEarth(){
+
+    public float getDistanceFromEarth() {
         return distanceFromEarth;
     }
-    public float getAngleAroundEarth() {
-        return angleAroundEarth;
+
+    public Matrix4f getViewMatrix(){
+        return viewMatrix;
     }
+
+
 }

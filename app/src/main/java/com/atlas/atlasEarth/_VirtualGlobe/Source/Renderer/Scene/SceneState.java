@@ -30,7 +30,7 @@ public class SceneState {
         shininess = 12;
         this.camera =camera;
         projectionMatrix = MatricesUtility.createProjectionMatrix(context);
-        viewMatrix = MatricesUtility.createViewMatrix(camera);
+        viewMatrix = camera.getViewMatrix();
 
     }
 

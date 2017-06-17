@@ -8,7 +8,6 @@ import com.atlas.atlasEarth._VirtualGlobe.EarthViewOptions;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector3F;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Geometry.cartesianCS.Tessellation.SubdivisionSphereTessellator;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Geometry.geographicCS.Ellipsoid;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Matrices.MatricesUtility;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Renderables.Renderable;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.NamesGL3x.VertexArrayNameGL3x;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.ShaderGL3x.ShaderProgramGL3x;
@@ -45,12 +44,7 @@ class GeographicGlobe extends Renderable {
         GLES31.glActiveTexture(GLES20.GL_TEXTURE1);
         GLES31.glBindTexture(GLES31.GL_TEXTURE_2D, getTexture1().getTextureID());
 
-        earthShaderProgram.loadModelMatrix(MatricesUtility.createModelMatrix(
-                getPosition(),
-                getRotX(),
-                getRotY(),
-                getRotZ(),
-                getScale()));
+        earthShaderProgram.loadModelMatrix(getModelMatrix());
 
         mesh.getVertexArray().bindAndEnableVAO();
         mesh.getIndicesBuffer().bind();

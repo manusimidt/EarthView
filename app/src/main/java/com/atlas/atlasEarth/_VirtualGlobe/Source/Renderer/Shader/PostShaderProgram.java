@@ -4,7 +4,6 @@ import android.content.Context;
 import android.renderscript.Matrix4f;
 
 import com.atlas.atlasEarth.R;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Matrices.MatricesUtility;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Scene.Camera.Camera;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.ShaderGL3x.ShaderProgramGL3x;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Sun;
@@ -65,7 +64,7 @@ public class PostShaderProgram extends ShaderProgramGL3x {
     }
 
     public void loadViewMatrix(Camera camera) {
-        super.loadMatrix(location_viewMatrix, MatricesUtility.createViewMatrix(camera));
+        super.loadMatrix(location_viewMatrix, camera.getViewMatrix());
     }
 
     public void loadSun(Sun sun) {

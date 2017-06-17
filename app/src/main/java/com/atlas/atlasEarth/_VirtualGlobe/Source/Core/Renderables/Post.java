@@ -9,7 +9,6 @@ import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.TriangleIn
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector2F;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector3F;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Geometry.geographicCS.Geographic2D;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Matrices.MatricesUtility;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.NamesGL3x.VertexArrayNameGL3x;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.ShaderGL3x.ShaderProgramGL3x;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Mesh.Mesh;
@@ -58,12 +57,7 @@ public class Post extends Renderable {
         GLES31.glActiveTexture(GLES31.GL_TEXTURE0);
         GLES31.glBindTexture(GLES31.GL_TEXTURE_2D, getTexture0().getTextureID());
 
-        postShaderProgram.loadModelMatrix(MatricesUtility.createModelMatrix(
-                getPosition(),
-                getRotX() + earthView.getCamera().getPitch(),
-                getRotY() + earthView.getCamera().getAngleAroundEarth(),
-                getRotZ() + earthView.getCamera().getPitch(),
-                getScale()));
+        postShaderProgram.loadModelMatrix(getModelMatrix());
 
 
         mesh.getVertexArray().bindAndEnableVAO();
