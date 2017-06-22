@@ -425,6 +425,14 @@
                     android:gravity="center_vertical"
                     android:text="Camera:   "
                     android:textSize="16sp"/>
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:onClick="pan"
+                    android:text="Pan"
+                    />
 
                 <Button
                     android:layout_width="0dp"

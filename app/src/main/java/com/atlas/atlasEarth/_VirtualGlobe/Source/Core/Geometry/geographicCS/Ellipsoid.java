@@ -8,9 +8,9 @@ import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Geometry.CSConverter;
 public class Ellipsoid {
 
     //Semimajoraxis Semimajoraxis Semiminoraxis
-    public static Ellipsoid Wgs84 = new Ellipsoid(new Vector3D(6378137.0, 6378137.0, 6356752.314245));
-    public static Ellipsoid ScaledWgs84 = new Ellipsoid(new Vector3D(1.0, 1.0, 6356752.314245 / 6378137.0));
-    public static Ellipsoid UnitSphere = new Ellipsoid(new Vector3D(1.0, 1.0, 1.0));
+    public static final Ellipsoid WGS84 = new Ellipsoid(new Vector3D(6378137.0, 6378137.0, 6356752.314245));
+    public static final Ellipsoid SCALED_WGS84 = new Ellipsoid(new Vector3D(1.0, 1.0, 6356752.314245 / 6378137.0));
+    public static final Ellipsoid UNIT_SPHERE = new Ellipsoid(new Vector3D(1.0, 1.0, 1.0));
 
     private Vector3D radii;
     private Vector3D radiiSquared;

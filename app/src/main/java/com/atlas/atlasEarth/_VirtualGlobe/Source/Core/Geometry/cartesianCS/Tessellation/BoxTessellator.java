@@ -4,7 +4,7 @@ import com.atlas.atlasEarth._VirtualGlobe.Source.Core.ByteFlags;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.TriangleIndices.TriangleIndicesShort;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector3F;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Mesh.Mesh;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Mesh.VertexAttributeCollection;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Mesh.VertexBufferCollection;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,8 +23,7 @@ public class BoxTessellator {
             throw new IllegalArgumentException("Length has to be bigger than zero");
         }
 
-        Mesh mesh = new Mesh();
-       mesh.setFrontFaceWindingOrder(ByteFlags.COUNTERCLOCKWISE);
+
 
 
 
@@ -61,8 +60,8 @@ public class BoxTessellator {
         indices.add(new TriangleIndicesShort((short) 0,(short) 1,(short) 5));    // Side: plane y = -corner.Y
         indices.add(new TriangleIndicesShort((short) 0,(short) 5,(short) 4));
 
-        mesh.addVertexAttributes(new VertexAttributeCollection(positions, null, null, ByteFlags.GL_TRIANGLES));
-        mesh.addTriangles(indices);
+        VertexBufferCollection vbos = new VertexBufferCollection(positions, null, null, ByteFlags.GL_TRIANGLES);
+        Mesh mesh = new Mesh(vbos,indices,ByteFlags.COUNTERCLOCKWISE);
         return mesh;
     }
 }

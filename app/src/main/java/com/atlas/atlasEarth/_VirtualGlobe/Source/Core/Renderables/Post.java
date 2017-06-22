@@ -9,10 +9,9 @@ import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.TriangleIn
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector2F;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector3F;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Geometry.geographicCS.Geographic2D;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.NamesGL3x.VertexArrayNameGL3x;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.ShaderGL3x.ShaderProgramGL3x;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Mesh.Mesh;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Mesh.VertexAttributeCollection;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Mesh.VertexBufferCollection;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Shader.PostShaderProgram;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Texture;
 
@@ -55,18 +54,12 @@ public class Post extends Renderable {
         postShaderProgram.loadTextureIdentifier();
 
         GLES31.glActiveTexture(GLES31.GL_TEXTURE0);
-        GLES31.glBindTexture(GLES31.GL_TEXTURE_2D, getTexture0().getTextureID());
+        GLES31.glBindTexture(GLES31.GL_TEXTURE_2D, getTexture0().getTextureIDGl3x());
 
         postShaderProgram.loadModelMatrix(getModelMatrix());
 
 
-        mesh.getVertexArray().bindAndEnableVAO();
-        mesh.getIndicesBuffer().bind();
-
-        GLES31.glDrawElements(mesh.getDrawModeGL3x(), mesh.getVertexCount(), mesh.getIndicesBuffer().getDataTypeGL3x(), 0);
-
-        mesh.getIndicesBuffer().unbind();
-        VertexArrayNameGL3x.unbindAndDisableVAO();
+        mesh.draw();
     }
 
     private Mesh loadBasicCube() {
@@ -168,10 +161,8 @@ public class Post extends Renderable {
         normals.add(new Vector3F(0, 1, 0));
         normals.add(new Vector3F(0, 1, 0));
 
-        Mesh mesh = new Mesh();
-        mesh.setFrontFaceWindingOrder(ByteFlags.COUNTERCLOCKWISE);
-        mesh.addVertexAttributes(new VertexAttributeCollection(positions, normals, textureCoords, ByteFlags.GL_TRIANGLES));
-        mesh.addTriangles(indices);
+        VertexBufferCollection vbos = new VertexBufferCollection(positions, normals, textureCoords, ByteFlags.GL_TRIANGLES);
+        Mesh mesh = new Mesh(vbos, indices, ByteFlags.COUNTERCLOCKWISE);
         return mesh;
     }
 
@@ -200,11 +191,8 @@ public class Post extends Renderable {
         textureCoords.add(new Vector2F(0.0f, 0.0f));
 
 
-
-        Mesh mesh = new Mesh();
-        mesh.setFrontFaceWindingOrder(ByteFlags.CLOCKWISE);
-        mesh.addTriangles(indices);
-        mesh.addVertexAttributes(new VertexAttributeCollection(positions, normals, textureCoords, ByteFlags.GL_TRIANGLES));
+        VertexBufferCollection vbos = new VertexBufferCollection(positions, normals, textureCoords, ByteFlags.GL_TRIANGLES);
+        Mesh mesh = new Mesh(vbos,indices, ByteFlags.CLOCKWISE);
 
         return mesh;
 

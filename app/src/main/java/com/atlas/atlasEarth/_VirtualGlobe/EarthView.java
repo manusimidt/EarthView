@@ -12,11 +12,10 @@ import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.LinkedList
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector3F;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Geometry.geographicCS.Ellipsoid;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Geometry.geographicCS.Geographic2D;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Matrices.MatricesUtility;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Renderables.EarthModel.EarthModel;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Renderables.Post;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Renderables.Renderable;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Renderables.SpaceBackground;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Renderables.SkyBox;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Scene.Camera.Camera;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Testing.PointInWorldSpace;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.TouchHandeling.TouchHandler;
@@ -57,7 +56,6 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
     }
 
 
-
     public void init() {
 
         super.setEGLContextClientVersion(3);
@@ -68,7 +66,7 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
         //super.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
         scaleGestureDetector = new ScaleGestureDetector(getContext(), new ScaleListener());
 
-        globeShape = Ellipsoid.ScaledWgs84;
+        globeShape = Ellipsoid.SCALED_WGS84;
         renderables = new ArrayList<>();
         doneQueue = new ArrayList<>();
         posts = new LinkedList<>();
@@ -79,18 +77,21 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
     @Override
     public void onSurfaceCreated(GL10 gl10, EGLConfig eglConfig) {
 
-        EarthModel earthModel = new EarthModel(getContext());
-        earthModel.onCreate();
-        earthModel.activateVAO();
-        renderables.add(earthModel);
-
-        SpaceBackground background = new SpaceBackground();
-        background.onCreate();
-        background.activateVAO();
-        renderables.add(background);
-
         sun = new Sun();
         Camera camera = new Camera();
+
+        EarthModel earthModel = new EarthModel();
+        earthModel.onCreate();
+        earthModel.activateVAO();
+        earthModel.loadTextures(getContext());
+        renderables.add(earthModel);
+
+        SkyBox skyBox = new SkyBox(camera);
+        skyBox.onCreate();
+        skyBox.activateVAO();
+        skyBox.loadTextures(getContext());
+        renderables.add(skyBox);
+
         sceneState = new SceneState(camera, getContext());
         RenderStatesHolder renderStates = new RenderStatesHolder();
         renderStates.loadGlobalDefaults();
@@ -98,11 +99,10 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
         renderer = new RendererGL3x(getContext(), renderStates, sceneState);
 
 
-        touchHandler = new TouchHandler(MatricesUtility.createProjectionMatrix(getContext()), camera, getContext());
         touchHandler = new TouchHandler(renderer.getProjectionMatrix(), camera, getContext());
 
         Vector3F middle = globeShape.convertGeographicToCartesian(new Geographic2D(0, 0)).toVector3F();
-        Vector3F home = globeShape.convertGeographicToCartesian(new Geographic2D(48.7904472,11.4978895)).toVector3F();
+        Vector3F home = globeShape.convertGeographicToCartesian(new Geographic2D(48.7904472, 11.4978895)).toVector3F();
 
         pointInWorldSpace = new PointInWorldSpace(getContext(), camera, middle, home);
 
@@ -152,9 +152,7 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
     @Override
     public void onPause() {
         super.onPause();
-        for (Renderable renderable : doneQueue) {
-            renderable.dispose();
-        }
+        renderer.dispose();
     }
 
     @Override
@@ -235,6 +233,10 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
         float x = event.getX();
         float y = event.getY();
 
+        if (touchHandler == null) {
+            return false;
+        }
+
         switch (event.getPointerCount()) {
             case 1:
                 switch (event.getAction()) {
@@ -250,7 +252,16 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
                 }
                 break;
             case 2:
+
+                if(pan){
+
+                        float averageCurrentY = (event.getY(0) + event.getY(1)) / 2;
+                        float averageHistoricalY = event.getHistoricalY(0, 1) + event.getHistoricalY(1, 1);
+                        getCamera().increasePan((averageCurrentY - averageHistoricalY) / 50);
+
+                }else{
                 scaleGestureDetector.onTouchEvent(event);
+                }
                 break;
             default:
 
@@ -260,6 +271,12 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
 
 
         return true;
+    }
+
+    // TODO: 6/22/2017 implement real panning and remove this !
+    private boolean pan = false;
+    public void togglePan() {
+        pan = !pan;
     }
 
     private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
@@ -305,7 +322,6 @@ public class EarthView extends GLSurfaceView implements GLSurfaceView.Renderer {
         protected Renderable[] doInBackground(Renderable... params) {
             for (Renderable renderable : params) {
                 renderable.onCreate();
-                renderable.setReady();
             }
             return params;
         }

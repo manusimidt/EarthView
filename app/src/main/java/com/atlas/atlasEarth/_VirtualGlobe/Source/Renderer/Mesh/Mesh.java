@@ -1,181 +1,112 @@
 package com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Mesh;
 
 
+import android.opengl.GLES31;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.ByteFlags;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.TriangleIndices.TriangleIndicesInt;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.TriangleIndices.TriangleIndicesShort;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector2F;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector3F;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Tools.BufferUtils;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.BufferGL3x.BufferGL3x;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.TypeConverterGL3x;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.VertexArrayGL3x;
 
 import java.nio.Buffer;
-import java.nio.FloatBuffer;
 import java.util.List;
 
 
 public class Mesh {
 
 
-    private List<TriangleIndicesInt> trianglesInt = null;
-    private List<TriangleIndicesShort> trianglesShort = null;
-    private VertexAttributeCollection vertexAttributes = null;
-
+    //Created by Constructor
+    private VertexBufferCollection vertexBufferCollection = null;
     private Buffer indicesBufferRAW;
-    private FloatBuffer positionBufferRaw;
-    private FloatBuffer normalBufferRaw;
-    private FloatBuffer textureBufferRaw;
 
+    //Created by activateVAO(), in the EGL Context
     private VertexArrayGL3x vertexArray;
     private BufferGL3x indicesBuffer;
 
-    private byte indicesDataType = ByteFlags.NULL;
-    private byte frontFaceWindingOrder = ByteFlags.NULL;
-    private byte mode = ByteFlags.NULL;
-    private int vertexCount;
+    //Winding order of the triangles
+    private byte frontFaceWindingOrder;
+    //Render Mode (i.e GL_TRIANGLES)
+    private byte renderMode;
 
 
-    /**
-     * Required Empty Constructor for modular Mesh
-     */
-    public Mesh() {
+    public <T> Mesh(@NonNull VertexBufferCollection vbos, @Nullable List<T> indices, byte frontFaceWindingOrder) {
+        this(vbos, frontFaceWindingOrder);
 
-    }
-
-
-    /**
-     * Special Constructor for higher performance
-     *
-     * @param indices       Indices for GLES31.glDrawElements()
-     * @param positions     3D Positions for VAO in Euclidean Space
-     * @param normals       3D Normals, could be null
-     * @param textureCoords 3D Texture Coordinates, could be null
-     * @param mode          Draw mode for glDraw...() (ie: GL_TRIANGLES)
-     */
-    public Mesh(int indices[], float[] positions, float[] normals, float[] textureCoords, byte mode) {
-        this.mode = mode;
-        if (positions.length < 3 || indices.length < 3) {
-            this.dispose();
-            throw new IllegalArgumentException("Mesh must contain at least one position with three coordinates!");
-        }
-
-        indicesDataType = ByteFlags.GL_INT;
-        vertexCount = indices.length;
-        positionBufferRaw = BufferUtils.convertFloatArrayToFloatBuffer(positions);
-
-        if (normals != null) {
-            normalBufferRaw = BufferUtils.convertFloatArrayToFloatBuffer(normals);
-        }
-
-        if (textureCoords != null) {
-            textureBufferRaw = BufferUtils.convertFloatArrayToFloatBuffer(textureCoords);
-        }
-        indicesBufferRAW = BufferUtils.convertIntArrayToIntBuffer(indices);
-    }
-
-
-    public void addVertexAttributes(VertexAttributeCollection vertexAttributeCollection) {
-        this.vertexAttributes = vertexAttributeCollection;
-        this.mode = vertexAttributeCollection.getMode();
-        if (indicesDataType != ByteFlags.NULL) {
-            progressData();
+        if (indices != null) {
+           indicesBufferRAW = BufferUtils.convertTrianglesToBuffer(indices);
         }
     }
 
-    @SuppressWarnings("unchecked")
-    public <T> void addTriangles(List<T> triangles) {
+    public Mesh(@NonNull VertexBufferCollection vbos, @Nullable int[] indices, byte frontFaceWindingOrder) {
+        this(vbos, frontFaceWindingOrder);
 
-        if (triangles.get(triangles.size() - 1) instanceof TriangleIndicesShort) {
-            this.trianglesShort = (List<TriangleIndicesShort>) triangles;
-            indicesDataType = ByteFlags.GL_SHORT;
-        } else if (triangles.get(triangles.size() - 1) instanceof TriangleIndicesInt) {
-            this.trianglesInt = (List<TriangleIndicesInt>) triangles;
-            indicesDataType = ByteFlags.GL_INT;
-        }
-
-        vertexCount = triangles.size() * 3;
-
-        if (vertexAttributes != null) {
-            progressData();
+        if (indices != null) {
+            this.indicesBufferRAW = BufferUtils.convertIntArrayToIntBuffer(indices);
         }
 
     }
 
+    public Mesh(@NonNull VertexBufferCollection vbos, byte frontFaceWindingOrder) {
+
+        this.vertexBufferCollection = vbos;
+        this.frontFaceWindingOrder = frontFaceWindingOrder;
+
+    }
+
+
+    public void activateVAO() {
+        vertexArray = new VertexArrayGL3x(vertexBufferCollection);
+
+        if (indicesBufferRAW != null) {
+            indicesBuffer = new BufferGL3x(ByteFlags.GL_ELEMENTARRAY_BUFFER, ByteFlags.GL_STATIC_DRAW);
+            indicesBuffer.setData(indicesBufferRAW);
+        }
+        renderMode = vertexBufferCollection.getMode();
+        clearMesh();
+    }
+
+    public void draw() {
+        if (vertexArray == null) {
+            activateVAO();
+        }
+        if (indicesBuffer == null) {
+            vertexArray.bindAndEnableVAO();
+            GLES31.glDrawArrays(getDrawModeGL3x(), 0, vertexArray.getVertexCount());
+            vertexArray.unbindAndDisableVAO();
+        } else {
+            vertexArray.bindAndEnableVAO();
+            indicesBuffer.bind();
+
+            GLES31.glDrawElements(getDrawModeGL3x(), vertexArray.getVertexCount(), indicesBuffer.getDataTypeGL3x(), 0);
+
+            indicesBuffer.unbind();
+            vertexArray.unbindAndDisableVAO();
+        }
+
+    }
 
     public byte getFrontFaceWindingOrder() {
         return frontFaceWindingOrder;
     }
 
-    public void setFrontFaceWindingOrder(byte frontFaceWindingOrder) {
-        this.frontFaceWindingOrder = frontFaceWindingOrder;
+    private int getDrawModeGL3x() {
+        return TypeConverterGL3x.convert(TypeConverterGL3x.Category_RENDER_MODE, renderMode);
     }
-
-    private void progressData() {
-        positionBufferRaw = BufferUtils.convertFloatArrayToFloatBuffer(Vector3F.toArray(vertexAttributes.getPositions()));
-        if (vertexAttributes.getNormals() != null) {
-            normalBufferRaw = BufferUtils.convertFloatArrayToFloatBuffer(Vector3F.toArray(vertexAttributes.getNormals()));
-        }
-        if (vertexAttributes.getTextureCoordinates() != null) {
-            textureBufferRaw = BufferUtils.convertFloatArrayToFloatBuffer(Vector2F.toArray(vertexAttributes.getTextureCoordinates()));
-        }
-
-        if (indicesDataType == ByteFlags.GL_INT) {
-            indicesBufferRAW = BufferUtils.convertIntArrayToIntBuffer(TriangleIndicesInt.convertToIntArray(trianglesInt));
-        } else if (indicesDataType == ByteFlags.GL_SHORT) {
-            indicesBufferRAW = BufferUtils.convertShortArrayToShortBuffer(TriangleIndicesShort.convertToShortArray(trianglesShort));
-        } else {
-            throw new IllegalArgumentException("No indices are assigned!!");
-        }
-        vertexAttributes.clear();
-    }
-
-    public void activateVAO() {
-        vertexArray = new VertexArrayGL3x(positionBufferRaw, normalBufferRaw, textureBufferRaw);
-
-        if (indicesDataType == ByteFlags.GL_SHORT) {
-            indicesBuffer = new BufferGL3x(ByteFlags.GL_ELEMENTARRAY_BUFFER, ByteFlags.GL_STATIC_DRAW, indicesBufferRAW.limit() * 2);
-            indicesBuffer.setData(indicesBufferRAW);
-        } else if (indicesDataType == ByteFlags.GL_INT) {
-            indicesBuffer = new BufferGL3x(ByteFlags.GL_ELEMENTARRAY_BUFFER, ByteFlags.GL_STATIC_DRAW, indicesBufferRAW.limit() * 4);
-            indicesBuffer.setData(indicesBufferRAW);
-        }
-
-        clearMesh();
-    }
-
-    public int getVertexCount() {
-        return vertexCount;
-    }
-
-    public int getDrawModeGL3x() {
-        return TypeConverterGL3x.convert(TypeConverterGL3x.Category_RENDER_MODE, mode);
-    }
-
 
     private void clearMesh() {
-        trianglesInt = null;
-        trianglesShort = null;
-        positionBufferRaw = null;
-        normalBufferRaw = null;
-        textureBufferRaw = null;
         indicesBufferRAW = null;
-        vertexAttributes = null;
+        vertexBufferCollection = null;
     }
 
     public void dispose() {
         clearMesh();
         vertexArray.dispose();
-        indicesBuffer.dispose();
-    }
-
-    public VertexArrayGL3x getVertexArray() {
-        return vertexArray;
-    }
-
-    public BufferGL3x getIndicesBuffer() {
-        return indicesBuffer;
+        if(indicesBufferRAW !=null) {
+            indicesBuffer.dispose();
+        }
     }
 
 

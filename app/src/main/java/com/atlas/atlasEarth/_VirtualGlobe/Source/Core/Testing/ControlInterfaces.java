@@ -73,6 +73,7 @@ public class ControlInterfaces {
 
     public interface CameraControlInterface {
 
+        void pan();
         void iPitch();
         void dPitch();
         void iDist();

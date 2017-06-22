@@ -1,18 +1,19 @@
-package com.atlas.atlasEarth._VirtualGlobe.Source.Renderer;
+package com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.States;
 
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Renderables.Renderable;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Shader.EarthShaderProgram;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.States.RenderStatesHolder;
 
 
 public class DrawState {
+
     private RenderStatesHolder renderStates;
     private EarthShaderProgram shaderProgram;
     private Renderable renderable;
 
-    public DrawState(){
+    public DrawState() {
         renderStates = new RenderStatesHolder();
     }
+
     public DrawState(RenderStatesHolder renderStates, EarthShaderProgram earthShaderProgram, Renderable renderable) {
         this.renderStates = renderStates;
         this.shaderProgram = earthShaderProgram;

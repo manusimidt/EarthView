@@ -8,17 +8,22 @@ import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Geometry.geographicCS.Geog
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Matrices.MatricesUtility;
 
 
+/**
+ * Class for making the ViewMatrix visual. The calculations assume that the Earth will be rendered in the Origin
+ */
 public class Camera {
 
     private static final String TAG = "Camera";
 
     private Vector3F position = new Vector3F(5, 0, 0);
     private float pitch = 0;
+    private float pan = 0;
     private float yaw = 0;
     private float distanceFromEarth = 5;
     private float viewAngle = 0;
     private boolean dirty = true;
     private Matrix4f viewMatrix;
+    private CameraChangeListener cameraChangeListener;
 
 
     public Camera() {
@@ -81,6 +86,18 @@ public class Camera {
         pitch += value;
     }
 
+    public void increasePan(float value){
+        if(pan+value>30){
+            pan = 30;
+            return;
+        }
+        if(pan-value<-30){
+            pan = -30;
+            return;
+        }
+        pan += value;
+    }
+
     public void lookAt(Geographic2D geographic) {
         dirty = true;
         pitch = (float) geographic.getLatitude();
@@ -100,11 +117,11 @@ public class Camera {
             //Y Coordinate is independent from the viewAngle
             position.y = verticalDistance;
 
-        /*
-         * Calculate the final x coordinate in the view from above
-         * Add ninety to synchronize the viewAngle with the geographic Coordinate System,
-         * so that viewAngle = 0, pitch = 0 is corresponding to the Geographic(0,0)
-         */
+            /*
+             * Calculate the final x coordinate in the view from above
+             * Add ninety to synchronize the viewAngle with the geographic Coordinate System,
+             * so that viewAngle = 0, pitch = 0 is corresponding to the Geographic(0,0)
+             */
             position.x = (float) (horizontalDistance * Math.sin(Math.toRadians(viewAngle + 90)));
             //Calculate the final y coordinate in the view from above
             position.z = (float) (horizontalDistance * Math.cos(Math.toRadians(viewAngle + 90)));
@@ -125,8 +142,11 @@ public class Camera {
             Log.i(TAG, "ViewAngle (λ): \t\t" + viewAngle);
             Log.i(TAG, "Distance from Earth: \t" + distanceFromEarth);
             Log.i(TAG, "Computed Variables");
-            Log.i(TAG, "Camera Yaw :\t\t\t"+yaw);
+            Log.i(TAG, "Camera Yaw :\t\t\t" + yaw);
 
+            if(cameraChangeListener !=null){
+                cameraChangeListener.onPositionChanged(position);
+            }
         }
     }
 
@@ -142,6 +162,9 @@ public class Camera {
     public float getPitch() {
         return pitch;
     }
+    public float getPan() {
+        return pan;
+    }
 
     public float getViewAngle() {
         return viewAngle;
@@ -155,8 +178,18 @@ public class Camera {
         return distanceFromEarth;
     }
 
-    public Matrix4f getViewMatrix(){
+    public Matrix4f getViewMatrix() {
+        if(dirty){
+            MatricesUtility.createViewMatrix(this);
+        }
         return viewMatrix;
+    }
+
+    public void setOnCameraChangeListener(CameraChangeListener listener){
+        cameraChangeListener = listener;
+    }
+    public interface CameraChangeListener {
+         void onPositionChanged(Vector3F position);
     }
 
 

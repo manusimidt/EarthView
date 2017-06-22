@@ -1,6 +1,6 @@
 package com.atlas.atlasEarth._VirtualGlobe.Source.Core.Renderables;
 
-import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.DrawState;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.States.DrawState;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.States.RenderStatesHolder;
 
 /**

@@ -24,7 +24,7 @@ public class MatricesUtility {
         modelMatrix.rotate(ry, 0, 1, 0);
         modelMatrix.rotate(rz, 0, 0, 1);
         modelMatrix.scale(scale, scale, scale);
-
+     
         return modelMatrix;
     }
 
@@ -54,7 +54,7 @@ public class MatricesUtility {
     public static Matrix4f createViewMatrix(Camera camera) {
         Matrix4f viewMatrix = new Matrix4f();
         viewMatrix.loadIdentity();
-        viewMatrix.rotate(camera.getPitch(), 1, 0, 0);
+        viewMatrix.rotate(camera.getPitch() + camera.getPan(), 1, 0, 0);
         viewMatrix.rotate(camera.getYaw(), 0, 1, 0);
         Vector3F negativeCameraPos = new Vector3F(-camera.getPosition().x, -camera.getPosition().y, -camera.getPosition().z);
 

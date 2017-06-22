@@ -85,6 +85,10 @@ public class ByteFlags {
 
     //~-----Mesh------//
 
+    //Texture Types
+    public static final byte GL_TEXTURE_2D = 110;
+    public static final byte GL_TEXTURE_CUBE_MAP = 111;
+    //~Texture Types
 
     /**
      * All negative values are not implemented in the GL3x Converter!!!

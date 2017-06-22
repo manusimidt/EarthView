@@ -8,20 +8,15 @@ import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.LinkedList
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Renderables.EarthModel.EarthModel;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Renderables.EarthModel.RayCastedGlobe;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Renderables.Renderable;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Renderables.Shapefiles.ShapefileRenderable;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Renderables.SpaceBackground;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Testing.TestTriangle;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Testing.TestTriangleRenderer;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.ModelRenderer.BackgroundRenderer;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Renderables.SkyBox;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.ModelRenderer.EarthModelRenderer;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.ModelRenderer.PostRenderer;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.ModelRenderer.RayCastedGlobeRenderer;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.ModelRenderer.ShapefileRenderer;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.ModelRenderer.SkyBoxRenderer;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Scene.SceneState;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.States.RenderStatesHolder;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Sun;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -35,10 +30,8 @@ public class RendererGL3x {
     private Matrix4f projectionMatrix;
     private EarthModelRenderer earthRenderer;
     private RayCastedGlobeRenderer rayCastedGlobeRenderer;
-    private BackgroundRenderer backgroundRenderer;
-    private ShapefileRenderer shapefileRenderer;
+    private SkyBoxRenderer skyBoxRenderer;
     private PostRenderer postRenderer;
-    private TestTriangleRenderer testTriangleRenderer;
     private List<Renderable> renderables;
     private LinkedList<Renderable> posts;
     private RenderStateAdapterGL3x renderStateAdapter;
@@ -48,10 +41,8 @@ public class RendererGL3x {
         projectionMatrix = sceneState.getProjectionMatrix();
         earthRenderer = new EarthModelRenderer(context, projectionMatrix);
         rayCastedGlobeRenderer = new RayCastedGlobeRenderer(context, projectionMatrix);
-        backgroundRenderer = new BackgroundRenderer(context, projectionMatrix);
-        shapefileRenderer = new ShapefileRenderer(context, projectionMatrix);
+        skyBoxRenderer = new SkyBoxRenderer(context, projectionMatrix);
         postRenderer = new PostRenderer(context, projectionMatrix);
-        testTriangleRenderer = new TestTriangleRenderer(context, projectionMatrix);
         renderStateAdapter = new RenderStateAdapterGL3x(renderStates);
 
     }
@@ -70,17 +61,11 @@ public class RendererGL3x {
         sceneState.getCamera().calculateCameraPosition();
         sun.calculateAngle();
 
-        int renderableCounter = renderables.size();
-        boolean lastRenderable = false;
-        List<Renderable> shapefiles = new ArrayList<>();
+
         clearBuffers();
 
 
         for (Renderable renderable : renderables) {
-            renderableCounter--;
-            if (renderableCounter == 0) {
-                lastRenderable = true;
-            }
 
             /*
              * Set the Front Face
@@ -90,17 +75,17 @@ public class RendererGL3x {
             * Handle RenderStates for each Renderable, if the Renderable has no specific
             * RenderState sync the default
             */
-            if (renderable.hasRenderstate()) {
+            if (renderable.hasRenderState()) {
                 renderStateAdapter.syncRenderStates(renderable.getRenderStateHolder());
             } else {
                 renderStateAdapter.syncDefaults();
             }
 
 
-            if (renderable instanceof SpaceBackground) {
-                backgroundRenderer.getShaderProgram().start();
-                backgroundRenderer.render(renderable, sceneState.getCamera());
-                backgroundRenderer.getShaderProgram().stop();
+            if (renderable instanceof SkyBox) {
+                skyBoxRenderer.getShaderProgram().start();
+                skyBoxRenderer.render(renderable, sceneState.getCamera());
+                skyBoxRenderer.getShaderProgram().stop();
 
             } else if (renderable instanceof EarthModel) {
                 earthRenderer.getShaderProgram().start();
@@ -112,22 +97,6 @@ public class RendererGL3x {
                 rayCastedGlobeRenderer.render(renderable, sceneState, sun);
                 rayCastedGlobeRenderer.getShaderProgram().stop();
 
-            } else if (renderable instanceof ShapefileRenderable) {
-                /*
-                * Sort all Shapefiles out of the posted Renderables
-                * if the last Renderable in the Array is rendered, render all Shapefiles
-                */
-                shapefiles.add(renderable);
-                if (lastRenderable) {
-                    shapefileRenderer.getShaderProgram().start();
-                    shapefileRenderer.render(shapefiles, sceneState.getCamera());
-                    shapefileRenderer.getShaderProgram().stop();
-                }
-
-            } else if (renderable instanceof TestTriangle) {
-                testTriangleRenderer.getShaderProgram().start();
-                testTriangleRenderer.render(renderable, sceneState.getCamera());
-                testTriangleRenderer.getShaderProgram().stop();
             }
             if (posts.size() > 0) {
                 postRenderer.getShaderProgram().start();
@@ -140,7 +109,15 @@ public class RendererGL3x {
     /**
      * Worker Methods
      */
-
+    public void dispose() {
+        earthRenderer.getShaderProgram().dispose();
+        rayCastedGlobeRenderer.getShaderProgram().dispose();
+        skyBoxRenderer.getShaderProgram().dispose();
+        postRenderer.getShaderProgram().dispose();
+        for (Renderable renderable : renderables){
+            renderable.dispose();
+        }
+    }
 
     private void clearBuffers() {
         GLES31.glClear(GLES31.GL_COLOR_BUFFER_BIT | GLES31.GL_DEPTH_BUFFER_BIT);

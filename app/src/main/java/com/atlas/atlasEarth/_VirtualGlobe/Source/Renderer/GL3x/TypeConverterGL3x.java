@@ -19,6 +19,7 @@ public class TypeConverterGL3x {
     public static final byte Category_DATA_TYPES = 9;
     public static final byte Category_BUFFER_TYPES = 10;
     public static final byte Category_BUFFER_USAGE_HINT = 11;
+    public static final byte Category_TEXTURES = 12;
 
     /**
      * @param category Category of the flag, for validation
@@ -219,7 +220,15 @@ public class TypeConverterGL3x {
                     default:
                         throw new IllegalArgumentException("Flag with ID: " + flag + " is not in the Category BUFFER_USAGE_HINT");
                 }
-
+            case Category_TEXTURES:
+                switch (flag){
+                    case ByteFlags.GL_TEXTURE_2D:
+                        return GLES31.GL_TEXTURE_2D;
+                    case ByteFlags.GL_TEXTURE_CUBE_MAP:
+                        return GLES31.GL_TEXTURE_CUBE_MAP;
+                    default:
+                        throw new IllegalArgumentException("Flag with ID: " + flag + " is not in the Category BUFFER_USAGE_HINT");
+                }
             default:
                 throw new IllegalArgumentException("Wrong Category");
         }

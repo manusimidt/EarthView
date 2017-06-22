@@ -38,39 +38,35 @@ public class RenderStateAdapterGL3x {
     }
 
     public void syncRenderStates(@NonNull RenderStatesHolder renderStates) {
-        if (renderStates != defaults) {
-            dirty = true;
-            defaults.markChangedRenderStates(renderStates);
-        }
-            if (renderStates.getDepthTest().isDirty()) {
-                if (renderStates.getDepthTest().isEnabled()) {
-                    GLES31.glEnable(GLES31.GL_DEPTH_TEST);
-                    GLES31.glDepthFunc(TypeConverterGL3x.convert(TypeConverterGL3x.Category_DEPTH_TESTING, renderStates.getDepthTest().getDepthTestFunction()));
-                    GLES31.glDepthRangef(0.1f, 50f);
-                } else {
-                    GLES31.glDisable(GLES31.GL_DEPTH_TEST);
-                }
-                renderStates.getDepthTest().isSynced();
-            }
+       if (renderStates != defaults) {
+           dirty = true;
+           defaults.markChangedRenderStates(renderStates);
+       }
+           if (renderStates.getDepthTest().isDirty()) {
+               if (renderStates.getDepthTest().isEnabled()) {
+                   GLES31.glEnable(GLES31.GL_DEPTH_TEST);
+                   GLES31.glDepthFunc(TypeConverterGL3x.convert(TypeConverterGL3x.Category_DEPTH_TESTING, renderStates.getDepthTest().getDepthTestFunction()));
+                   GLES31.glDepthRangef(0.1f, 50f);
+               } else {
+                   GLES31.glDisable(GLES31.GL_DEPTH_TEST);
+               }
+               renderStates.getDepthTest().isSynced();
+           }
 
-            if (renderStates.getFaceCulling().isDirty()) {
-                if (renderStates.getFaceCulling().isEnabled()) {
-                    GLES31.glEnable(GLES31.GL_CULL_FACE);
-                    GLES31.glCullFace(TypeConverterGL3x.convert(Category_FACET_CULLING, renderStates.getFaceCulling().getCullFace()));
-                } else {
-                    GLES31.glDisable(GLES31.GL_CULL_FACE);
-                }
-                renderStates.getFaceCulling().isSynced();
-            }
-            if (renderStates == defaults) {
-                dirty = false;
-            } else {
-                dirty = true;
-            }
-        }
+           if (renderStates.getFaceCulling().isDirty()) {
+               if (renderStates.getFaceCulling().isEnabled()) {
+                   GLES31.glEnable(GLES31.GL_CULL_FACE);
+                   GLES31.glCullFace(TypeConverterGL3x.convert(Category_FACET_CULLING, renderStates.getFaceCulling().getCullFace()));
+               } else {
+                   GLES31.glDisable(GLES31.GL_CULL_FACE);
+               }
+               renderStates.getFaceCulling().isSynced();
+           }
+
+       }
 
 
-    public static void setDirty() {
+    public static void setDirty(){
         dirty = true;
     }
 

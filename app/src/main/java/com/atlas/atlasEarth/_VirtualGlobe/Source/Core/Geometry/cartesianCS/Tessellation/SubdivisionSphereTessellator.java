@@ -4,7 +4,7 @@ import com.atlas.atlasEarth._VirtualGlobe.Source.Core.ByteFlags;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.TriangleIndices.TriangleIndicesShort;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector3F;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Mesh.Mesh;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Mesh.VertexAttributeCollection;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Mesh.VertexBufferCollection;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +14,7 @@ public class SubdivisionSphereTessellator {
 
 
     public static Mesh compute(int numberOfSubdivisions) {
-        Mesh mesh = new Mesh();
+
 
         List<TriangleIndicesShort> triangles = new ArrayList<>(SubdivisionUtility.NumberOfTriangles(numberOfSubdivisions));
 
@@ -34,10 +34,9 @@ public class SubdivisionSphereTessellator {
         subdivide(positions, triangles, new TriangleIndicesShort((short) 0, (short) 3, (short) 1), numberOfSubdivisions);
         subdivide(positions, triangles, new TriangleIndicesShort((short) 1, (short) 3, (short) 2), numberOfSubdivisions);
 
+        VertexBufferCollection vbos = new VertexBufferCollection(positions,null, null, ByteFlags.GL_TRIANGLES);
+        Mesh mesh = new Mesh(vbos,triangles,ByteFlags.COUNTERCLOCKWISE);
 
-        mesh.setFrontFaceWindingOrder(ByteFlags.COUNTERCLOCKWISE);
-        mesh.addVertexAttributes(new VertexAttributeCollection(positions,null, null, ByteFlags.GL_TRIANGLES));
-        mesh.addTriangles(triangles);
         return mesh;
     }
 

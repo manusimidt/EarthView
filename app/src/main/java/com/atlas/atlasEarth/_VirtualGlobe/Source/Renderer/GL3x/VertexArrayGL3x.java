@@ -1,11 +1,11 @@
 package com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x;
 
 import android.opengl.GLES31;
-import android.support.annotation.Nullable;
 
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.ByteFlags;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.BufferGL3x.BufferGL3x;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.NamesGL3x.VertexArrayNameGL3x;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Mesh.VertexBufferCollection;
 
 import java.nio.FloatBuffer;
 
@@ -16,36 +16,37 @@ import java.nio.FloatBuffer;
 
 public class VertexArrayGL3x extends VertexArrayNameGL3x {
 
-    /**
-     * @param positionBuffer The position Data as {@link java.nio.Buffer} Object which should be loaded in the VAO(0)
-     * @param normalBuffer The normals Data as {@link java.nio.Buffer} Object which should be loaded in the VAO(1)
-     * @param textureBuffer The texture Coordinates Data as {@link java.nio.Buffer} Object which should be loaded in the VAO(2)
-     */
+    private int vertexCount;
 
-    public VertexArrayGL3x(FloatBuffer positionBuffer, @Nullable FloatBuffer normalBuffer, @Nullable FloatBuffer textureBuffer) {
+    public VertexArrayGL3x(VertexBufferCollection vbos) {
+        super(vbos.getRequiredSlots());
         bindAndEnableVAO();
 
         //Store Positions
-        storeFloatBufferInVAO(0, 3, positionBuffer);
+        storeFloatBufferInVAO(0, 3, vbos.getPositionBuffer());
 
         //Check for normals
-        if (normalBuffer != null) {
-            storeFloatBufferInVAO(1, 3, normalBuffer);
+        if (vbos.getRequiredSlots()[1]) {
+            storeFloatBufferInVAO(1, 3, vbos.getNormalBuffer());
         }
 
         //Check for Texture Coordinates
-        if (textureBuffer != null) {
-            storeFloatBufferInVAO(2, 2, textureBuffer);
+        if (vbos.getRequiredSlots()[2]) {
+            storeFloatBufferInVAO(2, 2, vbos.getTextureBuffer());
         }
         unbindAndDisableVAO();
+
+        vertexCount = vbos.getVertexCount();
     }
 
     private void storeFloatBufferInVAO(int index, int dimension, FloatBuffer data) {
-        BufferGL3x buffer = new BufferGL3x(ByteFlags.GL_ARRAY_BUFFER, ByteFlags.GL_STATIC_DRAW, data.capacity() * 4);
+        BufferGL3x buffer = new BufferGL3x(ByteFlags.GL_ARRAY_BUFFER, ByteFlags.GL_STATIC_DRAW);
         buffer.setData(data);
         GLES31.glEnableVertexAttribArray(index);
         GLES31.glVertexAttribPointer(index, dimension, GLES31.GL_FLOAT, false, 0, 0);
     }
 
-
+    public int getVertexCount() {
+        return vertexCount;
+    }
 }

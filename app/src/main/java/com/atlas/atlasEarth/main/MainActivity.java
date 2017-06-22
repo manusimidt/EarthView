@@ -200,6 +200,9 @@ public class MainActivity extends AppCompatActivity {
         postControlInterface.dZR();
     }
 
+    public void pan(View view){
+        cameraControlInterface.pan();
+    }
     public void iPitch(View view) {
         cameraControlInterface.iPitch();
     }

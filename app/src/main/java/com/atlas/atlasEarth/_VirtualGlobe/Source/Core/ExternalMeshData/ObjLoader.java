@@ -7,6 +7,7 @@ import com.atlas.atlasEarth._VirtualGlobe.Source.Core.ByteFlags;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector2F;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector3F;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Mesh.Mesh;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Mesh.VertexBufferCollection;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -93,7 +94,8 @@ public class ObjLoader {
             indicesArray[i] = indices.get(i);
         }
 
-        return new Mesh(indicesArray, positionArray, sortedNormals, sortedTextures, ByteFlags.GL_TRIANGLES);
+        VertexBufferCollection vbos = new VertexBufferCollection(positionArray,sortedNormals,sortedTextures,ByteFlags.GL_TRIANGLES);
+        return new Mesh(vbos, indicesArray, ByteFlags.COUNTERCLOCKWISE);
     }
 
     private static void sortVertexData(String[] vertexData, List<Integer> indices,

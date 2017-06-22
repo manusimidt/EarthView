@@ -3,6 +3,7 @@ package com.atlas.atlasEarth._VirtualGlobe.Source.Renderer;
 
 import android.graphics.Bitmap;
 
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.ByteFlags;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.NamesGL3x.TextureNameGL3x;
 
 
@@ -12,19 +13,20 @@ import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.NamesGL3x.Texture
 
 public class Texture extends TextureNameGL3x{
 
+    // TODO: 6/19/2017 ShineDamper and Reflectivity?
     private int resourceID = 0;
     private String url = "";
-    private float shineDamper = 1; //Stride in which the camera can be to catch the reflection vektor
-    private float reflectivity = 0; //Length of the reflection vector
     private Bitmap bitmap = null;
+    private byte type = ByteFlags.NULL;
 
 
     /**
      * Load a texture out of a Resource folder
      * @param resourceID id for the Resource data
      */
-    public Texture(int resourceID) {
+    public Texture(int resourceID, byte type) {
         this.resourceID = resourceID;
+        this.type = type;
     }
 
     /**
@@ -33,6 +35,7 @@ public class Texture extends TextureNameGL3x{
      */
     public Texture(Bitmap bitmap){
         this.bitmap = bitmap;
+        this.type = ByteFlags.GL_TEXTURE_2D;
     }
 
     /**
@@ -40,6 +43,7 @@ public class Texture extends TextureNameGL3x{
      */
     public Texture(String url){
         this.url = url;
+        this.type = ByteFlags.GL_TEXTURE_2D;
     }
 
     public int getResourceID() {
@@ -54,26 +58,14 @@ public class Texture extends TextureNameGL3x{
         return bitmap;
     }
 
-    public int getTextureID() {
-        return super.getTextureID();
+    public byte getType() {
+        return type;
     }
 
-    public float getReflectivity() {
-        return reflectivity;
+    public int getTextureIDGl3x() {
+        return super.getTextureIDGl3x();
     }
 
-    public void setReflectivity(float reflectivity) {
-        this.reflectivity = reflectivity;
-    }
-
-
-    public float getShineDamper() {
-        return shineDamper;
-    }
-
-    public void setShineDamper(float shineDamper) {
-        this.shineDamper = shineDamper;
-    }
 
 
 }

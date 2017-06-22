@@ -6,17 +6,17 @@ import android.renderscript.Matrix4f;
 
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Renderables.Renderable;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Scene.Camera.Camera;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Shader.BackgroundShaderProgram;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Shader.SkyBoxShaderProgram;
 
 
+public class SkyBoxRenderer {
 
-public class BackgroundRenderer {
-
-    private BackgroundShaderProgram shaderProgram;
-    public BackgroundRenderer(Context context, Matrix4f projectionMatrix) {
-        shaderProgram = new BackgroundShaderProgram(context);
+    private SkyBoxShaderProgram shaderProgram;
+    public SkyBoxRenderer(Context context, Matrix4f projectionMatrix) {
+        shaderProgram = new SkyBoxShaderProgram(context);
         shaderProgram.start();
         shaderProgram.loadProjectionMatrix(projectionMatrix);
+        shaderProgram.loadUniverseIntensity();
         shaderProgram.stop();
     }
 
@@ -27,7 +27,7 @@ public class BackgroundRenderer {
 
 
 
-    public BackgroundShaderProgram getShaderProgram() {
+    public SkyBoxShaderProgram getShaderProgram() {
         return shaderProgram;
     }
 }

@@ -61,7 +61,7 @@ public class RenderStatesHolder {
         if (!(this.getDepthTest().equals(renderStatesHolder2.getDepthTest()))) {
             DepthTest.setDirty();
         }
-        if (this.getFaceCulling().equals(renderStatesHolder2.getFaceCulling())){
+        if (!(this.getFaceCulling().equals(renderStatesHolder2.getFaceCulling()))){
             FaceCulling.setDirty();
         }
     }

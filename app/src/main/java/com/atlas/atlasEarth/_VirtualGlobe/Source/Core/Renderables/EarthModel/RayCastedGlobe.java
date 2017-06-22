@@ -5,11 +5,11 @@ import android.opengl.GLES31;
 
 import com.atlas.atlasEarth.R;
 import com.atlas.atlasEarth._VirtualGlobe.EarthViewOptions;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.ByteFlags;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Vector3F;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Geometry.cartesianCS.Tessellation.BoxTessellator;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Geometry.geographicCS.Ellipsoid;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Renderables.Renderable;
-import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.NamesGL3x.VertexArrayNameGL3x;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.ShaderGL3x.ShaderProgramGL3x;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Shader.RayCastedEarthShaderProgram;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.Texture;
@@ -29,16 +29,12 @@ public class RayCastedGlobe extends Renderable {
     }
 
     private Texture configureDayTexture(int path) {
-        Texture texture = new Texture(path);
-        texture.setReflectivity(0.05f);
-        texture.setShineDamper(6f);
+        Texture texture = new Texture(path, ByteFlags.GL_TEXTURE_2D);
         return texture;
     }
 
     private Texture configureNightTexture(int path) {
-        Texture texture = new Texture(path);
-        texture.setReflectivity(0.05f);
-        texture.setShineDamper(6f);
+        Texture texture = new Texture(path, ByteFlags.GL_TEXTURE_2D);
         return texture;
     }
 
@@ -64,19 +60,13 @@ public class RayCastedGlobe extends Renderable {
         earthShaderProgram.loadUseAverageDepth(useAverageDepth);
 
         GLES31.glActiveTexture(GLES31.GL_TEXTURE0);
-        GLES31.glBindTexture(GLES31.GL_TEXTURE_2D, getTexture0().getTextureID());
+        GLES31.glBindTexture(GLES31.GL_TEXTURE_2D, getTexture0().getTextureIDGl3x());
 
 
        // GLES31.glActiveTexture(GLES20.GL_TEXTURE1);
-       // GLES31.glBindTexture(GLES31.GL_TEXTURE_2D, getTexture1().getTextureID());
+       // GLES31.glBindTexture(GLES31.GL_TEXTURE_2D, getTexture1().getTextureIDGl3x());
 
-        mesh.getVertexArray().bindAndEnableVAO();
-        mesh.getIndicesBuffer().bind();
-
-        GLES31.glDrawElements(mesh.getDrawModeGL3x(), mesh.getVertexCount(), mesh.getIndicesBuffer().getDataTypeGL3x(), 0);
-
-        mesh.getIndicesBuffer().unbind();
-        VertexArrayNameGL3x.unbindAndDisableVAO();
+       mesh.draw();
     }
 
 }

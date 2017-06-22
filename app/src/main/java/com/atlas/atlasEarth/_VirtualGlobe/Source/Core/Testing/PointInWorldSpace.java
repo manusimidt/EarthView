@@ -101,7 +101,7 @@ public class PointInWorldSpace {
         GLES31.glBindVertexArray(vaoID);
 
 
-        loadMatrix(uniform_viewMatrix, camera.getViewMatrix());
+        loadMatrix(uniform_viewMatrix, MatricesUtility.createViewMatrix(camera));
         loadMatrix(uniform_translationMatrix,
                 MatricesUtility.createModelMatrix(
                         new Vector3F(positionX, positionY, positionZ), rotX, rotY, rotZ, 1));

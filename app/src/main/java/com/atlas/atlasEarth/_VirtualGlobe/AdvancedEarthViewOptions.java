@@ -10,7 +10,8 @@ import com.atlas.atlasEarth._VirtualGlobe.Source.Core.CustomDataTypes.Vectors.Ve
 public class AdvancedEarthViewOptions {
 
     public static final Vector3F sunlightColor = new Vector3F(0.82f, 0.82f, 0.92f);
-    public static final Vector3F sunNightShininessColor = new Vector3F(1.23f,1.2f,1.2f);
+    public static final Vector3F sunNightShininessColor = new Vector3F(1.18f,1.17f,1.17f);
+    public static final Vector3F universeIntensity = new Vector3F(0.5f,0.5f,0.5f);
 
 
 }

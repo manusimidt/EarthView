@@ -257,6 +257,11 @@ public class MapFragment extends Fragment {
 
         ((MainActivity) getActivity()).setOnCameraControlListener(new ControlInterfaces.CameraControlInterface() {
             @Override
+            public void pan(){
+                earthView.togglePan();
+            }
+
+            @Override
             public void iPitch() {
                 earthView.getCamera().increasePitch(10);
             }

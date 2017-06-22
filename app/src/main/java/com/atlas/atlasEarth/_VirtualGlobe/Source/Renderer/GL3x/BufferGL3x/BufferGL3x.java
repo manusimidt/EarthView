@@ -24,31 +24,32 @@ public class BufferGL3x extends BufferNameGL3x {
     private byte dataType;
 
     /**
-     * @param bufferType type of the buffer (i.e ARRAY_BUFFER)
-     * @param usageHint usage hint of the buffer (i.e STATIC_DRAW)
-     * @param sizeInBytes size of the buffer in bytes
+     * @param bufferType  type of the buffer (i.e ARRAY_BUFFER)
+     * @param usageHint   usage hint of the buffer (i.e STATIC_DRAW)
      */
-    public BufferGL3x(byte bufferType, byte usageHint, int sizeInBytes) {
+    public BufferGL3x(byte bufferType, byte usageHint) {
         super();
         this.bufferType = bufferType;
         this.usageHint = usageHint;
-        this.sizeIinBytes = sizeInBytes;
-        TypeConverterGL3x.testForBiggerZero(sizeInBytes);
     }
 
     /**
      * load the Data in OpenGL
+     *
      * @param data Object of {@link Buffer} which should be loaded in OpenGL
      */
     public void setData(Buffer data) {
         bind();
         if (data instanceof IntBuffer) {
             dataType = ByteFlags.GL_UNSIGNED_INT;
+            sizeIinBytes = data.capacity() * 4;
         } else if (data instanceof ShortBuffer) {
             dataType = ByteFlags.GL_UNSIGNED_SHORT;
+            sizeIinBytes = data.capacity() * 2;
         } else if (data instanceof FloatBuffer) {
             // TODO: 4/11/2017 test if Medium float works!
             dataType = ByteFlags.GL_MEDIUM_FLOAT;
+            sizeIinBytes = data.capacity() * 4;
         }
         GLES31.glBufferData(getBufferTypeGL3x(),
                 sizeIinBytes,
@@ -65,17 +66,16 @@ public class BufferGL3x extends BufferNameGL3x {
         GLES31.glBindBuffer(getBufferTypeGL3x(), 0);
     }
 
-    public byte getDataType() {
-        return dataType;
-    }
-    public int getDataTypeGL3x(){
+
+    public int getDataTypeGL3x() {
         return TypeConverterGL3x.convert(TypeConverterGL3x.Category_DATA_TYPES, dataType);
     }
 
     private int getBufferTypeGL3x() {
         return TypeConverterGL3x.convert(TypeConverterGL3x.Category_BUFFER_TYPES, bufferType);
     }
-    private int getUsageHintGL3x(){
-       return TypeConverterGL3x.convert(TypeConverterGL3x.Category_BUFFER_USAGE_HINT, usageHint);
+
+    private int getUsageHintGL3x() {
+        return TypeConverterGL3x.convert(TypeConverterGL3x.Category_BUFFER_USAGE_HINT, usageHint);
     }
 }

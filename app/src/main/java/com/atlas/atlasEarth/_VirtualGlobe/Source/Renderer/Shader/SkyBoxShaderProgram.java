@@ -4,11 +4,13 @@ import android.content.Context;
 import android.renderscript.Matrix4f;
 
 import com.atlas.atlasEarth.R;
+import com.atlas.atlasEarth._VirtualGlobe.AdvancedEarthViewOptions;
+import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Matrices.MatricesUtility;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Core.Scene.Camera.Camera;
 import com.atlas.atlasEarth._VirtualGlobe.Source.Renderer.GL3x.ShaderGL3x.ShaderProgramGL3x;
 
 
-public class BackgroundShaderProgram extends ShaderProgramGL3x {
+public class SkyBoxShaderProgram extends ShaderProgramGL3x {
 
     //Matrices
     private int location_modelMatrix;
@@ -16,10 +18,11 @@ public class BackgroundShaderProgram extends ShaderProgramGL3x {
     private int location_projectionMatrix;
 
     private int location_texture0;
+    private int location_universeIntensity;
 
 
-    public BackgroundShaderProgram(Context context) {
-        super(context, R.raw.background_vertex_shader, R.raw.background_fragment_shader, "BackgroundShaderProgram");
+    public SkyBoxShaderProgram(Context context) {
+        super(context, R.raw.skybox_vertex_shader, R.raw.skybox_fragment_shader, "SkyBoxShaderProgram");
     }
 
     @Override
@@ -45,6 +48,7 @@ public class BackgroundShaderProgram extends ShaderProgramGL3x {
         location_viewMatrix = super.getUniformLocation("viewMatrix");
 
         location_texture0 = super.getUniformLocation("texture0");
+        location_universeIntensity = super.getUniformLocation("universeIntensity");
     }
 
 
@@ -53,7 +57,7 @@ public class BackgroundShaderProgram extends ShaderProgramGL3x {
     }
 
     public void loadViewMatrix(Camera camera) {
-        super.loadMatrix(location_viewMatrix, camera.getViewMatrix());
+        super.loadMatrix(location_viewMatrix, MatricesUtility.createViewMatrix(camera));
     }
 
     public void loadProjectionMatrix(Matrix4f projection) {
@@ -63,6 +67,10 @@ public class BackgroundShaderProgram extends ShaderProgramGL3x {
 
     public void loadTextureIdentifier() {
         super.loadInt(location_texture0, 0);
+    }
+
+    public void loadUniverseIntensity(){
+        super.loadVector3F(location_universeIntensity, AdvancedEarthViewOptions.universeIntensity);
     }
 
 
